@@ -6,3 +6,4 @@
 - `openmm cudatoolkit=11.8`
 - `fire`
 - `mdtraj`
+- `pdbfixer`

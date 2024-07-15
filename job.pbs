@@ -11,4 +11,4 @@ source activate openmm
 
 module load CUDA/11.8.0
 
-python main.py --filename S1_Best_A
+python main.py

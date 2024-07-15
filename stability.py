@@ -14,7 +14,7 @@ def is_water_or_ion(residue):
 
 def main(
         filename=None,
-        nsteps=5000
+        nsteps=250000
         ):
     
     if filename is None:
