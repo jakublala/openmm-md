@@ -50,7 +50,7 @@ def main(
     # then assign it to Simulation object
 
     simulation = Simulation(modeller.topology, system, integrator)
-
+    print('Platform used:', simulation.context.getPlatform().getName())
     # asign the positions
     simulation.context.setPositions(modeller.positions)
     # minimize the structure first (relaxation)

@@ -7,8 +7,8 @@
 cd $PBS_O_WORKDIR
 cat $PBS_NODEFILE
 
-module load CUDA/11.7.0
-module load OpenMM/8.0.0-foss-2022a-CUDA-11.7.0
 source activate openmm
 
-python main.py
+module load CUDA/11.8.0
+
+python main.py --filename S1_Best_A
