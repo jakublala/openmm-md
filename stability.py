@@ -26,8 +26,14 @@ def main(
     
     forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
     
-    system = forcefield.createSystem(pdb.topology, nonbondedMethod=PME,
-            nonbondedCutoff=1*nanometer, constraints=HBonds)
+    system = forcefield.createSystem(
+        topology=pdb.topology, 
+        nonbondedMethod=PME,
+        nonbondedCutoff=1*nanometer,
+        constraints=None
+        )
+    print('Periodic boundary conditions:', system.usesPeriodicBoundaryConditions())
+
     integrator = LangevinMiddleIntegrator(300*kelvin, 1/picosecond, 0.004*picoseconds)
     simulation = Simulation(pdb.topology, system, integrator)
     simulation.context.setPositions(pdb.positions)
@@ -35,16 +41,15 @@ def main(
     simulation.reporters.append(
         PDBReporter(
             f'{filename}_traj.pdb', 
-            reportInterval=1000,
+            reportInterval=2,
             atomSubset=non_water_ion_atoms_indices
             )
         )
     # log the energy and temperature every 1000 steps
     simulation.reporters.append(
         StateDataReporter(
-            # file=f'{filename}.out',
-            file=stdout, 
-            reportInterval=1000,
+            file=f'{filename}.out',
+            reportInterval=2,
             step=True,
             time=True,
             potentialEnergy=True,
