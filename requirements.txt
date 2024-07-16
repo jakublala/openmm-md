@@ -1,5 +1,5 @@
 openmm 
-cudatoolkit=11.8
+cudatoolkit==11.8
 fire
 mdtraj
 pdbfixer
