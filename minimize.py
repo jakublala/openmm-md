@@ -3,6 +3,10 @@ from openmm import *
 from openmm.unit import nanometer, picosecond, picoseconds, kelvin, kilojoules_per_mole
 from sys import stdout
 import fire
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 def main(
         filename=None
@@ -64,16 +68,15 @@ def main(
         def report(self, iteration, x, grad, args):
             # print current system energy to screen 
             if iteration % self.interval == 0:
-                print(iteration, args['system energy'], time.time()-self.times[-1])
+                print(iteration, args['system energy'], time.time()-self.times[-1], flush=True)
 
             # save energy at each iteration to an array we can use later
-            if iteration == 1: # create new list
+            if iteration == 0: # create new list
                 self.energies.append([args['system energy']])
                 self.iterations.append([iteration])
             else:
                 self.energies[-1].append(args['system energy'])
                 self.iterations[-1].append(iteration)
-            self.iterations.append(iteration)
 
             self.times.append(time.time())
 
@@ -84,7 +87,7 @@ def main(
     print("Minimizing energy...", flush=True)
     simulation.minimizeEnergy(
         tolerance=10*kilojoules_per_mole/nanometer,
-        maxIterations=10000,
+        maxIterations=100,
         reporter=Reporter(),
     )
 

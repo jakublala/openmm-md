@@ -35,7 +35,7 @@ def main(filename=None):
 
 if __name__ == '__main__':
     # filenames = ['S1_Best_A', 'S1_Best_AB', 'S2_Best_A', 'S2_Best_AB']
-    filenames = ['tutorial_example']
+    filenames = ['S1_Best_A']
     for filename in filenames:
         print(f'==================== Running {filename} ====================')
         main(filename=filename)

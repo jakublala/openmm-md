@@ -41,7 +41,7 @@ def main(
     simulation.reporters.append(
         PDBReporter(
             f'{filename}_traj.pdb', 
-            reportInterval=2,
+            reportInterval=1000,
             atomSubset=non_water_ion_atoms_indices
             )
         )
@@ -49,7 +49,7 @@ def main(
     simulation.reporters.append(
         StateDataReporter(
             file=f'{filename}.out',
-            reportInterval=2,
+            reportInterval=1000,
             step=True,
             time=True,
             potentialEnergy=True,
