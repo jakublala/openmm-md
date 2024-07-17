@@ -12,7 +12,7 @@ def main(
     
     # 1: STRUCTURE
     # load the PDB system, can also load newer PDBx
-    print('Loading...')
+    print('Loading...', flush=True)
     pdb = PDBFile(f'{filename}_fixed.pdb')
 
 
@@ -25,9 +25,9 @@ def main(
 
     # invoke modeller to adjust the system
     modeller = Modeller(pdb.topology, pdb.positions)
-    print('Adding hydrogens...')
+    print('Adding hydrogens...', flush=True)
     modeller.addHydrogens(forcefield, pH=7.0) # -> we fail here
-    print('Adding solvent...')
+    print('Adding solvent...', flush=True)
     modeller.addSolvent(forcefield, padding=1*nanometer)
 
     # modeller could also add a membrane or ions (ionic strength of the solvent)
@@ -50,12 +50,10 @@ def main(
     # then assign it to Simulation object
 
     simulation = Simulation(modeller.topology, system, integrator)
-    print('Platform used:', simulation.context.getPlatform().getName())
+    print('Platform used:', simulation.context.getPlatform().getName(), flush=True)
     # asign the positions
     simulation.context.setPositions(modeller.positions)
     # minimize the structure first (relaxation)
-    print('Minimizing...')
-
     import time
     class Reporter(MinimizationReporter):
         interval = 10 # report interval
@@ -69,7 +67,12 @@ def main(
                 print(iteration, args['system energy'], time.time()-self.times[-1])
 
             # save energy at each iteration to an array we can use later
-            self.energies.append(args['system energy'])
+            if iteration == 1: # create new list
+                self.energies.append([args['system energy']])
+                self.iterations.append([iteration])
+            else:
+                self.energies[-1].append(args['system energy'])
+                self.iterations[-1].append(iteration)
             self.iterations.append(iteration)
 
             self.times.append(time.time())
@@ -78,25 +81,26 @@ def main(
             # You can use this functionality for early termination.
             return False
 
-    print("Minimizing energy...")
+    print("Minimizing energy...", flush=True)
     simulation.minimizeEnergy(
-        tolerance=1*kilojoules_per_mole/nanometer,
+        tolerance=10*kilojoules_per_mole/nanometer,
         maxIterations=10000,
         reporter=Reporter(),
     )
 
-    print('Saving...')
+    print('Saving...', flush=True)
     positions = simulation.context.getState(getPositions=True).getPositions()
     PDBFile.writeFile(simulation.topology, positions, open(f'{filename}_solvated.pdb', 'w'))
 
-    import matplotlib.pyplot as plt
-    # plot energies
-    plt.plot(Reporter.iterations, Reporter.energies)
-    plt.xlabel('Iteration')
-    plt.ylabel('Energy')
-    plt.savefig(f'{filename}_minimization.png')
+    # import matplotlib.pyplot as plt
+    # # plot energies
+    # for i, (iteration, energy) in enumerate(zip(Reporter.iterations, Reporter.energies)):
+    #     plt.plot(iteration, energy, 'x', alpha=(i+1)/len(Reporter.energies))
+    # plt.xlabel('Iteration')
+    # plt.ylabel('Energy')
+    # plt.savefig(f'{filename}_minimization.png')
 
-    print('Done')
+    print('Done', flush=True)
 
 
 if __name__ == '__main__':

@@ -49,10 +49,12 @@ def main(
         io = PDBIO()
         io.set_structure(model)
         io.save(f"{filename}_fixed.pdb")
+        fixer = PDBFixer(filename=f"{filename}_fixed.pdb")
+    else:
+        fixer = PDBFixer(filename=f'{filename}.pdb')
 
     # this script added the C-terminus oxygen atom
     print('Fixing C-terminus...')
-    fixer = PDBFixer(filename=f"{filename}_fixed.pdb")
     fixer.findMissingResidues()
     # only deal with missing residues in the middle of the chain, not at the start or end
     # if this is removed, multiple chains become merged into one chain
