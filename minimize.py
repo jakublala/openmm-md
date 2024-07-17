@@ -60,7 +60,7 @@ def main(
     # minimize the structure first (relaxation)
     import time
     class Reporter(MinimizationReporter):
-        interval = 10 # report interval
+        interval = 100 # report interval
         iterations = []
         energies = [] # array to record progress
         times = [time.time()] # array to record progress
@@ -86,8 +86,8 @@ def main(
 
     print("Minimizing energy...", flush=True)
     simulation.minimizeEnergy(
-        tolerance=10*kilojoules_per_mole/nanometer,
-        maxIterations=100,
+        # tolerance=10*kilojoules_per_mole/nanometer,
+        maxIterations=1000,
         reporter=Reporter(),
     )
 
@@ -95,13 +95,14 @@ def main(
     positions = simulation.context.getState(getPositions=True).getPositions()
     PDBFile.writeFile(simulation.topology, positions, open(f'{filename}_solvated.pdb', 'w'))
 
-    # import matplotlib.pyplot as plt
-    # # plot energies
-    # for i, (iteration, energy) in enumerate(zip(Reporter.iterations, Reporter.energies)):
-    #     plt.plot(iteration, energy, 'x', alpha=(i+1)/len(Reporter.energies))
-    # plt.xlabel('Iteration')
-    # plt.ylabel('Energy')
-    # plt.savefig(f'{filename}_minimization.png')
+    import matplotlib.pyplot as plt
+    # plot energies
+    for i, (iteration, energy) in enumerate(zip(Reporter.iterations, Reporter.energies)):
+        plt.plot(iteration, energy, 'b-', alpha=(i+1)/len(Reporter.energies), label=f'Iteration {i+1}')
+    plt.xlabel('Iteration')
+    plt.ylabel('Energy')
+    plt.legend()
+    plt.savefig(f'{filename}_minimization.png')
 
     print('Done', flush=True)
 
