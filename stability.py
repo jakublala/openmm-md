@@ -30,7 +30,7 @@ def main(
         topology=pdb.topology, 
         nonbondedMethod=PME,
         nonbondedCutoff=1*nanometer,
-        constraints=None
+        constraints=HBonds
         )
     print('Periodic boundary conditions:', system.usesPeriodicBoundaryConditions())
 
