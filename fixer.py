@@ -18,7 +18,7 @@ def main(
     if 'AB' in filename:
         print('Splitting chains...')
         # SEE https://stackoverflow.com/questions/74735845/splitting-and-renaming-protein-chain-with-biopythons-biopdb
-        structure = PDBParser().get_structure(filename, f'{filename}.pdb')
+        structure = PDBParser().get_structure(filename, f'input/{filename}.pdb')
         # get residue id where to break
         last_id = 0
         res_to_chain_B = None
@@ -48,10 +48,10 @@ def main(
             my_chain.add(res)
         io = PDBIO()
         io.set_structure(model)
-        io.save(f"{filename}_fixed.pdb")
-        fixer = PDBFixer(filename=f"{filename}_fixed.pdb")
+        io.save(f"tmp/{filename}_fixed.pdb")
+        fixer = PDBFixer(filename=f"tmp/{filename}_fixed.pdb")
     else:
-        fixer = PDBFixer(filename=f'{filename}.pdb')
+        fixer = PDBFixer(filename=f'input/{filename}.pdb')
 
     # this script added the C-terminus oxygen atom
     print('Fixing C-terminus...')
@@ -71,7 +71,7 @@ def main(
     fixer.addMissingAtoms()
     fixer.addMissingHydrogens()
 
-    with open(f'{filename}_fixed.pdb', 'w') as f:
+    with open(f'tmp/{filename}_fixed.pdb', 'w') as f:
         PDBFile.writeFile(fixer.topology, fixer.positions, f)
 
 

@@ -1,18 +1,20 @@
 import sys
 print(sys.executable)
 
+import os
 import subprocess
 
 def run_command(command):
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     stdout, stderr = process.communicate()
-    
+
     if process.returncode != 0:
         print(f"Error running command: {command}")
         print(f"Return code: {process.returncode}")
         print(f"Standard output:\n{stdout.decode()}")
         print(f"Standard error:\n{stderr.decode()}")
-        sys.exit(1)  # Exit the script with an error code
+        raise Exception(f"Error running command: {command}")
+
     
     return stdout.decode()
 
@@ -20,22 +22,47 @@ def main(filename=None):
     if filename is None:
         raise ValueError('Filename is required')
     
-    print("-----Running fixer.py-----")
+    # if tmp folder exists, remove it
+    if os.path.exists('tmp'):
+        run_command('rm -r tmp')
+    if not os.path.exists('tmp'):
+        # create the tmp folder
+        run_command('mkdir tmp')
+
+
+    # print("-----Running fixer.py-----")
     output = run_command(f'python fixer.py --filename {filename}')
     print(output)
-    
-    print("-----Running minimize.py-----")
-    output = run_command(f'python minimize.py --filename {filename}')
-    print(output)
 
-    print("-----Running stability.py-----")
-    output = run_command(f'python stability.py --filename {filename} --nsteps=5000')
-    print(output)
+
+    # do 10 attempts
+    for i in range(100):
+        print("-----Running minimize.py-----")
+        output = run_command(f'python minimize.py --filename {filename} --max_iterations 1000')
+        print(output)
+
+        try:
+            print("-----Running stability.py-----")
+            print(f"Running for the {i+1}th time...")
+            output = run_command(f'python stability.py --filename {filename} --mdtime 10')
+            # output = run_command(f'python stability.py --filename {filename} --nsteps=1000')
+            print(output)
+            break
+        except Exception as e:
+            print(f"Error running stability.py: {e}")
+            print("Trying again...")
+            # remove the xtc file
+            # if this file exists run the command
+            if os.path.exists(f'tmp/{filename}.xtc'):
+                run_command(f'rm tmp/{filename}.xtc')
+            if os.path.exists(f'tmp/{filename}.out'):
+                run_command(f'rm tmp/{filename}.out')
+            continue
 
 
 if __name__ == '__main__':
     # filenames = ['S1_Best_A', 'S1_Best_AB', 'S2_Best_A', 'S2_Best_AB']
-    filenames = ['S1_Best_A']
+    filenames = ['S1_Best_AB']
     for filename in filenames:
         print(f'==================== Running {filename} ====================')
         main(filename=filename)

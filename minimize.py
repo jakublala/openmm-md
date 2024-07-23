@@ -9,15 +9,19 @@ import logging
 logger = logging.getLogger(__name__)
 
 def main(
-        filename=None
+        filename=None,
+        max_iterations=None,
         ):
     if filename is None:
         raise ValueError('Filename is required')
-    
+    if max_iterations is None:
+        raise ValueError('Max iterations is required')
+
+
     # 1: STRUCTURE
     # load the PDB system, can also load newer PDBx
     print('Loading...', flush=True)
-    pdb = PDBFile(f'{filename}_fixed.pdb')
+    pdb = PDBFile(f'tmp/{filename}_fixed.pdb')
 
 
     # 2: FORCE FIELD AND SYSTEM
@@ -52,8 +56,14 @@ def main(
     # there's 4 different platforms tu use - Reference, CPU, CUDA, and OpenCL
     # platform = Platform.getPlatformByName('CUDA')
     # then assign it to Simulation object
+    try:
+        platform = Platform.getPlatformByName('CUDA')
+        properties = {'DeviceIndex': '0,1'}
+    except:
+        platform = Platform.getPlatformByName('OpenCL')
 
-    simulation = Simulation(modeller.topology, system, integrator)
+
+    simulation = Simulation(modeller.topology, system, integrator, platform, properties)
     print('Platform used:', simulation.context.getPlatform().getName(), flush=True)
     # asign the positions
     simulation.context.setPositions(modeller.positions)
@@ -67,8 +77,8 @@ def main(
 
         def report(self, iteration, x, grad, args):
             # print current system energy to screen 
-            if iteration % self.interval == 0:
-                print(iteration, args['system energy'], time.time()-self.times[-1], flush=True)
+            # if iteration % self.interval == 0:
+            #     print(iteration, args['system energy'], time.time()-self.times[-1], flush=True)
 
             # save energy at each iteration to an array we can use later
             if iteration == 0: # create new list
@@ -86,14 +96,14 @@ def main(
 
     print("Minimizing energy...", flush=True)
     simulation.minimizeEnergy(
-        # tolerance=10*kilojoules_per_mole/nanometer,
-        maxIterations=1000,
+        tolerance=5*kilojoules_per_mole/nanometer,
+        maxIterations=max_iterations,
         reporter=Reporter(),
     )
 
     print('Saving...', flush=True)
     positions = simulation.context.getState(getPositions=True).getPositions()
-    PDBFile.writeFile(simulation.topology, positions, open(f'{filename}_solvated.pdb', 'w'))
+    PDBFile.writeFile(simulation.topology, positions, open(f'tmp/{filename}_solvated.pdb', 'w'))
 
     import matplotlib.pyplot as plt
     # plot energies
@@ -102,7 +112,7 @@ def main(
     plt.xlabel('Iteration')
     plt.ylabel('Energy')
     plt.legend()
-    plt.savefig(f'{filename}_minimization.png')
+    plt.savefig(f'tmp/{filename}_minimization.png')
 
     print('Done', flush=True)
 
