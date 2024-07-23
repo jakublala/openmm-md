@@ -8,7 +8,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def main(
+def minimize(
         filename=None,
         max_iterations=None,
         ):
@@ -118,4 +118,4 @@ def main(
 
 
 if __name__ == '__main__':
-    fire.Fire(main)
+    fire.Fire(minimize)

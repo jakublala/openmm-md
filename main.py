@@ -4,6 +4,11 @@ print(sys.executable)
 import os
 import subprocess
 
+# current datetime
+from datetime import datetime
+now = datetime.now()
+dt_string = now.strftime("%y%m%d_%H%M%S")
+
 def run_command(command):
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
     stdout, stderr = process.communicate()
@@ -31,32 +36,31 @@ def main(filename=None):
 
 
     # print("-----Running fixer.py-----")
-    output = run_command(f'python fixer.py --filename {filename}')
-    print(output)
+    from fixer import fixer
+    fixer(filename=filename)
 
 
     # do 10 attempts
     for i in range(100):
         print("-----Running minimize.py-----")
-        output = run_command(f'python minimize.py --filename {filename} --max_iterations 1000')
-        print(output)
+        from minimize import minimize
+        minimize(filename=filename, max_iterations=1000)
 
         try:
             print("-----Running stability.py-----")
             print(f"Running for the {i+1}th time...")
-            output = run_command(f'python stability.py --filename {filename} --mdtime 10')
-            # output = run_command(f'python stability.py --filename {filename} --nsteps=1000')
-            print(output)
+            from stability import stability
+            stability(filename=filename, mdtime=10)
             break
         except Exception as e:
-            print(f"Error running stability.py: {e}")
+            print(f"Error running stability: {e}")
             print("Trying again...")
             # remove the xtc file
             # if this file exists run the command
             if os.path.exists(f'tmp/{filename}.xtc'):
-                run_command(f'rm tmp/{filename}.xtc')
+                run_command(f'mv tmp/{filename}.xtc output/{filename}_{dt_string}.xtc')
             if os.path.exists(f'tmp/{filename}.out'):
-                run_command(f'rm tmp/{filename}.out')
+                run_command(f'mv tmp/{filename}.out output/{filename}_{dt_string}.out')
             continue
 
 

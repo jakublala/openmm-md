@@ -12,7 +12,7 @@ def is_water_or_ion(residue):
 
 
 
-def main(
+def stability(
         filename=None,
         nsteps=None,
         mdtime=None, # give in ns
@@ -113,4 +113,4 @@ def main(
 
 
 if __name__ == '__main__':
-    fire.Fire(main)
+    fire.Fire(stability)

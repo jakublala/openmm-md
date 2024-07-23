@@ -7,7 +7,7 @@ from Bio.PDB.Model import Model
 from Bio.PDB.Structure import Structure
 
 
-def main(
+def fixer(
         filename=None
 ):
     if filename is None:
@@ -76,4 +76,4 @@ def main(
 
 
 if __name__ == '__main__':
-    fire.Fire(main)
+    fire.Fire(fixer)
