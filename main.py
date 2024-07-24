@@ -63,6 +63,16 @@ def main(filename=None):
                 run_command(f'mv tmp/{filename}.out output/{filename}_{dt_string}.out')
             continue
 
+def restart(filename=None):
+    if filename is None:
+        raise ValueError('Filename is required')
+
+    # just run stability from a checkpoint
+    print("-----Running stability.py-----")
+    from stability import stability
+    # HACK: set to 90 ns, since first run was 10 ns
+    stability(filename=filename, mdtime=90, restart=True)
+
 
 if __name__ == '__main__':
     # filenames = ['S1_Best_A', 'S1_Best_AB', 'S2_Best_A', 'S2_Best_AB']

@@ -16,6 +16,7 @@ def stability(
         filename=None,
         nsteps=None,
         mdtime=None, # give in ns
+        restart=False,
         ):
     
     time_step = 0.004*picoseconds
@@ -37,8 +38,10 @@ def stability(
 
     
 
-    
-    pdb = PDBFile(f'tmp/{filename}_solvated.pdb')
+    if restart:
+        pdb = PDBFile(f'output/{filename}_solvated.pdb')
+    else:
+        pdb = PDBFile(f'tmp/{filename}_solvated.pdb')
     non_water_ion_atoms_indices = [atom.index for atom in pdb.topology.atoms() if not is_water_or_ion(atom.residue)]
     
     
@@ -94,8 +97,12 @@ def stability(
             totalSteps=nsteps
         )
     )
-    # there's an automated way for checkpointing - CheckpointReporter
-
+    simulation.reporters.append(
+        CheckpointReporter(
+            file=f'tmp/{filename}.chk', 
+            reportInterval=10000
+            )
+        )
 
     import time
 
