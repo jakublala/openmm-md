@@ -57,10 +57,10 @@ def stability(
 
     integrator = LangevinMiddleIntegrator(300*kelvin, 1/picosecond, time_step)
 
-    
+    properties = None
     try:
         platform = Platform.getPlatformByName('CUDA')
-        properties = {'DeviceIndex': '0,1'}
+        # properties = {'DeviceIndex': '0,1'} # only use the below on a multi-GPU system
     except:
         platform = Platform.getPlatformByName('OpenCL')
     simulation = Simulation(pdb.topology, system, integrator, platform, properties)

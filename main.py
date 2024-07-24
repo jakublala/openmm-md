@@ -50,7 +50,8 @@ def main(filename=None):
             print("-----Running stability.py-----")
             print(f"Running for the {i+1}th time...")
             from stability import stability
-            stability(filename=filename, mdtime=10)
+            # stability(filename=filename, mdtime=10)
+            stability(filename=filename, nstes=5000)
             break
         except Exception as e:
             print(f"Error running stability: {e}")
@@ -78,7 +79,7 @@ def restart(filename=None):
 
 if __name__ == '__main__':
     # filenames = ['S1_Best_A', 'S1_Best_AB', 'S2_Best_A', 'S2_Best_AB']
-    filenames = ['S2_Best_A']
+    filenames = ['S1_Best_A']
     for filename in filenames:
         print(f'==================== Running {filename} ====================')
         main(filename=filename)
