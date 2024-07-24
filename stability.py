@@ -116,6 +116,7 @@ def stability(
     shutil.move(f'tmp/{filename}.xtc', f'output/{filename}.xtc')
     shutil.move(f'tmp/{filename}.out', f'output/{filename}.out')
     shutil.move(f'tmp/{filename}_solvated.pdb', f'output/{filename}_solvated.pdb')
+    shutil.move(f'tmp/{filename}.chk', f'output/{filename}.chk')
 
 
 

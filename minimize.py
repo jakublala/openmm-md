@@ -113,6 +113,7 @@ def minimize(
     plt.ylabel('Energy')
     plt.legend()
     plt.savefig(f'tmp/{filename}_minimization.png')
+    plt.clf()
 
     print('Done', flush=True)
 

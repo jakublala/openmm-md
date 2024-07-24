@@ -61,6 +61,8 @@ def main(filename=None):
                 run_command(f'mv tmp/{filename}.xtc output/{filename}_{dt_string}.xtc')
             if os.path.exists(f'tmp/{filename}.out'):
                 run_command(f'mv tmp/{filename}.out output/{filename}_{dt_string}.out')
+            if os.path.exists(f'tmp/{filename}.chk'):
+                run_command(f'mv tmp/{filename}.chk output/{filename}_{dt_string}.chk')
             continue
 
 def restart(filename=None):
@@ -76,7 +78,7 @@ def restart(filename=None):
 
 if __name__ == '__main__':
     # filenames = ['S1_Best_A', 'S1_Best_AB', 'S2_Best_A', 'S2_Best_AB']
-    filenames = ['S1_Best_AB']
+    filenames = ['S2_Best_A']
     for filename in filenames:
         print(f'==================== Running {filename} ====================')
         main(filename=filename)
