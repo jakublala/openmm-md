@@ -60,7 +60,8 @@ def minimize(
     properties = None
     try:
         platform = Platform.getPlatformByName('CUDA')
-        properties = {'DeviceIndex': device_index}
+        # only use the below on a multi-GPU system
+        # properties = {'DeviceIndex': '0,1'}
     except:
         platform = Platform.getPlatformByName('OpenCL')
 
