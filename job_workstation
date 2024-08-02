@@ -4,4 +4,6 @@
 source activate openmm
 
 # run the main script
-python main.py
+# # filenames = ['S1_Best_A', 'S1_Best_AB', 'S2_Best_A', 'S2_Best_AB']
+# python main.py --filename S2_Best_AB --device_index 1
+python stability.py --filename S1_Best_A_240726_160248 --mdtime 10 --restart True --log_freq=1000

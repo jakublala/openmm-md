@@ -6,8 +6,6 @@ import subprocess
 
 # current datetime
 from datetime import datetime
-now = datetime.now()
-dt_string = now.strftime("%y%m%d_%H%M%S")
 
 def run_command(command):
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -23,13 +21,12 @@ def run_command(command):
     
     return stdout.decode()
 
-def main(filename=None):
+def main(filename=None, device_index=0):
     if filename is None:
         raise ValueError('Filename is required')
     
-    # if tmp folder exists, remove it
-    if os.path.exists('tmp'):
-        run_command('rm -r tmp')
+    print(f'==================== Running {filename} ====================')
+    
     if not os.path.exists('tmp'):
         # create the tmp folder
         run_command('mkdir tmp')
@@ -41,16 +38,19 @@ def main(filename=None):
 
 
     # do 10 attempts
-    for i in range(100):
+    for i in range(10):
         print("-----Running minimize.py-----")
         from minimize import minimize
-        minimize(filename=filename, max_iterations=1000)
+        minimize(filename=filename, max_iterations=1000, device_index=str(device_index))
 
         try:
             print("-----Running stability.py-----")
             print(f"Running for the {i+1}th time...")
+            now = datetime.now()
+            dt_string = now.strftime("%y%m%d_%H%M%S")
+
             from stability import stability
-            stability(filename=filename, mdtime=10)
+            stability(filename=filename, mdtime=100, device_index=str(device_index))
             break
         except Exception as e:
             print(f"Error running stability: {e}")
@@ -63,6 +63,8 @@ def main(filename=None):
                 run_command(f'mv tmp/{filename}.out output/{filename}_{dt_string}.out')
             if os.path.exists(f'tmp/{filename}.chk'):
                 run_command(f'mv tmp/{filename}.chk output/{filename}_{dt_string}.chk')
+            if os.path.exists(f"tmp/{filename}_solvated.pdb"):
+                run_command(f"mv tmp/{filename}_solvated.pdb output/{filename}_{dt_string}_solvated.pdb")
             continue
 
 def restart(filename=None):
@@ -76,11 +78,6 @@ def restart(filename=None):
     stability(filename=filename, mdtime=90, restart=True)
 
 
+import fire
 if __name__ == '__main__':
-    # filenames = ['S1_Best_A', 'S1_Best_AB', 'S2_Best_A', 'S2_Best_AB']
-    filenames = ['S2_Best_A']
-    for filename in filenames:
-        print(f'==================== Running {filename} ====================')
-        main(filename=filename)
-    
-    print("All scripts completed successfully.")
+    fire.Fire(main)

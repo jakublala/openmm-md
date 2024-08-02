@@ -17,6 +17,8 @@ def stability(
         nsteps=None,
         mdtime=None, # give in ns
         restart=False,
+        device_index='0',
+        log_freq=10000,
         ):
     
     time_step = 0.004*picoseconds
@@ -42,7 +44,7 @@ def stability(
         pdb = PDBFile(f'output/{filename}_solvated.pdb')
     else:
         pdb = PDBFile(f'tmp/{filename}_solvated.pdb')
-    non_water_ion_atoms_indices = [atom.index for atom in pdb.topology.atoms() if not is_water_or_ion(atom.residue)]
+    # non_water_ion_atoms_indices = [atom.index for atom in pdb.topology.atoms() if not is_water_or_ion(atom.residue)]
     
     
     forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
@@ -55,23 +57,28 @@ def stability(
         )
     print('Periodic boundary conditions:', system.usesPeriodicBoundaryConditions())
 
+    # TODO: run it at body temperature
+    # have a bit larger friction coefficient initially in an equilibriation phase
+    # then decrease it to a smaller value for production run
     integrator = LangevinMiddleIntegrator(300*kelvin, 1/picosecond, time_step)
 
     
     try:
         platform = Platform.getPlatformByName('CUDA')
-        properties = {'DeviceIndex': '0,1'}
+        properties = {'DeviceIndex': device_index}
     except:
         platform = Platform.getPlatformByName('OpenCL')
     simulation = Simulation(pdb.topology, system, integrator, platform, properties)
     print('platform used:', simulation.context.getPlatform().getName())
-    simulation.context.setPositions(pdb.positions)
+    if restart:
+        simulation.loadCheckpoint(f'output/{filename}.chk')
+    else:
+        simulation.context.setPositions(pdb.positions)
     # log the structure output as PDB
     simulation.reporters.append(
         XTCReporter(
             f'tmp/{filename}.xtc', 
-            # reportInterval=100,
-            reportInterval=10000,
+            reportInterval=log_freq,
             enforcePeriodicBox=False,
             # atomSubset=non_water_ion_atoms_indices
             )
@@ -80,9 +87,7 @@ def stability(
     simulation.reporters.append(
         StateDataReporter(
             file=f'tmp/{filename}.out',
-            # file=stdout,
-            reportInterval=10000,
-            # reportInterval=100,
+            reportInterval=log_freq,
             step=True,
             time=True,
             potentialEnergy=True,
@@ -100,7 +105,7 @@ def stability(
     simulation.reporters.append(
         CheckpointReporter(
             file=f'tmp/{filename}.chk', 
-            reportInterval=10000
+            reportInterval=log_freq
             )
         )
 

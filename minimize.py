@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 def minimize(
         filename=None,
         max_iterations=None,
+        device_index='0',
         ):
     if filename is None:
         raise ValueError('Filename is required')
@@ -58,7 +59,7 @@ def minimize(
     # then assign it to Simulation object
     try:
         platform = Platform.getPlatformByName('CUDA')
-        properties = {'DeviceIndex': '0,1'}
+        properties = {'DeviceIndex': device_index}
     except:
         platform = Platform.getPlatformByName('OpenCL')
 
