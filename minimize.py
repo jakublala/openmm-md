@@ -57,9 +57,11 @@ def minimize(
     # there's 4 different platforms tu use - Reference, CPU, CUDA, and OpenCL
     # platform = Platform.getPlatformByName('CUDA')
     # then assign it to Simulation object
+    properties = None
     try:
         platform = Platform.getPlatformByName('CUDA')
-        properties = {'DeviceIndex': device_index}
+        # only use the below on a multi-GPU system
+        # properties = {'DeviceIndex': '0,1'}
     except:
         platform = Platform.getPlatformByName('OpenCL')
 

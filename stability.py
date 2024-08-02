@@ -62,7 +62,7 @@ def stability(
     # then decrease it to a smaller value for production run
     integrator = LangevinMiddleIntegrator(300*kelvin, 1/picosecond, time_step)
 
-    
+    properties = None
     try:
         platform = Platform.getPlatformByName('CUDA')
         properties = {'DeviceIndex': device_index}
