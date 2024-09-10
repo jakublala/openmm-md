@@ -41,45 +41,45 @@ def main(filename=None, device_index=0):
     from relax import minimize
     minimize(
         filename=filename, 
-        max_iterations=1000, 
+        max_iterations=10000, 
         device_index=str(device_index),
         constraints=None
         )
     
     # 3. run NPT relaxation / equilibriation
     from relax import relax_md_npt
-    # 3a. relax water
-    relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix='protein')
-    # 3b. relax protein
-    relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix='water')
+    # # 3a. relax water
+    # relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix='protein')
+    # # 3b. relax protein
+    # relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix='water')
     # 3c. relax both
-    relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix=None)
+    relax_md_npt(filename=filename, mdtime=10, device_index=str(device_index), constraints=None, fix=None)
 
     # 4. equilibriate the system with fixed H bonds
     from openmm.app import HBonds
-    relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=HBonds, fix=None)
+    relax_md_npt(filename=filename, mdtime=10, device_index=str(device_index), constraints=HBonds, fix=None)
 
 
-    # try:
-    #     print("-----Running stability.py-----")
-    #     now = datetime.now()
-    #     dt_string = now.strftime("%y%m%d_%H%M%S")
+    try:
+        print("-----Running stability.py-----")
+        now = datetime.now()
+        dt_string = now.strftime("%y%m%d_%H%M%S")
 
-    #     from stability import stability
-    #     stability(filename=filename, mdtime=100, device_index=str(device_index))
-    # except Exception as e:
-    #     print(f"Error running stability: {e}")
-    #     print("Trying again...")
-    #     # remove the xtc file
-    #     # if this file exists run the command
-    #     if os.path.exists(f'tmp/{filename}.xtc'):
-    #         run_command(f'mv tmp/{filename}.xtc output/{filename}_{dt_string}.xtc')
-    #     if os.path.exists(f'tmp/{filename}.out'):
-    #         run_command(f'mv tmp/{filename}.out output/{filename}_{dt_string}.out')
-    #     if os.path.exists(f'tmp/{filename}.chk'):
-    #         run_command(f'mv tmp/{filename}.chk output/{filename}_{dt_string}.chk')
-    #     if os.path.exists(f"tmp/{filename}_solvated.pdb"):
-    #         run_command(f"mv tmp/{filename}_solvated.pdb output/{filename}_{dt_string}_solvated.pdb")
+        from stability import stability
+        stability(filename=filename, mdtime=100, device_index=str(device_index))
+    except Exception as e:
+        print(f"Error running stability: {e}")
+        print("Trying again...")
+        # remove the xtc file
+        # if this file exists run the command
+        if os.path.exists(f'tmp/{filename}.xtc'):
+            run_command(f'mv tmp/{filename}.xtc output/{filename}_{dt_string}.xtc')
+        if os.path.exists(f'tmp/{filename}.out'):
+            run_command(f'mv tmp/{filename}.out output/{filename}_{dt_string}.out')
+        if os.path.exists(f'tmp/{filename}.chk'):
+            run_command(f'mv tmp/{filename}.chk output/{filename}_{dt_string}.chk')
+        if os.path.exists(f"tmp/{filename}_solvated.pdb"):
+            run_command(f"mv tmp/{filename}_solvated.pdb output/{filename}_{dt_string}_solvated.pdb")
 
 def restart(filename=None):
     if filename is None:
