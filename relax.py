@@ -128,7 +128,7 @@ def minimize(
     original_pos = simulation.context.getState(getPositions=True).getPositions()
     original_pos = np.array(original_pos.value_in_unit(nanometer))
     simulation.minimizeEnergy(
-        tolerance=5*kilojoules_per_mole/nanometer,
+        tolerance=10*kilojoules_per_mole/nanometer,
         maxIterations=max_iterations,
         reporter=reporter_hyrogens,
     )
@@ -180,7 +180,7 @@ def minimize(
     original_pos = simulation.context.getState(getPositions=True).getPositions()
     original_pos = np.array(original_pos.value_in_unit(nanometer))
     simulation.minimizeEnergy(
-        tolerance=5*kilojoules_per_mole/nanometer,
+        tolerance=10*kilojoules_per_mole/nanometer,
         maxIterations=max_iterations,
         reporter=reporter_water,
     )
@@ -272,8 +272,8 @@ def minimize(
     original_pos = simulation.context.getState(getPositions=True).getPositions()
     original_pos = np.array(original_pos.value_in_unit(nanometer))
     simulation.minimizeEnergy(
-        tolerance=5*kilojoules_per_mole/nanometer,
-        maxIterations=max_iterations,
+        tolerance=10*kilojoules_per_mole/nanometer,
+        maxIterations=max_iterations, # TODO: remove this and see what happens
         reporter=reporter_whole,
     )
 

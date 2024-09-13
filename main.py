@@ -22,7 +22,7 @@ def run_command(command):
     
     return stdout.decode()
 
-def main(filename=None, device_index=0):
+def main(filename=None, device_index=1):
     if filename is None:
         raise ValueError('Filename is required')
     
@@ -41,7 +41,7 @@ def main(filename=None, device_index=0):
     from relax import minimize
     minimize(
         filename=filename, 
-        max_iterations=10000, 
+        max_iterations=0, 
         device_index=str(device_index),
         constraints=None
         )
@@ -53,11 +53,11 @@ def main(filename=None, device_index=0):
     # # 3b. relax protein
     # relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix='water')
     # 3c. relax both
-    relax_md_npt(filename=filename, mdtime=10, device_index=str(device_index), constraints=None, fix=None)
+    relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix=None)
 
     # 4. equilibriate the system with fixed H bonds
     from openmm.app import HBonds
-    relax_md_npt(filename=filename, mdtime=10, device_index=str(device_index), constraints=HBonds, fix=None)
+    relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=HBonds, fix=None)
 
 
     try:
