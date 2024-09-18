@@ -27,7 +27,7 @@ temperature = 300*kelvin
 friction = 1.0/picosecond
 
 # Simulation Options
-steps = 10**6
+steps = 10**7
 equilibrationSteps = 10**5
 # platform = Platform.getPlatformByName('OpenCL')
 platform = Platform.getPlatformByName('CUDA')

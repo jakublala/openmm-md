@@ -5,3 +5,6 @@ mdtraj
 pdbfixer
 matplotlib
 biopython
+plumed
+py-plumed
+openmm-plumed
