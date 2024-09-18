@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# load environment
+source activate /home/jakub/anaconda3/envs/openmm
+
+python run_plumed.py
