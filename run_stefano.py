@@ -57,8 +57,8 @@ print("y:", box_vectors[1] / unit.nanometers)
 print("z:", box_vectors[2] / unit.nanometers)
 
 # Save the solvated structure
-# with open('tmp/solvated.pdb', 'w') as f:
-#     PDBFile.writeFile(modeller.topology, modeller.positions, f)
+with open('tmp/solvated.pdb', 'w') as f:
+    PDBFile.writeFile(modeller.topology, modeller.positions, f)
 
 
 # System Configuration
