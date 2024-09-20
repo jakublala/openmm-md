@@ -3,6 +3,8 @@ output.zip
 tmp/
 __pycache__/
 
+*.dcd
+
 .vscode/
 
 # job output
