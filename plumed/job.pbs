@@ -1,0 +1,14 @@
+#!/bin/bash
+#PBS -l walltime=10:00:00
+#PBS -l select=1:ncpus=1:mem=80gb:ngpus=1:gpu_type=A100
+#PBS -q hx
+#PBS -N openmm.md
+
+cd $PBS_O_WORKDIR
+cat $PBS_NODEFILE
+
+source activate openmm
+
+module load CUDA/11.8.0
+
+python run_plumed.py
