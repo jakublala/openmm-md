@@ -1,0 +1,8 @@
+#!/bin/bash
+
+
+export LD_LIBRARY_PATH=/gpfs/home/jl24018/mambaforge-pypy3/envs/openmm/lib:$LD_LIBRARY_PATH
+# load environment
+source activate /home/jakub/anaconda3/envs/openmm
+
+python run_plumed.py

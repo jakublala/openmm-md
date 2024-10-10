@@ -2,6 +2,7 @@ output/
 output.zip
 tmp/
 __pycache__/
+mymd.egg-info/
 
 *.dcd
 
