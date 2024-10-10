@@ -22,10 +22,17 @@ def run_command(command):
     
     return stdout.decode()
 
-def main(filename=None, device_index=1):
-    if filename is None:
-        raise ValueError('Filename is required')
-    
+def main(
+        filepath=None, 
+        device_index=1,
+        mdtime=100, # in ns
+        timestep=4
+        ):
+    if filepath is None:
+        raise ValueError('Filepath is required')
+
+    filename = os.path.basename(filepath).split('.')[0]
+
     print(f'==================== Running {filename} ====================')
     
     if not os.path.exists('tmp'):
@@ -35,7 +42,7 @@ def main(filename=None, device_index=1):
 
     # 1. load the PDB and fix errors
     from fixer import fixer
-    fixer(filename=filename)
+    fixer(filepath=filepath)
 
     # 2. minimize the structure with LBFGS and H atoms mobile
     from relax import minimize
@@ -53,11 +60,19 @@ def main(filename=None, device_index=1):
     # # 3b. relax protein
     # relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix='water')
     # 3c. relax both
-    relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix=None)
+    # relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix=None)
 
     # 4. equilibriate the system with fixed H bonds
-    from openmm.app import HBonds
-    relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=HBonds, fix=None)
+    # TODO: fix this
+    # from openmm.app import HBonds
+    # relax_md_npt(
+    #     filename=filename, 
+    #     mdtime=1, 
+    #     device_index=str(device_index), 
+    #     constraints=HBonds, 
+    #     fix=None,
+    #     timestep=timestep
+    #     )
 
 
     try:
@@ -66,14 +81,17 @@ def main(filename=None, device_index=1):
         dt_string = now.strftime("%y%m%d_%H%M%S")
 
         from stability import stability
-        stability(filename=filename, mdtime=100, device_index=str(device_index))
+        stability(
+            filename=filename, 
+            mdtime=mdtime, 
+            device_index=str(device_index),
+            timestep=timestep
+            )
+        
     except Exception as e:
         print(f"Error running stability: {e}")
-        print("Trying again...")
-        # remove the xtc file
-        # if this file exists run the command
-        if os.path.exists(f'tmp/{filename}.xtc'):
-            run_command(f'mv tmp/{filename}.xtc output/{filename}_{dt_string}.xtc')
+        if os.path.exists(f'tmp/{filename}.xyz'):
+            run_command(f'mv tmp/{filename}.xyz output/{filename}_{dt_string}.xyz')
         if os.path.exists(f'tmp/{filename}.out'):
             run_command(f'mv tmp/{filename}.out output/{filename}_{dt_string}.out')
         if os.path.exists(f'tmp/{filename}.chk'):

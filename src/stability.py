@@ -19,9 +19,10 @@ def stability(
         restart=False,
         device_index='0',
         log_freq=10000,
+        timestep=4, # in femtoseconds
         ):
     
-    time_step = 0.004*picoseconds
+    time_step = 0.001*timestep*picoseconds
 
     if filename is None:
         raise ValueError('Filename is required')
@@ -44,7 +45,7 @@ def stability(
         pdb = PDBFile(f'output/{filename}_solvated.pdb')
     else:
         pdb = PDBFile(f'tmp/{filename}_solvated.pdb')
-    # non_water_ion_atoms_indices = [atom.index for atom in pdb.topology.atoms() if not is_water_or_ion(atom.residue)]
+    non_water_ion_atoms_indices = [atom.index for atom in pdb.topology.atoms() if not is_water_or_ion(atom.residue)]
     
     
     forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
@@ -74,15 +75,20 @@ def stability(
         simulation.loadCheckpoint(f'output/{filename}.chk')
     else:
         simulation.context.setPositions(pdb.positions)
-    # log the structure output as PDB
+    
+    from mdareporter import MDAReporter
+
+
     simulation.reporters.append(
-        XTCReporter(
-            f'tmp/{filename}.xtc', 
-            reportInterval=log_freq,
-            enforcePeriodicBox=False,
-            # atomSubset=non_water_ion_atoms_indices
+        MDAReporter(
+            f'tmp/{filename}.xyz', 
+            log_freq, 
+            enforcePeriodicBox=False, 
+            selection="protein"
             )
         )
+
+    
     # log the energy and temperature every 1000 steps
     simulation.reporters.append(
         StateDataReporter(
@@ -118,7 +124,7 @@ def stability(
 
     # move from tmp/ to output/
     import shutil
-    shutil.move(f'tmp/{filename}.xtc', f'output/{filename}.xtc')
+    shutil.move(f'tmp/{filename}.xyz', f'output/{filename}.xyz')
     shutil.move(f'tmp/{filename}.out', f'output/{filename}.out')
     shutil.move(f'tmp/{filename}_solvated.pdb', f'output/{filename}_solvated.pdb')
     shutil.move(f'tmp/{filename}.chk', f'output/{filename}.chk')

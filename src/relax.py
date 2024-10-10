@@ -330,6 +330,7 @@ def relax_md_npt(
         constraints=None,
         fix=None,
         annealing=True,
+        timestep=4 # in femtoseconds
 ):
     """
     Runs MD in NPT to relax the system.
@@ -342,10 +343,10 @@ def relax_md_npt(
         current_T = 300 # TODO: check that this system works at this temp (or whether I could be at body temperature)
     final_T = 300
     if constraints is None:
-        timestep = 0.004*picoseconds / np.sqrt(12)
+        timestep = 0.001*timestep*picoseconds / np.sqrt(12)
     else: # assume HBonds constraint included, but assert
         assert constraints == HBonds, 'Only HBonds constraint is supported'
-        timestep = 0.004*picoseconds
+        timestep = 0.001*timestep*picoseconds
     if mdtime is None:
         mdtime = 0.01*nanosecond # ns
         logger.warning(f'mdtime is not set, using default value of {mdtime}')

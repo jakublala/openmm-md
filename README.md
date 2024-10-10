@@ -14,3 +14,6 @@ Instructions in Notion.
 - `fire`
 - `mdtraj`
 - `pdbfixer`
+
+
+- `netCDF4` - speeds up MDanalysis logging of the trajectory
