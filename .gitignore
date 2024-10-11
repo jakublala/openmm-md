@@ -11,3 +11,6 @@ mymd.egg-info/
 # job output
 slurm*
 openmm*
+
+
+pymol-pngs/
