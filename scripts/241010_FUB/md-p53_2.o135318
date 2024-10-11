@@ -1,0 +1,27 @@
+hx1-d09-gpu-01.hx1.hpc.ic.ac.uk
+/gpfs/home/jl24018/mambaforge-pypy3/envs/openmm/bin/python
+==================== Running p53_2 ====================
+Splitting chains...
+Fixing C-terminus...
+-----Running stability.py-----
+Periodic boundary conditions: True
+platform used: CUDA
+Total elapsed time: 32272.035370588303
+Time per MD step 0.0006454407076787949
+Error running stability: [Errno 2] No such file or directory: 'output/p53_2.xyz'
+Error running command: mv tmp/p53_2.xyz output/p53_2_241010_160112.xyz
+Return code: 1
+Standard output:
+
+Standard error:
+mv: cannot move 'tmp/p53_2.xyz' to 'output/p53_2_241010_160112.xyz': No such file or directory
+
+
+====================================
+CPU Time used: 08:58:14
+CPU Percent: 99%
+Memory usage: 537612kb
+Approx Power usage: 0.1076
+Walltime usage: 09:02:57
+
+====================================

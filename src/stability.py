@@ -124,6 +124,7 @@ def stability(
 
     # move from tmp/ to output/
     import shutil
+    os.makedirs('output', exist_ok=True)
     shutil.move(f'tmp/{filename}.xyz', f'output/{filename}.xyz')
     shutil.move(f'tmp/{filename}.out', f'output/{filename}.out')
     shutil.move(f'tmp/{filename}_solvated.pdb', f'output/{filename}_solvated.pdb')
