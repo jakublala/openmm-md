@@ -41,6 +41,5 @@ opes: OPES_METAD ...
 \tSTATE_WFILE=tmp/{filename}/{filename}.state
 \tSTATE_WSTRIDE={config['pace']}*100
 ...
-# PRINT ARG=cmap,d,opes.* STRIDE={config['stride']} FILE=tmp/{filename}/{filename}.colvar
 PRINT ARG=cmap,d,opes.* STRIDE={config['stride']} FILE=tmp/{filename}/{filename}.colvar"""
 )

@@ -27,12 +27,12 @@ def opes(filename, mdtime, device_index, timestep, temperature=300):
 
     # Simulation Options
     steps = int(mdtime * nanoseconds / dt)
-    # equilibrationSteps = 10**5
-    equilibrationSteps = 100
+    equilibrationSteps = int(1 * nanosecond / dt)
+    # equilibrationSteps = 100
     platform = Platform.getPlatformByName('CUDA')
 
-    # traj_interval = int(100 * picoseconds / dt)
-    traj_interval = int(1 * picoseconds / dt)
+    traj_interval = int(100 * picoseconds / dt)
+    # traj_interval = int(1 * picoseconds / dt)
 
     from mdareporter import MDAReporter
     trajReporter = MDAReporter(
