@@ -34,17 +34,24 @@ def main(
     filename = os.path.basename(filepath).split('.')[0]
 
     print(f'==================== Running {filename} ====================')
-    
-    if not os.path.exists('tmp'):
-        # create the tmp folder
-        run_command('mkdir tmp')
+    os.makedirs(f'tmp/{filename}', exist_ok=True)
 
 
     # 1. load the PDB and fix errors
     from src.fixer import fixer
     fixer(filepath=filepath)
 
-    # 1.5 get OPES preparation
+
+    # 2. minimize the structure with LBFGS and H atoms mobile
+    from src.relax import minimize
+    minimize(
+        filename=filename, 
+        max_iterations=0, 
+        device_index=str(device_index),
+        constraints=None
+        )
+    
+    # 2.5 get OPES preparation
     from src.plumed.cv import get_interface_contact_indices
     cutoff = 0.8
     contact_indices = get_interface_contact_indices(filename=filename, cutoff=cutoff)
@@ -72,17 +79,6 @@ def main(
         cv_string=contact_pairs_str,
         config=config
         )
-
-    # 2. minimize the structure with LBFGS and H atoms mobile
-    # from src.relax import minimize
-    # minimize(
-    #     filename=filename, 
-    #     max_iterations=0, 
-    #     device_index=str(device_index),
-    #     constraints=None
-    #     )
-    
-    # try:
 
     now = datetime.now()
     dt_string = now.strftime("%y%m%d_%H%M%S")

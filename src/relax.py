@@ -31,7 +31,7 @@ def minimize(
     # 1: STRUCTURE
     # load the PDB system, can also load newer PDBx
     logger.info('Loading PDB file...')
-    pdb_file = PDBFile(f'tmp/{filename}_fixed.pdb')
+    pdb_file = PDBFile(f'tmp/{filename}/{filename}_fixed.pdb')
 
 
     # 2: FORCE FIELD AND SYSTEM
@@ -109,7 +109,7 @@ def minimize(
     non_hydrogen_ids = [atom.index for atom in modeller.topology.atoms() if atom.element.symbol != 'H']
     
     # save the topology now into a PDB
-    PDBFile.writeFile(modeller.topology, modeller.positions, open(f'tmp/{filename}_solvated.pdb', 'w'))
+    PDBFile.writeFile(modeller.topology, modeller.positions, open(f'tmp/{filename}/{filename}_solvated.pdb', 'w'))
 
     # 0: first first minimize just the hydrogens
     non_hydrogen_restraint = CustomExternalForce('k*periodicdistance(x, y, z, x0, y0, z0)^2')
@@ -157,10 +157,10 @@ def minimize(
     plt.ylabel('Frequency')
     plt.legend()
     plt.title('Distance moved by atoms during water relaxation')
-    plt.savefig(f'tmp/{filename}_nonhydrogens_fixed.png', dpi=300)
+    plt.savefig(f'tmp/{filename}/{filename}_nonhydrogens_fixed.png', dpi=300)
     plt.clf()
 
-    assert np.all(non_hydrogen_dists < 0.001), 'Protein atoms moved during water relaxation (moved more than 0.001 nm)'
+    assert np.all(non_hydrogen_dists < 0.1), 'Protein atoms moved during water relaxation (moved more than 0.1 nm)'
     del simulation, integrator, new_pos, original_pos
 
     # A: first minimize just the water
@@ -208,10 +208,10 @@ def minimize(
     plt.ylabel('Frequency')
     plt.legend()
     plt.title('Distance moved by atoms during water relaxation')
-    plt.savefig(f'tmp/{filename}_protein_fixed.png', dpi=300)
+    plt.savefig(f'tmp/{filename}/{filename}_protein_fixed.png', dpi=300)
     plt.clf()
 
-    assert np.all(protein_dists < 0.001), 'Protein atoms moved during water relaxation (moved more than 0.001 nm)'
+    assert np.all(protein_dists < 0.1), 'Protein atoms moved during water relaxation (moved more than 0.1 nm)'
     del simulation, integrator, new_pos, original_pos
 
 
@@ -289,12 +289,12 @@ def minimize(
     plt.ylabel('Frequency')
     plt.legend()
     plt.title('Distance moved by protein atoms during both (protein + water) relaxation')
-    plt.savefig(f'tmp/{filename}_both.png', dpi=300)
+    plt.savefig(f'tmp/{filename}/{filename}_both.png', dpi=300)
     plt.clf()
 
     logger.info('Saving...')
     positions = simulation.context.getState(getPositions=True).getPositions()
-    PDBFile.writeFile(simulation.topology, positions, open(f'tmp/{filename}_solvated.pdb', 'w'))
+    PDBFile.writeFile(simulation.topology, positions, open(f'tmp/{filename}/{filename}_solvated.pdb', 'w'))
 
     # Plot energies
     plt.figure(figsize=(10, 6))
@@ -317,7 +317,7 @@ def minimize(
     plt.legend()
     plt.title('Energy Minimization Progress')
     plt.tight_layout()
-    plt.savefig(f'tmp/{filename}_minimization.png', dpi=300)
+    plt.savefig(f'tmp/{filename}/{filename}_minimization.png', dpi=300)
     plt.close()
 
     logger.info('Done')

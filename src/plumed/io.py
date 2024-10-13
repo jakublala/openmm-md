@@ -9,7 +9,7 @@ def create_opes_input(
     filename = os.path.basename(filepath).split('.')[0]
 
     parser = PDBParser()
-    structure = parser.get_structure('protein', f'tmp/{filename}_fixed.pdb')
+    structure = parser.get_structure('protein', f'tmp/{filename}/{filename}_fixed.pdb')
 
     # get the initial atom ID for each chain
     # get the IDs for chain A and B
@@ -18,9 +18,11 @@ def create_opes_input(
 
     if config is None:
         raise ValueError('Config is required')
-# WHOLEMOLECULES ENTITY0={{@mdt:{{protein and chainid 0}}}} ENTITY1={{@mdt:{{protein and chainid 1}}}}
-    with open(f'tmp/{filename}_plumed.dat', 'w') as f:
-        f.write(f"""MOLINFO STRUCTURE=tmp/{filename}_fixed.pdb
+
+    with open(f'tmp/{filename}/{filename}_plumed.dat', 'w') as f:
+        
+        f.write(
+f"""MOLINFO STRUCTURE=tmp/{filename}/{filename}_fixed.pdb
 chain_A: GROUP ATOMS={atom_ids_A[0]}-{atom_ids_A[-1]}
 chain_B: GROUP ATOMS={atom_ids_B[0]}-{atom_ids_B[-1]}
 WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B
@@ -35,8 +37,10 @@ cmap: CONTACTMAP ...
 opes: OPES_METAD ...
 \tARG=cmap,d PACE={config['pace']} BARRIER={config['barrier']}
 \tTEMP={config['temperature']}
-\tFILE=tmp/{filename}.kernels
-\tSTATE_WFILE=tmp/{filename}.state
+\tFILE=tmp/{filename}/{filename}.kernels
+\tSTATE_WFILE=tmp/{filename}/{filename}.state
+\tSTATE_WSTRIDE={config['pace']}*100
 ...
-# PRINT ARG=cmap,d,opes.* STRIDE={config['stride']} FILE=tmp/{filename}.colvar
-PRINT ARG=opes.* STRIDE={config['stride']} FILE=tmp/{filename}.colvar""")
+# PRINT ARG=cmap,d,opes.* STRIDE={config['stride']} FILE=tmp/{filename}/{filename}.colvar
+PRINT ARG=cmap,d,opes.* STRIDE={config['stride']} FILE=tmp/{filename}/{filename}.colvar"""
+)

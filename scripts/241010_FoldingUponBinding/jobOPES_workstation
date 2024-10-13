@@ -5,6 +5,11 @@ source activate openmm
 
 # run the main script
 filepaths=(
+    'data/input/241010_FUB/A-synuclein/A-synuclein_alpha.pdb'
+    'data/input/241010_FUB/A-synuclein/A-synuclein_general.pdb'
+    'data/input/241010_FUB/CD28/CD28_alpha.pdb'
+    'data/input/241010_FUB/CD28/CD28_beta.pdb'
+    'data/input/241010_FUB/CD28/CD28_partial.pdb'
     'data/input/241010_FUB/SUMO/sumo1.pdb'
     'data/input/241010_FUB/SUMO/sumo1c.pdb'
     'data/input/241010_FUB/p53/p53_1.pdb'
@@ -13,5 +18,5 @@ filepaths=(
 )
 for filepath in "${filepaths[@]}"
 do
-    python ../../src/plumed/main.py --filepath "../../$filepath" --device_index 0 --timestep 2 --mdtime 100
+    python ../../src/plumed/main.py --filepath "../../$filepath" --device_index 0 --timestep 2 --mdtime 0.01
 done
