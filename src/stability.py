@@ -123,7 +123,7 @@ def stability(
     print('Time per MD step', (time.time() - t0) / nsteps)
 
     # move from tmp/ to output/
-    import shutil
+    import shutil, os 
     os.makedirs('output', exist_ok=True)
     shutil.move(f'tmp/{filename}.xyz', f'output/{filename}.xyz')
     shutil.move(f'tmp/{filename}.out', f'output/{filename}.out')

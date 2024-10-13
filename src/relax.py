@@ -7,7 +7,7 @@ import logging
 import numpy as np
 
 
-from utils import get_full_reporter
+from src.utils import get_full_reporter
 
 logger = logging.getLogger(__name__)
 

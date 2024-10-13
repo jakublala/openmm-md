@@ -1,0 +1,115 @@
+from openmm import *
+from openmm.app import *
+from openmm.unit import *
+from openmm import unit
+
+import random
+import numpy as np
+
+
+def opes(filename, mdtime, device_index, timestep, temperature=300):
+    pdf = PDBFile(f'tmp/{filename}_solvated.pdb')
+
+    forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
+
+    # System Configuration
+    nonbondedMethod = PME
+    nonbondedCutoff = 1.0*nanometers  #This cutoff and the following for tolerance are standard values
+    ewaldErrorTolerance = 10**(-4)
+    constraints = HBonds
+    rigidWater = True
+    constraintTolerance = 10**(-4) #Quite a default value for accuracy
+
+    # Integration Options
+    dt = 0.001 * picoseconds * timestep
+    temperature = temperature*kelvin
+    friction = 1.0/picosecond
+
+    # Simulation Options
+    steps = int(mdtime * nanoseconds / dt)
+    # equilibrationSteps = 10**5
+    equilibrationSteps = 100
+    platform = Platform.getPlatformByName('CUDA')
+
+    # traj_interval = int(100 * picoseconds / dt)
+    traj_interval = int(1 * picoseconds / dt)
+
+    from mdareporter import MDAReporter
+    trajReporter = MDAReporter(
+            f'tmp/{filename}.xyz', 
+            traj_interval, 
+            enforcePeriodicBox=False, 
+            selection="protein"
+            )
+
+    dataReporter = StateDataReporter(
+                file=f'tmp/{filename}.out',
+                reportInterval=traj_interval,
+                step=True,
+                time=True,
+                potentialEnergy=True,
+                kineticEnergy=True,
+                totalEnergy=True,
+                temperature=True,
+                volume=True,
+                density=True,
+                speed=True,
+                progress=True,
+                remainingTime=True,
+                totalSteps=steps,
+                separator='\t'
+            )
+    checkpointReporter = CheckpointReporter(f'tmp/{filename}.chk', traj_interval)
+
+
+    # Prepare the Simulation
+    print('Building system...')
+    topology = pdf.topology
+    positions = pdf.positions
+    system = forcefield.createSystem(
+        topology, 
+        nonbondedMethod=nonbondedMethod, 
+        nonbondedCutoff=nonbondedCutoff,
+        constraints=constraints, 
+        rigidWater=rigidWater, 
+        ewaldErrorTolerance=ewaldErrorTolerance
+        )
+
+    integrator = LangevinMiddleIntegrator(temperature, friction, dt)
+    integrator.setConstraintTolerance(constraintTolerance)
+    simulation = Simulation(topology, system, integrator, platform)
+    simulation.context.setPositions(positions)
+    
+    #Equilibrate
+    print('Equilibrating...')
+    simulation.context.setVelocitiesToTemperature(temperature)
+    simulation.step(equilibrationSteps)
+
+    # Add PLUMED bias
+    with open(f'tmp/{filename}_plumed.dat', 'r') as file:
+        script = file.read()
+
+    from openmmplumed import PlumedForce
+    plumed_force = PlumedForce(script)
+    system.addForce(plumed_force)
+    
+    # Reinitialize the simulation with the updated system
+    simulation.system = system
+    simulation.context.reinitialize(preserveState=True)
+
+    # Simulate
+    print('Simulating...')
+
+    simulation.reporters.append(trajReporter)
+    simulation.reporters.append(dataReporter)
+    simulation.reporters.append(checkpointReporter)
+    simulation.currentStep = 0
+    simulation.step(steps)
+    
+    # move from tmp/ to output/
+    import shutil, os
+    os.makedirs('output', exist_ok=True)
+    shutil.move(f'tmp/{filename}.xyz', f'output/{filename}/{filename}.xyz')
+    shutil.move(f'tmp/{filename}.out', f'output/{filename}/{filename}.out')
+    shutil.move(f'tmp/{filename}_solvated.pdb', f'output/{filename}/{filename}_solvated.pdb')
+    shutil.move(f'tmp/{filename}.chk', f'output/{filename}/{filename}.chk')

@@ -26,7 +26,7 @@ def main(
         filepath=None, 
         device_index=1,
         mdtime=100, # in ns
-        timestep=4
+        timestep=2
         ):
     if filepath is None:
         raise ValueError('Filepath is required')
@@ -41,47 +41,71 @@ def main(
 
 
     # 1. load the PDB and fix errors
-    from ..fixer import fixer
+    from src.fixer import fixer
     fixer(filepath=filepath)
 
     # 1.5 get OPES preparation
-    from .cv import get_interface_contact_indices
-    contact_indices = get_interface_contact_indices(filepath)
-    print(contact_indices)
+    from src.plumed.cv import get_interface_contact_indices
+    cutoff = 0.8
+    contact_indices = get_interface_contact_indices(filename=filename, cutoff=cutoff)
 
-    assert 0 == 1, "Stop here"
-    # 2. minimize the structure with LBFGS and H atoms mobile
-    from ..relax import minimize
-    minimize(
-        filename=filename, 
-        max_iterations=0, 
-        device_index=str(device_index),
-        constraints=None
+    contact_pairs_str = ""
+    for i, pair in enumerate(contact_indices):
+        if i != 0:
+            contact_pairs_str += f"\n\tATOMS{i+1}={pair[0]},{pair[1]}"
+        else:
+            contact_pairs_str += f"\tATOMS{i+1}={pair[0]},{pair[1]}"
+
+
+    # create the input for OPES
+    from src.plumed.io import create_opes_input
+    temperature = 300
+    config = {
+        'pace': 500,
+        'barrier': 50,
+        'temperature': temperature,
+        'stride': 500,
+        'cutoff': cutoff
+    }
+    create_opes_input(
+        filepath=filepath, 
+        cv_string=contact_pairs_str,
+        config=config
         )
-    
-    try:
-        print("-----Running stability.py-----")
-        now = datetime.now()
-        dt_string = now.strftime("%y%m%d_%H%M%S")
 
-        from src.stability import stability
-        stability(
-            filename=filename, 
-            mdtime=mdtime, 
-            device_index=str(device_index),
-            timestep=timestep
-            )
+    # 2. minimize the structure with LBFGS and H atoms mobile
+    # from src.relax import minimize
+    # minimize(
+    #     filename=filename, 
+    #     max_iterations=0, 
+    #     device_index=str(device_index),
+    #     constraints=None
+    #     )
+    
+    # try:
+
+    now = datetime.now()
+    dt_string = now.strftime("%y%m%d_%H%M%S")
+
+    from src.plumed.opes import opes
+    opes(
+        filename=filename, 
+        mdtime=mdtime, 
+        device_index=str(device_index),
+        timestep=timestep,
+        temperature=temperature
+        )
         
-    except Exception as e:
-        print(f"Error running stability: {e}")
-        if os.path.exists(f'tmp/{filename}.xyz'):
-            run_command(f'mv tmp/{filename}.xyz output/{filename}_{dt_string}.xyz')
-        if os.path.exists(f'tmp/{filename}.out'):
-            run_command(f'mv tmp/{filename}.out output/{filename}_{dt_string}.out')
-        if os.path.exists(f'tmp/{filename}.chk'):
-            run_command(f'mv tmp/{filename}.chk output/{filename}_{dt_string}.chk')
-        if os.path.exists(f"tmp/{filename}_solvated.pdb"):
-            run_command(f"mv tmp/{filename}_solvated.pdb output/{filename}_{dt_string}_solvated.pdb")
+    # except Exception as e:
+    #     print(f"Error running stability: {e}")
+    #     if os.path.exists(f'tmp/{filename}.xyz'):
+    #         run_command(f'mv tmp/{filename}.xyz output/{filename}_{dt_string}.xyz')
+    #     if os.path.exists(f'tmp/{filename}.out'):
+    #         run_command(f'mv tmp/{filename}.out output/{filename}_{dt_string}.out')
+    #     if os.path.exists(f'tmp/{filename}.chk'):
+    #         run_command(f'mv tmp/{filename}.chk output/{filename}_{dt_string}.chk')
+    #     if os.path.exists(f"tmp/{filename}_solvated.pdb"):
+    #         run_command(f"mv tmp/{filename}_solvated.pdb output/{filename}_{dt_string}_solvated.pdb")
 
 def restart(filename=None):
     if filename is None:
