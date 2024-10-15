@@ -36,7 +36,7 @@ def opes(filename, mdtime, device_index, timestep, temperature=300):
 
     from mdareporter import MDAReporter
     trajReporter = MDAReporter(
-            f'tmp/{filename}/{filename}.xyz', 
+            f'tmp/{filename}/{filename}.dcd', 
             traj_interval, 
             enforcePeriodicBox=False, 
             selection="protein"
