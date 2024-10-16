@@ -8,6 +8,10 @@ mymd.egg-info/
 
 .vscode/
 
+
+# experimental data
+OPES_100ns/
+
 # job output
 slurm*
 openmm*

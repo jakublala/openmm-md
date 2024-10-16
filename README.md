@@ -9,6 +9,17 @@ openmm-plumed
 Need to be installed from source.
 Instructions in Notion.
 
+
+Python wrapper didn't seem to install properly, so had to do:
+`pip install plumed` and then set the kernel:
+```
+import os
+os.environ["PLUMED_KERNEL"] = "/home/jakub/anaconda3/envs/openmm/lib/libplumedKernel.so"
+import plumed
+p=plumed.Plumed()
+```
+
+
 ### Required packages
 - `openmm cudatoolkit=11.8`
 - `fire`
