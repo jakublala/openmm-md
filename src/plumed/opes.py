@@ -114,5 +114,5 @@ def opes(filename, mdtime, device_index, timestep, temperature=300):
     # move from tmp/ to output/
     import shutil, os
     os.makedirs('output', exist_ok=True)
-    shutil.copytree(f'tmp/{filename}', f'output/{filename}')
+    shutil.copytree(f'tmp/{filename}', f'output/{filename}', dirs_exist_ok=True)
 
