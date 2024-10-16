@@ -26,7 +26,8 @@ def main(
         filepath=None, 
         device_index=1,
         mdtime=100, # in ns
-        timestep=2
+        timestep=2,
+        barrier=100,
         ):
     if filepath is None:
         raise ValueError('Filepath is required')
@@ -69,7 +70,7 @@ def main(
     temperature = 300
     config = {
         'pace': 500,
-        'barrier': 50,
+        'barrier': barrier,
         'temperature': temperature,
         'stride': 500,
         'cutoff': cutoff,
