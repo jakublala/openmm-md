@@ -1,9 +1,9 @@
 import sys
-print(sys.executable)
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 import os
 import subprocess
+import shutil
 
 # current datetime
 from datetime import datetime
@@ -28,41 +28,91 @@ def main(
         mdtime=100, # in ns
         timestep=2,
         barrier=100,
+        restart_rfile=None,
         ):
+    
+    CUTOFF = 0.8
+
     if filepath is None:
         raise ValueError('Filepath is required')
 
     filename = os.path.basename(filepath).split('.')[0]
 
+    assert f'output/{filename}' not in os.listdir(), f"Folder output/{filename} already exists. It might overwrite existing data!"
+
+    if restart_rfile is not None:
+        assert os.path.exists(restart_rfile), f"File {restart_rfile} does not exist"
+        print(f"Found a restart_rfile for PLUMED, going to restart the OPES simulation from .state and previous last frame in trajectory.")
+        restart = True
+    else:
+        restart = False
+
     print(f'==================== Running {filename} ====================')
     os.makedirs(f'tmp/{filename}', exist_ok=True)
 
+    if not restart:
+        # 1. load the PDB and fix errors
+        from src.fixer import fixer
+        fixer(filepath=filepath)
 
-    # 1. load the PDB and fix errors
-    from src.fixer import fixer
-    fixer(filepath=filepath)
+
+        # 2. minimize the structure with LBFGS and H atoms mobile
+        from src.relax import minimize
+        minimize(
+            filename=filename, 
+            max_iterations=0, 
+            device_index=str(device_index),
+            constraints=None
+            )
+        
+        # 2.5 get OPES preparation
+        from src.plumed.cv import get_interface_contact_indices
+        contact_indices = get_interface_contact_indices(filename=filename, cutoff=CUTOFF)
+
+        contact_pairs_str = ""
+        for i, pair in enumerate(contact_indices):
+            if i != 0:
+                contact_pairs_str += f"\n\tATOMS{i+1}={pair[0]},{pair[1]}"
+            else:
+                contact_pairs_str += f"\tATOMS{i+1}={pair[0]},{pair[1]}"
+    else:
+        print(f"Getting CVs from previous plumed.dat")
+        # assume it's in the same folder as restart_rfile
+        restart_rfile_path = os.path.dirname(restart_rfile)
+        plumed_file = os.path.join(restart_rfile_path, f'{filename}_plumed.dat')
+        assert os.path.exists(plumed_file), f"File {plumed_file} does not exist"
+
+        # assume fixed.pdb also in the same folder
+        fixed_pdb = os.path.join(restart_rfile_path, f'{filename}_fixed.pdb')
+        assert os.path.exists(fixed_pdb), f"File {fixed_pdb} does not exist"
+        # if it is, copy it to the tmp folder we deal with
+        shutil.copy(fixed_pdb, f'tmp/{filename}/{filename}_fixed.pdb')
+
+        # do the same copying for _solvated.pdb
+        solvated_pdb = os.path.join(restart_rfile_path, f'{filename}_solvated.pdb')
+        assert os.path.exists(solvated_pdb), f"File {solvated_pdb} does not exist"
+        shutil.copy(solvated_pdb, f'tmp/{filename}/{filename}_solvated.pdb')
+
+        # TODO: do I need to copy the kernels? the colvar? anything like that?
+
+        restart_checkpoint = os.path.join(restart_rfile_path, f'{filename}.chk')
+        assert os.path.exists(restart_checkpoint), f"File {restart_checkpoint} does not exist"
 
 
-    # 2. minimize the structure with LBFGS and H atoms mobile
-    from src.relax import minimize
-    minimize(
-        filename=filename, 
-        max_iterations=0, 
-        device_index=str(device_index),
-        constraints=None
-        )
-    
-    # 2.5 get OPES preparation
-    from src.plumed.cv import get_interface_contact_indices
-    cutoff = 0.8
-    contact_indices = get_interface_contact_indices(filename=filename, cutoff=cutoff)
+        def extract_contact_pairs_str(plumed_file):
+            import re
+            with open(plumed_file, 'r') as f:
+                content = f.read()
+            # Find all matches
+            matches = re.findall(r'ATOMS\d+=\d+,\d+', content)
 
-    contact_pairs_str = ""
-    for i, pair in enumerate(contact_indices):
-        if i != 0:
-            contact_pairs_str += f"\n\tATOMS{i+1}={pair[0]},{pair[1]}"
-        else:
-            contact_pairs_str += f"\tATOMS{i+1}={pair[0]},{pair[1]}"
+            # Join matches into a single string with newlines
+            result_string = '\n\t'.join(matches)
+            result_string = f"	{result_string}"  # Add leading tab for formatting
+            
+            return result_string
+        
+        contact_pairs_str = extract_contact_pairs_str(plumed_file)
 
 
     # create the input for OPES
@@ -73,7 +123,7 @@ def main(
         'barrier': barrier,
         'temperature': temperature,
         'stride': 500,
-        'cutoff': cutoff,
+        'cutoff': CUTOFF,
         'restart_rfile': restart_rfile,
     }
     create_opes_input(
@@ -82,28 +132,15 @@ def main(
         config=config
         )
 
-    now = datetime.now()
-    dt_string = now.strftime("%y%m%d_%H%M%S")
-
     from src.plumed.opes import opes
     opes(
         filename=filename, 
         mdtime=mdtime, 
         device_index=str(device_index),
         timestep=timestep,
-        temperature=temperature
+        temperature=temperature,
+        restart_checkpoint=restart_checkpoint,
         )
-        
-    # except Exception as e:
-    #     print(f"Error running stability: {e}")
-    #     if os.path.exists(f'tmp/{filename}.xyz'):
-    #         run_command(f'mv tmp/{filename}.xyz output/{filename}_{dt_string}.xyz')
-    #     if os.path.exists(f'tmp/{filename}.out'):
-    #         run_command(f'mv tmp/{filename}.out output/{filename}_{dt_string}.out')
-    #     if os.path.exists(f'tmp/{filename}.chk'):
-    #         run_command(f'mv tmp/{filename}.chk output/{filename}_{dt_string}.chk')
-    #     if os.path.exists(f"tmp/{filename}_solvated.pdb"):
-    #         run_command(f"mv tmp/{filename}_solvated.pdb output/{filename}_{dt_string}_solvated.pdb")
 
 def restart(filename=None):
     if filename is None:

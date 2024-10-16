@@ -7,7 +7,8 @@ import random
 import numpy as np
 
 
-def opes(filename, mdtime, device_index, timestep, temperature=300):
+def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_checkpoint=None):
+
     pdf = PDBFile(f'tmp/{filename}/{filename}_solvated.pdb')
 
     forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
@@ -28,11 +29,9 @@ def opes(filename, mdtime, device_index, timestep, temperature=300):
     # Simulation Options
     steps = int(mdtime * nanoseconds / dt)
     equilibrationSteps = int(1 * nanosecond / dt)
-    # equilibrationSteps = 100
     platform = Platform.getPlatformByName('CUDA')
 
     traj_interval = int(100 * picoseconds / dt)
-    # traj_interval = int(1 * picoseconds / dt)
 
     from mdareporter import MDAReporter
     trajReporter = MDAReporter(
@@ -77,13 +76,19 @@ def opes(filename, mdtime, device_index, timestep, temperature=300):
 
     integrator = LangevinMiddleIntegrator(temperature, friction, dt)
     integrator.setConstraintTolerance(constraintTolerance)
-    simulation = Simulation(topology, system, integrator, platform)
-    simulation.context.setPositions(positions)
+    properties = {'DeviceIndex': device_index}
+    simulation = Simulation(topology, system, integrator, platform, properties)
     
-    #Equilibrate
-    print('Equilibrating...')
-    simulation.context.setVelocitiesToTemperature(temperature)
-    simulation.step(equilibrationSteps)
+    if restart_checkpoint: 
+        simulation.loadCheckpoint(restart_checkpoint)
+        # no equilibration for system from checkpoint
+    else:
+        simulation.context.setPositions(positions)
+    
+        #Equilibrate
+        print('Equilibrating...')
+        simulation.context.setVelocitiesToTemperature(temperature)
+        simulation.step(equilibrationSteps)
 
     # Add PLUMED bias
     with open(f'tmp/{filename}/{filename}_plumed.dat', 'r') as file:
