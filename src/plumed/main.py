@@ -72,7 +72,8 @@ def main(
         'barrier': 50,
         'temperature': temperature,
         'stride': 500,
-        'cutoff': cutoff
+        'cutoff': cutoff,
+        'restart_rfile': restart_rfile,
     }
     create_opes_input(
         filepath=filepath, 
