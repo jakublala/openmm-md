@@ -4,7 +4,8 @@ from Bio.PDB import PDBParser
 def create_opes_input(
         filepath, 
         cv_string, 
-        config=None
+        config=None,
+        type='opes'
         ):
     filename = os.path.basename(filepath).split('.')[0]
 
@@ -20,7 +21,6 @@ def create_opes_input(
         raise ValueError('Config is required')
 
     with open(f'tmp/{filename}/{filename}_plumed.dat', 'w') as f:
-        
         content = f"""MOLINFO STRUCTURE=tmp/{filename}/{filename}_fixed.pdb
 chain_A: GROUP ATOMS={atom_ids_A[0]}-{atom_ids_A[-1]}
 chain_B: GROUP ATOMS={atom_ids_B[0]}-{atom_ids_B[-1]}
@@ -33,12 +33,17 @@ cmap: CONTACTMAP ...
 \tSWITCH={{RATIONAL R_0={config['cutoff']}}}
 \tSUM
 ...
-opes: OPES_METAD ...
-\tARG=cmap,d PACE={config['pace']} BARRIER={config['barrier']}
+"""
+        if type == 'opes_explore':
+            content += "opes: OPES_METAD_EXPLORE ...\n"
+        elif type == 'opes':
+            content += "opes: OPES_METAD ...\n"
+        else:
+            raise ValueError(f"Invalid type: {type}")
+        content += f"""\tARG=cmap,d PACE={config['pace']} BARRIER={config['barrier']}
 \tTEMP={config['temperature']}
 \tFILE=tmp/{filename}/{filename}.kernels
 """
-
         if config['restart_rfile'] is not None:
             content += f"\tSTATE_RFILE={config['restart_rfile']}\n\tRESTART=YES\n"
         else:
