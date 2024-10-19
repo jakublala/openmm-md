@@ -131,7 +131,8 @@ def main(
     create_opes_input(
         filepath=filepath, 
         cv_string=contact_pairs_str,
-        config=config
+        config=config,
+        type='opes'
         )
 
     from src.plumed.opes import opes
