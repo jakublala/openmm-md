@@ -29,6 +29,7 @@ def main(
         timestep=2,
         barrier=100,
         restart_rfile=None,
+        pace=500,
         ):
     
     CUTOFF = 0.8
@@ -51,6 +52,7 @@ def main(
     os.makedirs(f'tmp/{filename}', exist_ok=True)
 
     if not restart:
+        restart_checkpoint = None
         # 1. load the PDB and fix errors
         from src.fixer import fixer
         fixer(filepath=filepath)
@@ -119,10 +121,10 @@ def main(
     from src.plumed.io import create_opes_input
     temperature = 300
     config = {
-        'pace': 500,
+        'pace': pace,
         'barrier': barrier,
         'temperature': temperature,
-        'stride': 500,
+        'stride': pace,
         'cutoff': CUTOFF,
         'restart_rfile': restart_rfile,
     }

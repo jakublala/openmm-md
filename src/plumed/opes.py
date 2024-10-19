@@ -35,7 +35,7 @@ def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_
 
     from mdareporter import MDAReporter
     trajReporter = MDAReporter(
-            f'tmp/{filename}/{filename}.dcd', 
+            f'tmp/{filename}/{filename}.xyz', 
             traj_interval, 
             enforcePeriodicBox=False, 
             selection="protein"
@@ -76,8 +76,11 @@ def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_
 
     integrator = LangevinMiddleIntegrator(temperature, friction, dt)
     integrator.setConstraintTolerance(constraintTolerance)
-    properties = {'DeviceIndex': device_index}
-    simulation = Simulation(topology, system, integrator, platform, properties)
+    if device_index == 'nan':
+        simulation = Simulation(topology, system, integrator, platform)
+    else:
+        properties = {'DeviceIndex': device_index}
+        simulation = Simulation(topology, system, integrator, platform, properties)
     
     if restart_checkpoint: 
         simulation.loadCheckpoint(restart_checkpoint)
