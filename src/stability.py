@@ -39,12 +39,12 @@ def stability(
         else:
             raise ValueError('Something went wrong...')
 
-    
+    log_freq = int(100 * picoseconds / time_step)
 
     if restart:
-        pdb = PDBFile(f'output/{filename}_solvated.pdb')
+        pdb = PDBFile(f'output/{filename}/{filename}_solvated.pdb')
     else:
-        pdb = PDBFile(f'tmp/{filename}_solvated.pdb')
+        pdb = PDBFile(f'tmp/{filename}/{filename}_solvated.pdb')
     non_water_ion_atoms_indices = [atom.index for atom in pdb.topology.atoms() if not is_water_or_ion(atom.residue)]
     
     
@@ -76,23 +76,25 @@ def stability(
     else:
         simulation.context.setPositions(pdb.positions)
     
-    from mdareporter import MDAReporter
+    # from mdareporter import MDAReporter
 
 
+    # simulation.reporters.append(
+    #     MDAReporter(
+    #         f'tmp/{filename}/{filename}.xyz', 
+    #         log_freq, 
+    #         enforcePeriodicBox=False, 
+    #         selection="protein"
+    #         )
+    #     )
     simulation.reporters.append(
-        MDAReporter(
-            f'tmp/{filename}.xyz', 
-            log_freq, 
-            enforcePeriodicBox=False, 
-            selection="protein"
-            )
-        )
-
+        DCDReporter(f'tmp/{filename}/{filename}.dcd', log_freq)
+    )
     
     # log the energy and temperature every 1000 steps
     simulation.reporters.append(
         StateDataReporter(
-            file=f'tmp/{filename}.out',
+            file=f'tmp/{filename}/{filename}.out',
             reportInterval=log_freq,
             step=True,
             time=True,
@@ -110,7 +112,7 @@ def stability(
     )
     simulation.reporters.append(
         CheckpointReporter(
-            file=f'tmp/{filename}.chk', 
+            file=f'tmp/{filename}/{filename}.chk', 
             reportInterval=log_freq
             )
         )
@@ -124,12 +126,8 @@ def stability(
 
     # move from tmp/ to output/
     import shutil, os 
-    os.makedirs('output', exist_ok=True)
-    shutil.move(f'tmp/{filename}.xyz', f'output/{filename}.xyz')
-    shutil.move(f'tmp/{filename}.out', f'output/{filename}.out')
-    shutil.move(f'tmp/{filename}_solvated.pdb', f'output/{filename}_solvated.pdb')
-    shutil.move(f'tmp/{filename}.chk', f'output/{filename}.chk')
-
+    os.makedirs(f'output/{filename}', exist_ok=True)
+    shutil.move(f'tmp/{filename}', f'output/{filename}')
 
 
 if __name__ == '__main__':

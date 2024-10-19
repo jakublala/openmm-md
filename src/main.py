@@ -35,23 +35,23 @@ def main(
 
     print(f'==================== Running {filename} ====================')
     
-    if not os.path.exists('tmp'):
+    if not os.path.exists(f'tmp/{filename}'):
         # create the tmp folder
-        run_command('mkdir tmp')
+        run_command(f'mkdir tmp/{filename}')
 
 
-    # 1. load the PDB and fix errors
-    from fixer import fixer
-    fixer(filepath=filepath)
+    # # 1. load the PDB and fix errors
+    # from fixer import fixer
+    # fixer(filepath=filepath)
 
-    # 2. minimize the structure with LBFGS and H atoms mobile
-    from relax import minimize
-    minimize(
-        filename=filename, 
-        max_iterations=0, 
-        device_index=str(device_index),
-        constraints=None
-        )
+    # # 2. minimize the structure with LBFGS and H atoms mobile
+    # from relax import minimize
+    # minimize(
+    #     filename=filename, 
+    #     max_iterations=0, 
+    #     device_index=str(device_index),
+    #     constraints=None
+    #     )
     
     # 3. run NPT relaxation / equilibriation
     from relax import relax_md_npt
