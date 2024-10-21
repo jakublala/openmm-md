@@ -4,5 +4,3 @@ mdtraj
 pdbfixer
 matplotlib
 biopython
-openmm-mdanalysis-reporter
-netCDF4

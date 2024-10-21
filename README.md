@@ -1,5 +1,9 @@
 # openmm-md
 
+### Install
+Run `pip install -e .`
+Then also run `conda install cudatoolkit=11.8` based on your CUDA version to speed up OpenMM.
+
 
 ```
 plumed
@@ -30,9 +34,10 @@ export LD_LIBRARY_PATH="/home/jakub/anaconda3/envs/openmm/lib:$LD_LIBRARY_PATH"
 - `fire`
 - `mdtraj`
 - `pdbfixer`
+- `biopython`
 
 
-- `netCDF4` - speeds up MDanalysis logging of the trajectory
+- `netCDF4` - speeds up MDanalysis logging of the trajectory - maybe doesn't?? and slows down actually all of it!?! need to check!!!
 
 
 ### Getting data from HX1 to Workstation
