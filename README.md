@@ -19,6 +19,11 @@ import plumed
 p=plumed.Plumed()
 ```
 
+Also need to do this`
+```
+export LD_LIBRARY_PATH="/home/jakub/anaconda3/envs/openmm/lib:$LD_LIBRARY_PATH"
+```
+
 
 ### Required packages
 - `openmm cudatoolkit=11.8`
