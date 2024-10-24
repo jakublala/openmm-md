@@ -1,6 +1,13 @@
 # openmm-md
 
 ### Install
+Create env.
+```
+conda create -n openmm
+conda install python pdbfixer
+pip install -e .
+```
+
 Run `pip install -e .`
 Then also run `conda install cudatoolkit=11.8` based on your CUDA version to speed up OpenMM.
 
