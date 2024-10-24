@@ -76,20 +76,18 @@ def stability(
     else:
         simulation.context.setPositions(pdb.positions)
     
-    # from mdareporter import MDAReporter
-
-
-    # simulation.reporters.append(
-    #     MDAReporter(
-    #         f'tmp/{filename}/{filename}.xyz', 
-    #         log_freq, 
-    #         enforcePeriodicBox=False, 
-    #         selection="protein"
-    #         )
-    #     )
+    from mdareporter import MDAReporter
     simulation.reporters.append(
-        DCDReporter(f'tmp/{filename}/{filename}.dcd', log_freq)
-    )
+        MDAReporter(
+            f'tmp/{filename}/{filename}.xyz', 
+            log_freq*10000000000, 
+            enforcePeriodicBox=False, 
+            selection="protein"
+            )
+        )
+    # simulation.reporters.append(
+    #     DCDReporter(f'tmp/{filename}/{filename}.dcd', log_freq)
+    # )
     
     # log the energy and temperature every 1000 steps
     simulation.reporters.append(
@@ -113,7 +111,7 @@ def stability(
     simulation.reporters.append(
         CheckpointReporter(
             file=f'tmp/{filename}/{filename}.chk', 
-            reportInterval=log_freq
+            reportInterval=log_freq*1000000000
             )
         )
 

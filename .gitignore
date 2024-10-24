@@ -1,8 +1,8 @@
 output/
 output.zip
 tmp/
-__pycache__/
-mymd.egg-info/
+__pycache__
+mymd.egg-info
 
 *.dcd
 
@@ -13,6 +13,7 @@ mymd.egg-info/
 OPES_100ns/
 OPES_barrier_200_500ns/
 slow_run/
+VanillaMD_100ns/
 
 # job output
 slurm*
