@@ -2,6 +2,7 @@
 #PBS -l walltime=12:00:00
 #PBS -l select=1:ncpus=1:mem=80gb:ngpus=1:gpu_type=A100
 #PBS -q hx
+#PBS -l place=excl
 #PBS -N openmm.md
 
 cd $PBS_O_WORKDIR
