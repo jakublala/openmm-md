@@ -16,6 +16,7 @@ def minimize(
         max_iterations=None,
         device_index='0',
         constraints=None,
+        device="cuda",
         ):
     """
     Uses the OpenMM library (i.e. LBFGS) to minimize the energy of a given PDB file.
@@ -60,12 +61,17 @@ def minimize(
     # platform = Platform.getPlatformByName('CUDA')
     # then assign it to Simulation object
     properties = None
-    try:
-        platform = Platform.getPlatformByName('CUDA')
-        properties = {'DeviceIndex': device_index}
-    except:
+    if device == "cuda":
+        try:
+            platform = Platform.getPlatformByName('CUDA')
+            properties = {'DeviceIndex': device_index}
+        except:
+            print('CUDA not available, using OpenCL')
+            platform = Platform.getPlatformByName('OpenCL')
+    elif device == "cpu":
         platform = Platform.getPlatformByName('OpenCL')
-
+    else:
+        raise ValueError('Invalid device')
 
     logger.info(f'Platform used: {platform.getName()}')
     

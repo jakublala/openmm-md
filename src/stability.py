@@ -20,6 +20,7 @@ def stability(
         device_index='0',
         log_freq=10000,
         timestep=4, # in femtoseconds
+        device="cuda"
         ):
     
     time_step = 0.001*timestep*picoseconds
@@ -64,11 +65,17 @@ def stability(
     integrator = LangevinMiddleIntegrator(300*kelvin, 1/picosecond, time_step)
 
     properties = None
-    try:
-        platform = Platform.getPlatformByName('CUDA')
-        properties = {'DeviceIndex': device_index}
-    except:
+    if device == "cuda":
+        try:
+            platform = Platform.getPlatformByName('CUDA')
+            properties = {'DeviceIndex': device_index}
+        except:
+            print('CUDA not available, using OpenCL')
+            platform = Platform.getPlatformByName('OpenCL')
+    elif device == "cpu":
         platform = Platform.getPlatformByName('OpenCL')
+    else:
+        raise ValueError('Invalid device')
     simulation = Simulation(pdb.topology, system, integrator, platform, properties)
     print('platform used:', simulation.context.getPlatform().getName())
     if restart:
