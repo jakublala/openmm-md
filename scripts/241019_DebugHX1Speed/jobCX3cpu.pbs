@@ -1,0 +1,15 @@
+#!/bin/bash
+#PBS -lselect=1:ncpus=16:mem=96gb
+#PBS -lwalltime=24:0:0
+#PBS -N openmm
+#PBS -o openmm.o${PBS_JOBID}
+#PBS -e openmm.e${PBS_JOBID}
+
+cd $PBS_O_WORKDIR
+cat $PBS_NODEFILE
+
+module load anaconda3/personal
+source activate openmm
+
+filepath='data/241010_FoldingUponBinding/input/p53/p53_1.pdb'
+python ../../src/main.py --filepath "../../$filepath" --device_index 0 --timestep 2 --mdtime 2 --device "cpu" 

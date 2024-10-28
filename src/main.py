@@ -26,7 +26,8 @@ def main(
         filepath=None, 
         device_index=0,
         mdtime=100, # in ns
-        timestep=4
+        timestep=4,
+        device="cuda"
         ):
     if filepath is None:
         raise ValueError('Filepath is required')
@@ -36,22 +37,22 @@ def main(
     print(f'==================== Running {filename} ====================')
     
     if not os.path.exists(f'tmp/{filename}'):
-        # create the tmp folder
-        run_command(f'mkdir tmp/{filename}')
+        os.makedirs(f'tmp/{filename}')
 
 
-    # # 1. load the PDB and fix errors
-    # from fixer import fixer
-    # fixer(filepath=filepath)
+    # 1. load the PDB and fix errors
+    from fixer import fixer
+    fixer(filepath=filepath)
 
-    # # 2. minimize the structure with LBFGS and H atoms mobile
-    # from relax import minimize
-    # minimize(
-    #     filename=filename, 
-    #     max_iterations=0, 
-    #     device_index=str(device_index),
-    #     constraints=None
-    #     )
+    # 2. minimize the structure with LBFGS and H atoms mobile
+    from relax import minimize
+    minimize(
+        filename=filename, 
+        max_iterations=0, 
+        device_index=str(device_index),
+        constraints=None,
+        device=device
+        )
     
     # 3. run NPT relaxation / equilibriation
     from relax import relax_md_npt
@@ -85,7 +86,8 @@ def main(
             filename=filename, 
             mdtime=mdtime, 
             device_index=str(device_index),
-            timestep=timestep
+            timestep=timestep,
+            device=device
             )
         
     except Exception as e:

@@ -1,0 +1,14 @@
+#!/bin/bash
+#PBS -lselect=1:ncpus=16:mem=96gb:ngpus=1:gpu_type=RTX6000
+#PBS -lwalltime=72:0:0
+#PBS -N openmm
+
+cd $PBS_O_WORKDIR
+cat $PBS_NODEFILE
+
+module load anaconda3/personal
+source activate openmm
+module load cuda/11.4
+
+filepath='data/241010_FoldingUponBinding/input/p53/p53_1.pdb'
+python ../../src/plumed/main.py --filepath "../../$filepath" --device_index 0 --timestep 2 --mdtime 2 --output_dir "../../data/241010_FoldingUponBinding/output/241028/p53"

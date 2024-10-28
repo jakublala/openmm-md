@@ -7,9 +7,12 @@ import random
 import numpy as np
 
 
-def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_checkpoint=None):
+def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_checkpoint=None, device='cuda', output_dir=None):
 
-    pdf = PDBFile(f'tmp/{filename}/{filename}_solvated.pdb')
+    if output_dir is None:
+        raise ValueError('Output directory is required')
+
+    pdf = PDBFile(f'{output_dir}/{filename}_solvated.pdb')
 
     forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
 
@@ -29,20 +32,26 @@ def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_
     # Simulation Options
     steps = int(mdtime * nanoseconds / dt)
     equilibrationSteps = int(1 * nanosecond / dt)
-    platform = Platform.getPlatformByName('CUDA')
+
+    if device == 'cuda':
+        platform = Platform.getPlatformByName('CUDA')
+    elif device == 'cpu':
+        platform = Platform.getPlatformByName('OpenCL')
+    else:
+        raise ValueError(f'Invalid device: {device}')
 
     traj_interval = int(100 * picoseconds / dt)
 
     from mdareporter import MDAReporter
     trajReporter = MDAReporter(
-            f'tmp/{filename}/{filename}.dcd', 
+            f'{output_dir}/{filename}.xyz', 
             traj_interval, 
             enforcePeriodicBox=False, 
             selection="protein"
             )
 
     dataReporter = StateDataReporter(
-                file=f'tmp/{filename}/{filename}.out',
+                file=f'{output_dir}/{filename}.out',
                 reportInterval=traj_interval,
                 step=True,
                 time=True,
@@ -58,7 +67,7 @@ def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_
                 totalSteps=steps,
                 separator='\t'
             )
-    checkpointReporter = CheckpointReporter(f'tmp/{filename}/{filename}.chk', traj_interval*10)
+    checkpointReporter = CheckpointReporter(f'{output_dir}/{filename}.chk', traj_interval)
 
 
     # Prepare the Simulation
@@ -76,6 +85,7 @@ def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_
 
     integrator = LangevinMiddleIntegrator(temperature, friction, dt)
     integrator.setConstraintTolerance(constraintTolerance)
+    
     if device_index == 'nan':
         simulation = Simulation(topology, system, integrator, platform)
     else:
@@ -94,7 +104,7 @@ def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_
         simulation.step(equilibrationSteps)
 
     # Add PLUMED bias
-    with open(f'tmp/{filename}/{filename}_plumed.dat', 'r') as file:
+    with open(f'{output_dir}/{filename}_plumed.dat', 'r') as file:
         script = file.read()
 
     from openmmplumed import PlumedForce
@@ -118,9 +128,4 @@ def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_
     # TODO: DO ADAPTIVE CONVERGENCE HERE!!!!!
     # i.e. extend the simulation if convergence is not reached
 
-
-    # move from tmp/ to output/
-    import shutil, os
-    os.makedirs('output', exist_ok=True)
-    shutil.copytree(f'tmp/{filename}', f'output/{filename}', dirs_exist_ok=True)
 

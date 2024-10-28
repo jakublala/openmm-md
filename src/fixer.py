@@ -7,7 +7,7 @@ from Bio.PDB.Model import Model
 from Bio.PDB.Structure import Structure
 import os
 
-def fixer(filepath=None):
+def fixer(filepath=None, output_dir=None):
     if filepath is None:
         raise ValueError('filepath is required')
     
@@ -55,8 +55,8 @@ def fixer(filepath=None):
 
     io = PDBIO()
     io.set_structure(new_structure)
-    io.save(f"tmp/{file}/{file}_fixed.pdb")
-    fixer = PDBFixer(filename=f"tmp/{file}/{file}_fixed.pdb")
+    io.save(f"{output_dir}/{file}_fixed.pdb")
+    fixer = PDBFixer(filename=f"{output_dir}/{file}_fixed.pdb")
 
     print('Fixing C-terminus...')
     fixer.findMissingResidues()
@@ -71,7 +71,7 @@ def fixer(filepath=None):
     fixer.addMissingAtoms()
     fixer.addMissingHydrogens()
 
-    with open(f'tmp/{file}/{file}_fixed.pdb', 'w') as f:
+    with open(f'{output_dir}/{file}_fixed.pdb', 'w') as f:
         PDBFile.writeFile(fixer.topology, fixer.positions, f)
 
 
