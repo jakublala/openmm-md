@@ -5,6 +5,8 @@ import os
 import subprocess
 import shutil
 
+print(' THE SCRIPT WAS STARTED!!!!')
+
 # current datetime
 from datetime import datetime
 
@@ -30,9 +32,12 @@ def main(
         barrier=100,
         restart_rfile=None,
         pace=500,
+        device='cuda',
+        output_dir=None,
         ):
     
     CUTOFF = 0.8
+
 
     if filepath is None:
         raise ValueError('Filepath is required')
@@ -49,13 +54,21 @@ def main(
         restart = False
 
     print(f'==================== Running {filename} ====================')
-    os.makedirs(f'tmp/{filename}', exist_ok=True)
+    if output_dir is None:
+        print(f"WARNING: No output directory specified, using default tmp/{filename}")
+        # check that it's empty
+        if os.listdir(f'tmp/{filename}'):
+            raise ValueError(f"Folder tmp/{filename} is not empty, please specify an output directory")
+        else:
+            os.makedirs(f'tmp/{filename}', exist_ok=True)
+    else:
+        os.makedirs(output_dir, exist_ok=True)
 
     if not restart:
         restart_checkpoint = None
         # 1. load the PDB and fix errors
         from src.fixer import fixer
-        fixer(filepath=filepath)
+        fixer(filepath=filepath, output_dir=output_dir)
 
 
         # 2. minimize the structure with LBFGS and H atoms mobile
@@ -64,7 +77,9 @@ def main(
             filename=filename, 
             max_iterations=0, 
             device_index=str(device_index),
-            constraints=None
+            constraints=None,
+            device=device,
+            output_dir=output_dir
             )
         
         # 2.5 get OPES preparation
@@ -143,6 +158,8 @@ def main(
         timestep=timestep,
         temperature=temperature,
         restart_checkpoint=restart_checkpoint,
+        device=device,
+        output_dir=output_dir
         )
 
 def restart(filename=None):
