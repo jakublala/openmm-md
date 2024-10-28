@@ -63,7 +63,7 @@ def opes(
 
     from mdareporter import MDAReporter
     trajReporter = MDAReporter(
-            f'{output_dir}/{filename}.xyz', 
+            f'{output_dir}/{filename}.dcd', 
             traj_interval, 
             enforcePeriodicBox=False, 
             selection="protein"

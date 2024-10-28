@@ -51,6 +51,34 @@ def get_interface_contact_indices(
 
     os.remove(temp_filename)
 
+    write_pymol_commands(filename, chain_A_indices, contact_indices, output_dir)
+
     return contact_indices
 
 
+def write_pymol_commands(filename, binding_site_residues, contact_residues, output_dir):
+    # Write PyMOL visualization commands
+    pymol_commands = f"""load {output_dir}/{filename}_fixed.pdb
+# Color binding site residues yellow
+select binding_site, resi {'+'.join(str(i) for i in binding_site_residues)} and chain B
+color yellow, binding_site
+
+# Color chain A (binder) in blue
+select binder, chain A
+color marine, binder
+
+# Color contact residues in chain A in red
+select binder_contacts, resi {'+'.join(str(i) for i, _ in contact_residues)} and chain A
+color red, binder_contacts
+
+# Color remaining target protein (chain B) in gray
+select target, chain B and not binding_site
+color gray50, target
+
+# Set nice visualization
+hide everything
+show cartoon
+"""
+
+    with open(f'{output_dir}/{filename}_pymol_commands.txt', 'w') as f:
+        f.write(pymol_commands)

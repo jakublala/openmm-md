@@ -60,3 +60,4 @@ PRINT ARG=cmap,d,opes.* STRIDE={config['stride']} FILE={output_dir}/{filename}.c
 
         f.write(content)
 
+
