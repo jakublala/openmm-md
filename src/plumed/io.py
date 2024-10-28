@@ -20,6 +20,15 @@ def create_opes_input(
     if config is None:
         raise ValueError('Config is required')
 
+    # get atoms that are part of the binding site on the target protein
+    # and have been included as the part of the contact map
+    from src.plumed.cv import get_interface_contact_indices
+    contact_indices = get_interface_contact_indices(filename, cutoff=config['cutoff'])
+
+    print(contact_indices)
+    assert 0 == 1
+
+
     with open(f'tmp/{filename}/{filename}_plumed.dat', 'w') as f:
         content = f"""MOLINFO STRUCTURE=tmp/{filename}/{filename}_fixed.pdb
 chain_A: GROUP ATOMS={atom_ids_A[0]}-{atom_ids_A[-1]}

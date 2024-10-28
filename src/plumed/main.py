@@ -36,7 +36,7 @@ def main(
         output_dir=None,
         ):
     
-    CUTOFF = 0.8
+    CUTOFF = 1.0
 
 
     if filepath is None:

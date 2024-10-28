@@ -8,6 +8,9 @@ def get_interface_contact_indices(
         cutoff=0.8, # in angstroms
         chains='AB'
         ):
+    """
+    Creates a contact residue map for a given system.
+    """
     # find the residue indices of the selected chains within a cutoff
 
     # HACK: as of now, mdtraj cannot deal with overflow residue numbers
