@@ -6,19 +6,23 @@ import os
 def get_interface_contact_indices(
         filename, 
         cutoff=0.8, # in angstroms
-        chains='AB'
+        chains='AB',
+        output_dir=None
         ):
     """
     Creates a contact residue map for a given system.
     """
     # find the residue indices of the selected chains within a cutoff
 
+    if output_dir is None:
+        raise ValueError('Output directory is required')
+
     # HACK: as of now, mdtraj cannot deal with overflow residue numbers
     # so for this task, let's manually remove all non-protein elements
     import tempfile
 
     # go through all lines of the pdb until you find TER of chain B and then remove all lines until you find the next chain A TER and add END
-    with open(f'tmp/{filename}/{filename}_solvated.pdb', 'r') as file:
+    with open(f'{output_dir}/{filename}_solvated.pdb', 'r') as file:
         lines = file.readlines()
 
     # find the index of the TER line for chain B

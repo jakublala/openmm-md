@@ -5,7 +5,7 @@ import os
 import subprocess
 import shutil
 
-print(' THE SCRIPT WAS STARTED!!!!')
+logger = logging.getLogger(__name__)
 
 # current datetime
 from datetime import datetime
@@ -35,9 +35,12 @@ def main(
         device='cuda',
         output_dir=None,
         ):
+
+    if isinstance(device_index, tuple) or isinstance(device_index, list):
+        # this might happen if we send in CUDA_VISIBIBLE_DEVICES, which get converted to a tuple/list
+        device_index = ",".join(str(x) for x in device_index)
     
     CUTOFF = 1.0
-
 
     if filepath is None:
         raise ValueError('Filepath is required')
@@ -48,14 +51,14 @@ def main(
 
     if restart_rfile is not None:
         assert os.path.exists(restart_rfile), f"File {restart_rfile} does not exist"
-        print(f"Found a restart_rfile for PLUMED, going to restart the OPES simulation from .state and previous last frame in trajectory.")
+        logger.info(f"Found a restart_rfile for PLUMED, going to restart the OPES simulation from .state and previous last frame in trajectory.")
         restart = True
     else:
         restart = False
 
-    print(f'==================== Running {filename} ====================')
+    logger.info(f'==================== Running {filename} ====================')
     if output_dir is None:
-        print(f"WARNING: No output directory specified, using default tmp/{filename}")
+        logger.warning(f"WARNING: No output directory specified, using default tmp/{filename}")
         # check that it's empty
         if os.listdir(f'tmp/{filename}'):
             raise ValueError(f"Folder tmp/{filename} is not empty, please specify an output directory")
@@ -66,25 +69,28 @@ def main(
 
     if not restart:
         restart_checkpoint = None
-        # 1. load the PDB and fix errors
-        from src.fixer import fixer
-        fixer(filepath=filepath, output_dir=output_dir)
+        if not os.path.exists(f'{output_dir}/{filename}_solvated.pdb'):
+            logger.info('No minimized pdb file found, running relaxation...')
+            # 1. load the PDB and fix errors
+            from src.fixer import fixer
+            fixer(filepath=filepath, output_dir=output_dir)
+            logger.info("Fixing successful.")
+            
 
-
-        # 2. minimize the structure with LBFGS and H atoms mobile
-        from src.relax import minimize
-        minimize(
-            filename=filename, 
-            max_iterations=0, 
-            device_index=str(device_index),
-            constraints=None,
-            device=device,
-            output_dir=output_dir
-            )
-        
+            # 2. minimize the structure with LBFGS and H atoms mobile
+            from src.relax import minimize
+            minimize(
+                filename=filename, 
+                max_iterations=0, 
+                device_index=str(device_index),
+                constraints=None,
+                device=device,
+                output_dir=output_dir
+                )
+            
         # 2.5 get OPES preparation
         from src.plumed.cv import get_interface_contact_indices
-        contact_indices = get_interface_contact_indices(filename=filename, cutoff=CUTOFF)
+        contact_indices = get_interface_contact_indices(filename=filename, cutoff=CUTOFF, output_dir=output_dir)
 
         contact_pairs_str = ""
         for i, pair in enumerate(contact_indices):
@@ -131,10 +137,13 @@ def main(
         
         contact_pairs_str = extract_contact_pairs_str(plumed_file)
 
+    from openmm.unit import nanoseconds, picoseconds
+    chk_interval = int((1 * nanoseconds) / (timestep * 0.001 * picoseconds))
+
+    logger.info(f"Checkpoint interval every {chk_interval} steps")
 
     # create the input for OPES
     from src.plumed.io import create_opes_input
-    traj_interval = 100000 / timestep # in femtoseconds
     temperature = 300
     config = {
         'pace': pace,
@@ -143,13 +152,14 @@ def main(
         'stride': pace,
         'cutoff': CUTOFF,
         'restart_rfile': restart_rfile,
-        'chk_stride': 10*traj_interval,
+        'state_wstride': chk_interval,
     }
     create_opes_input(
         filepath=filepath, 
         cv_string=contact_pairs_str,
         config=config,
-        type='opes'
+        type='opes',
+        output_dir=output_dir
         )
 
     from src.plumed.opes import opes
@@ -161,7 +171,8 @@ def main(
         temperature=temperature,
         restart_checkpoint=restart_checkpoint,
         device=device,
-        output_dir=output_dir
+        output_dir=output_dir,
+        chk_interval=chk_interval
         )
 
 def restart(filename=None):
