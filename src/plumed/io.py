@@ -60,7 +60,7 @@ d: DISTANCE ATOMS=c1,c2
 cmap: CONTACTMAP ... 
 {contact_str}
 \tSWITCH={{RATIONAL R_0={config['cutoff']}}}
-\tSUM
+\tAVERAGE
 ...
 """
     if type == 'opes_explore':
@@ -80,9 +80,41 @@ cmap: CONTACTMAP ...
 
     plumed_content += f"""\tSTATE_WFILE={output_dir}/{filename}.state\n\tSTATE_WSTRIDE={config['state_wstride']}
 ...
-PRINT ARG=cmap,d,opes.* STRIDE={config['stride']} FILE={output_dir}/{filename}.colvar
+uwall: UPPER_WALLS ARG=d AT=3.0 KAPPA=150.0 EXP=2 EPS=1 OFFSET=0
+PRINT ARG=cmap,d,opes.*,uwall.bias STRIDE={config['stride']} FILE={output_dir}/{filename}.colvar
 """
     with open(f'{output_dir}/{filename}_plumed.dat', 'w') as f:
         f.write(plumed_content)
 
+    write_pymol_commands(filename, binding_site_residues, contact_residues, output_dir)
 
+
+
+
+def write_pymol_commands(filename, binding_site_residues, contact_residues, output_dir):
+    # Write PyMOL visualization commands
+    pymol_commands = f"""load {output_dir}/{filename}_fixed.pdb
+
+# Color chain B (target) in gray first
+select target, chain B
+color gray50, target
+
+# Then color binding site residues yellow
+select binding_site, resi {'+'.join(str(i) for i in binding_site_residues)} and chain B
+color green, binding_site
+
+# Color chain A (binder) in blue
+select binder, chain A
+color marine, binder
+
+# Color contact residues in chain A in red
+select binder_contacts, resi {'+'.join(str(i) for i, _ in contact_residues)} and chain A
+color red, binder_contacts
+
+# Set nice visualization
+hide everything
+show cartoon
+"""
+
+    with open(f'{output_dir}/{filename}_pymol_commands.txt', 'w') as f:
+        f.write(pymol_commands)
