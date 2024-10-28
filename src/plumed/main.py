@@ -88,16 +88,6 @@ def main(
                 output_dir=output_dir
                 )
             
-        # 2.5 get OPES preparation
-        from src.plumed.cv import get_interface_contact_indices
-        contact_indices = get_interface_contact_indices(filename=filename, cutoff=CUTOFF, output_dir=output_dir)
-
-        contact_pairs_str = ""
-        for i, pair in enumerate(contact_indices):
-            if i != 0:
-                contact_pairs_str += f"\n\tATOMS{i+1}={pair[0]},{pair[1]}"
-            else:
-                contact_pairs_str += f"\tATOMS{i+1}={pair[0]},{pair[1]}"
     else:
         print(f"Getting CVs from previous plumed.dat")
         # assume it's in the same folder as restart_rfile
@@ -120,7 +110,6 @@ def main(
 
         restart_checkpoint = os.path.join(restart_rfile_path, f'{filename}.chk')
         assert os.path.exists(restart_checkpoint), f"File {restart_checkpoint} does not exist"
-
 
         def extract_contact_pairs_str(plumed_file):
             import re
@@ -156,7 +145,6 @@ def main(
     }
     create_opes_input(
         filepath=filepath, 
-        cv_string=contact_pairs_str,
         config=config,
         type='opes',
         output_dir=output_dir

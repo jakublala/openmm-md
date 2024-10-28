@@ -125,6 +125,8 @@ def opes(
         #Equilibrate
         print('Equilibrating...')
         simulation.context.setVelocitiesToTemperature(temperature)
+        # HACK:
+        equilibrationSteps = 100
         simulation.step(equilibrationSteps)
 
     # Add PLUMED bias
