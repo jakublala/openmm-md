@@ -5,12 +5,16 @@ def create_opes_input(
         filepath, 
         cv_string, 
         config=None,
-        type='opes'
+        type='opes',
+        output_dir=None
         ):
     filename = os.path.basename(filepath).split('.')[0]
 
+    if output_dir is None:
+        raise ValueError('Output directory is required')
+
     parser = PDBParser()
-    structure = parser.get_structure('protein', f'tmp/{filename}/{filename}_fixed.pdb')
+    structure = parser.get_structure('protein', f'{output_dir}/{filename}_fixed.pdb')
 
     # get the initial atom ID for each chain
     # get the IDs for chain A and B
@@ -20,8 +24,8 @@ def create_opes_input(
     if config is None:
         raise ValueError('Config is required')
 
-    with open(f'tmp/{filename}/{filename}_plumed.dat', 'w') as f:
-        content = f"""MOLINFO STRUCTURE=tmp/{filename}/{filename}_fixed.pdb
+    with open(f'{output_dir}/{filename}_plumed.dat', 'w') as f:
+        content = f"""MOLINFO STRUCTURE={output_dir}/{filename}_fixed.pdb
 chain_A: GROUP ATOMS={atom_ids_A[0]}-{atom_ids_A[-1]}
 chain_B: GROUP ATOMS={atom_ids_B[0]}-{atom_ids_B[-1]}
 WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B
@@ -42,16 +46,16 @@ cmap: CONTACTMAP ...
             raise ValueError(f"Invalid type: {type}")
         content += f"""\tARG=cmap,d PACE={config['pace']} BARRIER={config['barrier']}
 \tTEMP={config['temperature']}
-\tFILE=tmp/{filename}/{filename}.kernels
+\tFILE={output_dir}/{filename}.kernels
 """
         if config['restart_rfile'] is not None:
             content += f"\tSTATE_RFILE={config['restart_rfile']}\n\tRESTART=YES\n"
         else:
             pass
 
-        content += f"""\tSTATE_WFILE=tmp/{filename}/{filename}.state
+        content += f"""\tSTATE_WFILE={output_dir}/{filename}.state\n\tSTATE_WSTRIDE={config['state_wstride']}
 ...
-PRINT ARG=cmap,d,opes.* STRIDE={config['stride']} FILE=tmp/{filename}/{filename}.colvar
+PRINT ARG=cmap,d,opes.* STRIDE={config['stride']} FILE={output_dir}/{filename}.colvar
 """
 
         f.write(content)

@@ -1,13 +1,23 @@
 from openmm import *
 from openmm.app import *
 from openmm.unit import *
-from openmm import unit
-
-import random
-import numpy as np
 
 
-def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_checkpoint=None, device='cuda', output_dir=None):
+import logging
+logger = logging.getLogger(__name__)
+
+
+def opes(
+        filename, 
+        mdtime, 
+        timestep, 
+        device_index='0', 
+        temperature=300, 
+        restart_checkpoint=None, 
+        device='cuda', 
+        output_dir=None, 
+        chk_interval=None
+        ):
 
     if output_dir is None:
         raise ValueError('Output directory is required')
@@ -33,10 +43,19 @@ def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_
     steps = int(mdtime * nanoseconds / dt)
     equilibrationSteps = int(1 * nanosecond / dt)
 
+    from openmm import Platform
+
+    # List all available platforms
+    logger.info("Available Platforms:")
+    for i in range(Platform.getNumPlatforms()):
+        platform = Platform.getPlatform(i)
+        logger.info(f"{i+1}. {platform.getName()}")
+    
+
     if device == 'cuda':
         platform = Platform.getPlatformByName('CUDA')
     elif device == 'cpu':
-        platform = Platform.getPlatformByName('OpenCL')
+        platform = Platform.getPlatformByName('CPU')
     else:
         raise ValueError(f'Invalid device: {device}')
 
@@ -67,7 +86,10 @@ def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_
                 totalSteps=steps,
                 separator='\t'
             )
-    checkpointReporter = CheckpointReporter(f'{output_dir}/{filename}.chk', traj_interval)
+    if chk_interval is None:
+        logger.warning("Checkpoint interval not specified, using default of every 1 ns")
+        chk_interval = int(1 * nanoseconds / dt)
+    checkpointReporter = CheckpointReporter(f'{output_dir}/{filename}.chk', chk_interval)
 
 
     # Prepare the Simulation
@@ -89,6 +111,8 @@ def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_
     if device_index == 'nan':
         simulation = Simulation(topology, system, integrator, platform)
     else:
+        logger.info(f"Using device index {device_index} of type {type(device_index)}")
+        device_index = "0,1" # HACK: as these seem to be already taking into account what is visible with CUDA only
         properties = {'DeviceIndex': device_index}
         simulation = Simulation(topology, system, integrator, platform, properties)
     

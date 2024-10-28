@@ -7,13 +7,19 @@ from Bio.PDB.Model import Model
 from Bio.PDB.Structure import Structure
 import os
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 def fixer(filepath=None, output_dir=None):
     if filepath is None:
         raise ValueError('filepath is required')
     
     file = os.path.basename(filepath).split('.')[0]
 
-    print('Splitting chains...')
+    logger.info(f"Fixing PDB protein file {file}...")
+
+    logger.info('Splitting chains...')
     structure = PDBParser().get_structure('protein', filepath)
     
     all_ids = []
@@ -57,22 +63,33 @@ def fixer(filepath=None, output_dir=None):
     io.set_structure(new_structure)
     io.save(f"{output_dir}/{file}_fixed.pdb")
     fixer = PDBFixer(filename=f"{output_dir}/{file}_fixed.pdb")
-
-    print('Fixing C-terminus...')
+    logger.info('Fixing C-terminus...')
+    logger.info('Finding missing residues...')
     fixer.findMissingResidues()
+    
+    logger.info('Getting chains and keys...')
     chains = list(fixer.topology.chains())
     keys = fixer.missingResidues.keys()
+    
+    logger.info('Processing missing residues...')
     for key in keys:
         chain = chains[key[0]]
         if key[1] == 0 or key[1] == len(list(chain.residues())):
             del fixer.missingResidues[key]
     
+    logger.info('Finding missing atoms...')
     fixer.findMissingAtoms()
+    
+    logger.info('Adding missing atoms...')
     fixer.addMissingAtoms()
+    
+    logger.info('Adding missing hydrogens...')
     fixer.addMissingHydrogens()
 
+    logger.info('Writing fixed PDB file...')
     with open(f'{output_dir}/{file}_fixed.pdb', 'w') as f:
         PDBFile.writeFile(fixer.topology, fixer.positions, f)
+    logger.info("Fixed PDB successfully written.")
 
 
 if __name__ == '__main__':

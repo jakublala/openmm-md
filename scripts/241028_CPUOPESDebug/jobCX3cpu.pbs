@@ -1,24 +1,17 @@
 #!/bin/bash
-#PBS -lselect=1:ncpus=8:mem=48gb
+#PBS -lselect=1:ncpus=8:mem=12gb
 #PBS -lwalltime=8:0:0
-#PBS -N openmm
+#PBS -N openmm-cpu
 
-echo "Starting job execution..."
 cd $PBS_O_WORKDIR
-echo "Changed to working directory: $(pwd)"
-
-echo "Printing node information..."
 cat $PBS_NODEFILE
 
-echo "Loading anaconda module..."
 module load anaconda3/personal
-echo "Activating openmm environment..."
 source activate openmm
-echo "Environment activated successfully"
+
+# Set OpenMM CPU threads to match PBS allocation
+export OPENMM_CPU_THREADS=8
 
 filepath='data/241010_FoldingUponBinding/input/p53/p53_1.pdb'
-echo "Input filepath: ../../$filepath"
-echo "Starting Python script execution..."
 
-python ../../src/plumed/main.py --filepath "../../$filepath" --timestep 2 --mdtime 2 --device "cpu"  --output_dir "../../data/241010_FoldingUponBinding/output/241028/p53_CPU"
-echo "Python script execution completed"
+python ../../src/plumed/main.py --filepath "../../$filepath" --timestep 2 --mdtime 2 --device_index 'nan' --device "cpu" --output_dir "../../data/241010_FoldingUponBinding/output/241028/p53_CPU"
