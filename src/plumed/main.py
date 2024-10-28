@@ -119,6 +119,7 @@ def main(
 
     # create the input for OPES
     from src.plumed.io import create_opes_input
+    traj_interval = 100000 / timestep # in femtoseconds
     temperature = 300
     config = {
         'pace': pace,
@@ -127,6 +128,7 @@ def main(
         'stride': pace,
         'cutoff': CUTOFF,
         'restart_rfile': restart_rfile,
+        'chk_stride': 10*traj_interval,
     }
     create_opes_input(
         filepath=filepath, 

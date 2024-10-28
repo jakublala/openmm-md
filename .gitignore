@@ -14,6 +14,7 @@ OPES_100ns/
 OPES_barrier_200_500ns/
 slow_run/
 VanillaMD_100ns/
+debug/
 
 # job output
 slurm*

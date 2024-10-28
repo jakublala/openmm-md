@@ -35,7 +35,7 @@ def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_
 
     from mdareporter import MDAReporter
     trajReporter = MDAReporter(
-            f'tmp/{filename}/{filename}.xyz', 
+            f'tmp/{filename}/{filename}.dcd', 
             traj_interval, 
             enforcePeriodicBox=False, 
             selection="protein"
@@ -58,7 +58,7 @@ def opes(filename, mdtime, timestep, device_index='0', temperature=300, restart_
                 totalSteps=steps,
                 separator='\t'
             )
-    checkpointReporter = CheckpointReporter(f'tmp/{filename}/{filename}.chk', traj_interval)
+    checkpointReporter = CheckpointReporter(f'tmp/{filename}/{filename}.chk', traj_interval*10)
 
 
     # Prepare the Simulation

@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -l walltime=72:00:00
-#PBS -l select=1:ncpus=1:mem=80gb:ngpus=1:gpu_type=A100
+#PBS -l select=1:ncpus=4:mem=80gb:ngpus=1:gpu_type=A100
 #PBS -l place=excl
 #PBS -q hx
 #PBS -N p53_1
@@ -14,6 +14,5 @@ export LD_LIBRARY_PATH=/gpfs/home/jl24018/mambaforge-pypy3/envs/openmm/lib:$LD_L
 
 source activate openmm
 
-SYSTEM_NAME='p53_1'
-FILEPATH="data/input/241010_FUB/$SYSTEM_NAME/$SYSTEM_NAME.pdb"
-python ../../src/plumed/main.py --filepath "../../$FILEPATH" --device_index 0 --timestep 2 --mdtime 500 --barrier 200 --restart_rfile "OPES_100ns/$SYSTEM_NAME/$SYSTEM_NAME.state"
+FILEPATH="data/input/241010_FUB/p53/p53_1.pdb"
+python ../../src/plumed/main.py --filepath "../../$FILEPATH" --device_index 0 --timestep 2 --mdtime 500 --barrier 200

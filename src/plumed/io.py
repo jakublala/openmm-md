@@ -49,7 +49,7 @@ cmap: CONTACTMAP ...
         else:
             pass
 
-        content += f"""\tSTATE_WFILE=tmp/{filename}/{filename}.state
+        content += f"""\tSTATE_WFILE=tmp/{filename}/{filename}.state\n\tSTATE_WSTRIDE={config['chk_stride']}
 ...
 PRINT ARG=cmap,d,opes.* STRIDE={config['stride']} FILE=tmp/{filename}/{filename}.colvar
 """
