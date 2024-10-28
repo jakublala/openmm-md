@@ -85,3 +85,4 @@ PRINT ARG=cmap,d,opes.* STRIDE={config['stride']} FILE={output_dir}/{filename}.c
     with open(f'{output_dir}/{filename}_plumed.dat', 'w') as f:
         f.write(plumed_content)
 
+
