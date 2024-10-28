@@ -46,21 +46,28 @@ def create_opes_input(
         binding_site_residues.append(j)
     com_residues = [f"@CA-B_{i}" for i in binding_site_residues]
     logger.info(f"The binding site has {len(com_residues)} residues")
-    com_residues = ','.join(com_residues)
+    com_residues_binding_site = ','.join(com_residues)
 
-    
+
+    binder_residues = []
+    for i in chain_A_indices:
+        atom_id = i
+        residue_id = traj.topology.atom(atom_id).residue.index + 1
+        binder_residues.append(residue_id)
+    binder_residues = list(set(binder_residues))
+    com_residues_binder = ','.join(f"@CA-A_{i}" for i in binder_residues)
     
     plumed_content = f"""MOLINFO STRUCTURE={output_dir}/{filename}_fixed.pdb
 chain_A: GROUP ATOMS={chain_A_indices[0]+1}-{chain_A_indices[-1]+1}
 chain_B: GROUP ATOMS={chain_B_indices[0]+2}-{chain_B_indices[-1]+2}
 WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B
-c1: COM ATOMS=chain_A
-c2: COM ATOMS={com_residues}
+c1: COM ATOMS={com_residues_binder}
+c2: COM ATOMS={com_residues_binding_site}
 d: DISTANCE ATOMS=c1,c2
 cmap: CONTACTMAP ... 
 {contact_str}
 \tSWITCH={{RATIONAL R_0={config['cutoff']}}}
-\tAVERAGE
+\tSUM
 ...
 """
     if type == 'opes_explore':

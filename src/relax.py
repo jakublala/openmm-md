@@ -48,7 +48,9 @@ def minimize(
     logger.info('Adding hydrogens...')
     modeller.addHydrogens(forcefield, pH=7.0)
     logger.info('Adding solvent...')
-    modeller.addSolvent(forcefield, padding=2*nanometer)
+    padding_nm = 2
+    logger.info(f'Padding solvent by {padding_nm} nm')
+    modeller.addSolvent(forcefield, padding=padding_nm*nanometer)
 
     # modeller could also add a membrane or ions (ionic strength of the solvent)
     system = forcefield.createSystem(modeller.topology, nonbondedMethod=PME,
