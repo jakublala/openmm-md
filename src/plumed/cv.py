@@ -9,6 +9,9 @@ def get_interface_contact_indices(
         chains='AB',
         output_dir=None
         ):
+    """
+    Creates a contact residue map for a given system.
+    """
     # find the residue indices of the selected chains within a cutoff
 
     if output_dir is None:

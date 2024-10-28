@@ -40,7 +40,7 @@ def main(
         # this might happen if we send in CUDA_VISIBIBLE_DEVICES, which get converted to a tuple/list
         device_index = ",".join(str(x) for x in device_index)
     
-    CUTOFF = 0.8
+    CUTOFF = 1.0
 
     if filepath is None:
         raise ValueError('Filepath is required')
