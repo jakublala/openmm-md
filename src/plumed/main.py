@@ -57,6 +57,11 @@ def main(
         restart = False
 
     logger.info(f'==================== Running {filename} ====================')
+
+    logger.info(f"Running with timestep {timestep} fs and mdtime {mdtime} ns")
+    logger.info(f"Energy barrier {barrier} kJ/mol for OPES")
+    logger.info(f"Pace {pace} steps of depositing bias in OPES.")
+
     if output_dir is None:
         logger.warning(f"WARNING: No output directory specified, using default tmp/{filename}")
         # check that it's empty
