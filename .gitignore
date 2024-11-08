@@ -3,6 +3,7 @@ output.zip
 tmp/
 __pycache__
 mymd.egg-info
+.ruff_cache/
 
 *.dcd
 

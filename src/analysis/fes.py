@@ -2,10 +2,9 @@ import pandas as pd
 import numpy as np
 import h5py
 import logging
-from scipy.stats import gaussian_kde
 from typing import List, Optional, Tuple
 from src.constants import kB
-
+from src.analysis.kde import GaussianKDE
 # move this elsewhere then
 logging.basicConfig(
     level=logging.INFO,
@@ -20,9 +19,9 @@ def compute_kde_weights(colvar_df: pd.DataFrame, bias: Optional[List[str]], kbT:
         total_bias = colvar_df[[col for col in colvar_df.columns if 'bias' in col.lower()]].sum(axis=1)
     else:
         total_bias = colvar_df[bias].sum(axis=1)
-    return np.exp(total_bias / kbT)
+    return np.exp(total_bias.values / kbT)
 
-def compute_1d_fes(colvar_df: pd.DataFrame, cv: str, kde: gaussian_kde, n_bins: int, kbT: float) -> Tuple[np.ndarray, np.ndarray]:
+def compute_1d_fes(colvar_df: pd.DataFrame, cv: str, kde: GaussianKDE, n_bins: int, kbT: float) -> Tuple[np.ndarray, np.ndarray]:
     """Compute 1D FES using KDE"""
     cv_bins = np.linspace(colvar_df[cv].min(), colvar_df[cv].max(), n_bins)
     # Evaluate KDE for all points at once
@@ -30,17 +29,13 @@ def compute_1d_fes(colvar_df: pd.DataFrame, cv: str, kde: gaussian_kde, n_bins: 
     fes -= np.min(fes)
     return cv_bins, fes
 
-def compute_2d_fes(colvar_df: pd.DataFrame, cvs: List[str], kde: gaussian_kde, n_bins: int, kbT: float) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def compute_2d_fes(colvar_df: pd.DataFrame, cvs: List[str], kde: GaussianKDE, n_bins: int, kbT: float) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Compute 2D FES using KDE"""
     cv1_bins = np.linspace(colvar_df[cvs[0]].min(), colvar_df[cvs[0]].max(), n_bins)
     cv2_bins = np.linspace(colvar_df[cvs[1]].min(), colvar_df[cvs[1]].max(), n_bins)
-    
-    # Create meshgrid and reshape for vectorized evaluation
-    X, Y = np.meshgrid(cv1_bins, cv2_bins)
-    positions = np.vstack([X.ravel(), Y.ravel()])
-    
+
     # Evaluate KDE for all points at once
-    fes = -kbT * np.log(kde(positions))
+    fes = -kbT * np.log(kde(cv1_bins, cv2_bins))
     fes = fes.reshape(n_bins, n_bins)
     fes -= np.min(fes)
     
@@ -58,7 +53,7 @@ def save_fes(outfile: str, cv1_bins: np.ndarray, cv2_bins: Optional[np.ndarray],
 
 def compute_fes(
         colvar_df: pd.DataFrame,
-        sigma: float,
+        sigma: List[float],
         temp: float, 
         cvs: List[str],
         outfile: str,
@@ -78,7 +73,8 @@ def compute_fes(
         Tuple of (cv1_bins, cv2_bins, fes)
     """
     assert len(cvs) in [1, 2], "Only 1D and 2D FES are supported"
-    
+    assert len(sigma) == len(cvs), "Number of bandwidths must match number of CVs"
+
     N_BINS = 100
     kbT = kB * temp
 
@@ -88,8 +84,8 @@ def compute_fes(
 
     # Step 2: Compute the KDE (unbiased probability density)
     logger.info("Computing the unbiased probability density")
-    kde = gaussian_kde(colvar_df[cvs].T, bw_method=sigma, weights=weights)
-
+    kde = GaussianKDE(colvar_df[cvs].values, weights=weights, sigma=sigma)
+    
     # Step 3: Compute the FES
     if len(cvs) == 1:
         logger.info("Computing 1D FES")

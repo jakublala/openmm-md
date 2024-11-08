@@ -6,6 +6,9 @@ import subprocess
 
 import logging
 
+from src.analysis.fes import compute_fes
+import pandas as pd
+
 logger = logging.getLogger(__name__)
 
 TIMESTEP = 0.002 * 10**-3  # in ns
@@ -53,47 +56,47 @@ def get_sigma(directory, target, binder, run, cv):
     kernels_file = f"{directory}/{target}_{binder}.kernels"
     df = plumed.read_as_pandas(kernels_file)
     sigma = df[f"sigma_{cv}"].iloc[-1]
-    return str(sigma.item())
+    return sigma.item()
 
 
-def compute_FES(directory, target, binder, run, recompute=False):
-    colvar_file = f"{directory}/{target}_{binder}.colvar"
-    df = plumed.read_as_pandas(colvar_file)
-    df = consider_walls(df)
-    # save df into file as colvar
-    plumed.write_pandas(df, f"{directory}/{target}_{binder}_with_walls.colvar")
+# def compute_FES(directory, target, binder, run, recompute=False):
+#     colvar_file = f"{directory}/{target}_{binder}.colvar"
+#     df = plumed.read_as_pandas(colvar_file)
+#     df = consider_walls(df)
+#     # save df into file as colvar
+#     plumed.write_pandas(df, f"{directory}/{target}_{binder}_with_walls.colvar")
 
-    sigma_cmap = get_sigma(directory, target, binder, run, "cmap")
-    sigma_d = get_sigma(directory, target, binder, run, "d")
+#     sigma_cmap = get_sigma(directory, target, binder, run, "cmap")
+#     sigma_d = get_sigma(directory, target, binder, run, "d")
 
-    # if the output file exists, skip the computation
-    if not os.path.exists(f"{directory}/{target}_{binder}_fes.dat") or recompute:
-        if recompute:
-            logger.info(f"Recomputing FES for {target} {binder} {run}")
-        else:
-            logger.info(f"Computing FES for {target} {binder} {run}")
-        # run the script FES_from_Reweighting.py
-        subprocess.run(
-            [
-                "python",
-                "FES_from_Reweighting.py",
-                "--colvar",
-                f"{directory}/{target}_{binder}_with_walls.colvar",
-                "--outfile",
-                f"{directory}/{target}_{binder}_fes.dat",
-                "--sigma",
-                f"{sigma_cmap},{sigma_d}",
-                "--temp",
-                "300",
-                "--bias",
-                "opes.bias",
-                "--cv",
-                "cmap,d",
-            ]
-        )
+#     # if the output file exists, skip the computation
+#     if not os.path.exists(f"{directory}/{target}_{binder}_fes.dat") or recompute:
+#         if recompute:
+#             logger.info(f"Recomputing FES for {target} {binder} {run}")
+#         else:
+#             logger.info(f"Computing FES for {target} {binder} {run}")
+#         # run the script FES_from_Reweighting.py
+#         subprocess.run(
+#             [
+#                 "python",
+#                 "FES_from_Reweighting.py",
+#                 "--colvar",
+#                 f"{directory}/{target}_{binder}_with_walls.colvar",
+#                 "--outfile",
+#                 f"{directory}/{target}_{binder}_fes.dat",
+#                 "--sigma",
+#                 f"{sigma_cmap},{sigma_d}",
+#                 "--temp",
+#                 "300",
+#                 "--bias",
+#                 "opes.bias",
+#                 "--cv",
+#                 "cmap,d",
+#             ]
+#         )
 
-    # plot the 2d FES
-    plot_2d_fes(directory, target, binder, run)
+#     # plot the 2d FES
+#     plot_2d_fes(directory, target, binder, run)
 
 
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -101,12 +104,12 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 def plot_2d_fes(directory, target, binder, run):
     # Read FES data
-    data = plumed.read_as_pandas(f"{directory}/{target}_{binder}_fes.dat")
+    data = plumed.read_as_pandas(f"{directory}/{target}_{binder}_fes.h5py")
 
     # Reshape data for contour plot (assuming 101x101 grid like in example)
-    cmap = np.array(data["cmap"]).reshape(101, 101)
-    d = np.array(data["d"]).reshape(101, 101)
-    fes = np.array(data["file.free"]).reshape(101, 101)
+    cmap = np.array(data["cmap_bins"]).reshape(101, 101)
+    d = np.array(data["d_bins"]).reshape(101, 101)
+    fes = np.array(data["fes"]).reshape(101, 101)
 
     # Create figure and axis
     fig, ax = plt.subplots(figsize=(8, 6))  # Add figure size for better proportions
@@ -137,6 +140,9 @@ def plot_2d_fes(directory, target, binder, run):
     plt.savefig(f"{directory}/fes_2d.png", dpi=300)
     plt.close()
 
+def get_sigmas(directory, target, binder, run, cvs):
+    assert len(cvs) == 2, "Only 2D FES are supported"
+    return [get_sigma(directory, target, binder, run, cv) for cv in cvs]
 
 def main():
     # List of all systems
@@ -155,7 +161,20 @@ def main():
                 print(f"System {system} does not exist for experiment {date}")
                 continue
             plot_colvar_trajectories(directory, target, binder, run)
-            compute_FES(directory, target, binder, run, recompute)
+            
+
+            # compute FES
+            colvar_df = plumed.read_as_pandas(f"{directory}/{target}_{binder}.colvar")
+            _, _, _ = compute_fes(
+                colvar_df, 
+                sigma=get_sigmas(directory, target, binder, run, ['cmap', 'd']), 
+                temp=300, 
+                cvs=['cmap', 'd'], 
+                outfile=f"{directory}/{target}_{binder}_fes.h5py", 
+                bias=['opes.bias', 'uwall.bias']
+            )
+
+            plot_2d_fes(directory, target, binder, run)
 
 
 if __name__ == "__main__":

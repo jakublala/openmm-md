@@ -66,7 +66,7 @@ def test_compute_fes():
 
     # CASE 1: no bias consideration
     colvar_df = pd.DataFrame({'x': traj_x})
-    x_bins, y_bins, fes = compute_fes(colvar_df, sigma=SIGMA, temp=kbT/kB, cvs=['x'], outfile='fes.h5py', bias=None)
+    x_bins, y_bins, fes = compute_fes(colvar_df, sigma=[SIGMA], temp=kbT/kB, cvs=['x'], outfile='fes.h5py', bias=None)
 
     energy_plus_bias = energy_fn(x_bins) + bias_fn(x_bins)
     energy_plus_bias -= np.min(energy_plus_bias)
@@ -82,7 +82,7 @@ def test_compute_fes():
 
     # CASE 2: unbiased FES
     colvard_df = pd.DataFrame({'x': traj_x, 'custom_bias': bias_fn(traj_x)})
-    x_bins, y_bins, fes = compute_fes(colvard_df, sigma=SIGMA, temp=kbT/kB, cvs=['x'], outfile='fes.h5py', bias=['custom_bias'])
+    x_bins, y_bins, fes = compute_fes(colvard_df, sigma=[SIGMA], temp=kbT/kB, cvs=['x'], outfile='fes.h5py', bias=['custom_bias'])
 
     # Only check difference in range [-2,2]
     diff = np.abs(fes[mask] - energy_fn(x_bins[mask]))
@@ -95,13 +95,13 @@ def test_compute_fes():
     # open the file and check the data
     with h5py.File('fes.h5py', 'r') as f:
         assert 'x_bins' in f.keys()
-        assert 'FES' in f.keys()
+        assert 'fes' in f.keys()
         fes_h5py = f['fes'][:]
 
     assert np.allclose(fes, fes_h5py), "FES should match"
 
     # clean up
-    os.remove('tests/fes.h5py')
+    os.remove('fes.h5py')
 
 
 if __name__ == "__main__":
