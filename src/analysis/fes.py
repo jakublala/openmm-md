@@ -19,7 +19,10 @@ def compute_kde_weights(colvar_df: pd.DataFrame, bias: Optional[List[str]], kbT:
         total_bias = colvar_df[[col for col in colvar_df.columns if 'bias' in col.lower()]].sum(axis=1)
     else:
         total_bias = colvar_df[bias].sum(axis=1)
-    return np.exp(total_bias.values / kbT)
+    
+    # Subtract maximum value to prevent overflow
+    max_bias = np.max(total_bias.values)
+    return np.exp((total_bias.values - max_bias) / kbT)
 
 def compute_1d_fes(colvar_df: pd.DataFrame, cv: str, kde: GaussianKDE, n_bins: int, kbT: float) -> Tuple[np.ndarray, np.ndarray]:
     """Compute 1D FES using KDE"""
@@ -35,7 +38,8 @@ def compute_2d_fes(colvar_df: pd.DataFrame, cvs: List[str], kde: GaussianKDE, n_
     cv2_bins = np.linspace(colvar_df[cvs[1]].min(), colvar_df[cvs[1]].max(), n_bins)
 
     # Evaluate KDE for all points at once
-    fes = -kbT * np.log(kde(cv1_bins, cv2_bins))
+    epsilon = 1e-300 # to avoid log(0)
+    fes = -kbT * np.log(kde(cv1_bins, cv2_bins) + epsilon)
     fes = fes.reshape(n_bins, n_bins)
     fes -= np.min(fes)
     
