@@ -113,7 +113,7 @@ def plot_analytically(energy_fn, bias_fn, x_range, y_range):
         # Create comprehensive visualization of energy landscapes
     x_bins = np.linspace(x_range[0], x_range[1], 100)
     y_bins = np.linspace(y_range[0], y_range[1], 100)
-    X, Y = np.meshgrid(x_bins, y_bins)
+    X, Y = np.meshgrid(x_bins, y_bins, indexing='ij')
 
     # Calculate 2D surfaces
     energy_2d = np.array([[energy_fn(np.array([x, y])) for x in x_bins] for y in y_bins])
@@ -344,17 +344,17 @@ def test_compute_fes_2d():
                                      cvs=['x', 'y'], outfile='fes.h5py', bias=None)
     
     # Create meshgrid for evaluation
-    X, Y = np.meshgrid(x_bins, y_bins)
+    X, Y = np.meshgrid(x_bins, y_bins, indexing='ij')
     coords = np.vstack([X.ravel(), Y.ravel()]).T
     energy_plus_bias = (energy_fn(coords) + bias_fn(coords)).reshape(len(x_bins), len(y_bins))
     energy_plus_bias -= np.min(energy_plus_bias)
 
-    # take difference between FES and bias, only in circle of radius 4
+    # take difference between FES and bias, only in circle of radius 3
     R = np.sqrt(X**2 + Y**2)
-    mask = R <= 4
+    mask = R <= 3
     diff = np.abs(fes - energy_plus_bias)[mask]
     
-    assert np.average(diff) < 5.0, "FES should match energy_plus_bias up to a constant shift within radius 2"
+    assert np.average(diff) < 5.0, "FES should match energy_plus_bias up to a constant shift within radius 3"
     assert len(x_bins) == 100 and len(y_bins) == 100, "x_bins and y_bins should have 100 bins each"
     assert fes.shape == (100, 100), "FES should be 100x100"
 

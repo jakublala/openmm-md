@@ -3,6 +3,7 @@ import plumed
 import numpy as np
 import matplotlib.pyplot as plt
 import subprocess
+import h5py
 
 import logging
 
@@ -104,12 +105,10 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 def plot_2d_fes(directory, target, binder, run):
     # Read FES data
-    data = plumed.read_as_pandas(f"{directory}/{target}_{binder}_fes.h5py")
-
-    # Reshape data for contour plot (assuming 101x101 grid like in example)
-    cmap = np.array(data["cmap_bins"]).reshape(101, 101)
-    d = np.array(data["d_bins"]).reshape(101, 101)
-    fes = np.array(data["fes"]).reshape(101, 101)
+    with h5py.File(f"{directory}/{target}_{binder}_fes.h5py", "r") as f:
+        fes = f["fes"][:]
+        cmap = f["cmap_bins"][:]
+        d = f["d_bins"][:]
 
     # Create figure and axis
     fig, ax = plt.subplots(figsize=(8, 6))  # Add figure size for better proportions
@@ -129,10 +128,10 @@ def plot_2d_fes(directory, target, binder, run):
     cbar.ax.yaxis.set_label_position("left")
 
     # Add kBT scale
-    k_B = 0.0083144621  # Boltzmann constant in kJ/(mol*K)
+    from src.constants import kB
     TEMP = 300
     cbar_kBT = cbar.ax.twinx()
-    cbar_kBT.set_ylim(cbar.vmin / (k_B * TEMP), cbar.vmax / (k_B * TEMP))
+    cbar_kBT.set_ylim(cbar.vmin / (kB * TEMP), cbar.vmax / (kB * TEMP))
     cbar_kBT.set_ylabel("FES [kBT]", rotation=270, labelpad=15)
 
     plt.title(f"{target} {binder} (run {run})")
