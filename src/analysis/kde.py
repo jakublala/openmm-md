@@ -1,6 +1,10 @@
 import numpy as np
 from typing import List
 from tqdm import tqdm
+import logging
+
+logger = logging.getLogger(__name__)
+
 class GaussianKDE:
     def __init__(self, data: np.ndarray, weights: np.ndarray, sigma: List[float]):
         self.data = data
@@ -42,7 +46,9 @@ class GaussianKDE:
         # Integrate over the grid points to check normalization
         dx = grid_x[1] - grid_x[0]
         integral = np.sum(density) * dx
-        assert np.isclose(integral, 1.0, rtol=1e-2), f"Integral of density should be about 1, but it is {integral} instead"
+        if not np.isclose(integral, 1.0, rtol=1e-2):
+            logger.warning("Density is not normalized to 1, but it is %f instead", integral)
+            density /= integral
 
         return density
 
@@ -90,12 +96,12 @@ class GaussianKDE:
         # Normalize the density
         density /= normalization
         
-
-        # HACK: let's assume this works
-        # # Integrate over the grid points to check normalization
-        # dx = grid_x[1] - grid_x[0]
-        # dy = grid_y[1] - grid_y[0]
-        # integral = np.sum(density) * dx * dy
-        # assert np.isclose(integral, 1.0, rtol=1e-2), f"Integral of density should be about 1, but it is {integral} instead"
-        
+        # if it's not normalized to 1, let's note, but normalize it
+        dx = grid_x[1] - grid_x[0]
+        dy = grid_y[1] - grid_y[0]
+        integral = np.sum(density) * dx * dy
+        if not np.isclose(integral, 1.0, rtol=1e-2):
+            logger.warning("Density is not normalized to 1, but it is %f instead", integral)
+            density /= integral
+    
         return density

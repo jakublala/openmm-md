@@ -215,20 +215,24 @@ def plot_analytically(energy_fn, bias_fn, x_range, y_range):
     plt.savefig('energy_landscapes.png', dpi=300, bbox_inches='tight')
     plt.close()
 
-def plot_analyticall_with_fes(X, Y, fes, energy, x_bins, y_bins):
+def plot_analyticall_with_fes(X, Y, fes, energy, energy_plus_bias, x_bins, y_bins):
     # Create figure with subplots
     fig, axs = plt.subplots(2, 2, figsize=(12, 10))
     plt.subplots_adjust(hspace=0.3, wspace=0.3)
 
+    # Calculate levels based on the analytical energy
+    max_energy = np.max(energy)
+    levels = np.linspace(0, max_energy, 20)
+
     # 2D contour plots
-    im0 = axs[0, 0].contourf(X, Y, fes, levels=20)
+    im0 = axs[0, 0].contourf(X, Y, fes, levels=levels)
     axs[0, 0].set_title('Computed FES')
     plt.colorbar(im0, ax=axs[0, 0])
     axs[0, 0].set_aspect('equal')
     axs[0, 0].set_xlim(-3, 3)
     axs[0, 0].set_ylim(-3, 3)
     
-    im1 = axs[0, 1].contourf(X, Y, energy, levels=20)
+    im1 = axs[0, 1].contourf(X, Y, energy, levels=levels)
     axs[0, 1].set_title('Analytical Energy')
     plt.colorbar(im1, ax=axs[0, 1])
     axs[0, 1].set_aspect('equal')
@@ -240,6 +244,7 @@ def plot_analyticall_with_fes(X, Y, fes, energy, x_bins, y_bins):
     middle_idx = len(y_bins) // 2
     axs[1, 0].plot(x_bins, fes[middle_idx, :], 'b-', label='FES')
     axs[1, 0].plot(x_bins, energy[middle_idx, :], 'r--', label='Analytical')
+    axs[1, 0].plot(x_bins, energy_plus_bias[middle_idx, :], 'g-.', label='Energy + Bias')
     axs[1, 0].set_title('1D Slice (y=0)')
     axs[1, 0].set_xlabel('x')
     axs[1, 0].set_ylabel('Energy')
@@ -250,9 +255,11 @@ def plot_analyticall_with_fes(X, Y, fes, energy, x_bins, y_bins):
     # Diagonal slice
     diagonal = np.diagonal(fes)
     analytical_diagonal = np.diagonal(energy)
+    analytical_diagonal_plus_bias = np.diagonal(energy_plus_bias)
     diag_coords = np.linspace(x_bins[0], x_bins[-1], len(diagonal))
     axs[1, 1].plot(diag_coords, diagonal, 'b-', label='FES')
     axs[1, 1].plot(diag_coords, analytical_diagonal, 'r--', label='Analytical')
+    axs[1, 1].plot(diag_coords, analytical_diagonal_plus_bias, 'g-.', label='Energy + Bias')
     axs[1, 1].set_title('Diagonal Slice (y=x)')
     axs[1, 1].set_xlabel('x=y')
     axs[1, 1].set_ylabel('Energy')
@@ -372,7 +379,7 @@ def test_compute_fes_2d():
     energy = energy_fn(coords).reshape(len(x_bins), len(y_bins))
 
     if DEBUG:
-        plot_analyticall_with_fes(X, Y, fes, energy, x_bins, y_bins)
+        plot_analyticall_with_fes(X, Y, fes, energy, energy_plus_bias, x_bins, y_bins)
 
     # Only check difference within radius 2
     diff = np.abs(fes - energy)[mask]
