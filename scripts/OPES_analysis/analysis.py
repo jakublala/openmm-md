@@ -1,0 +1,162 @@
+import os
+import plumed
+import numpy as np
+import matplotlib.pyplot as plt
+import subprocess
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+TIMESTEP = 0.002 * 10**-3  # in ns
+OPES_PACE = 500
+
+
+def plot_colvar_trajectories(directory, target, binder, run):
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    fig.suptitle(f"Colvar Trajectories for {target=} {binder=} {run=}")
+
+    # get the colvar trajectory
+    colvar_file = f"{directory}/{target}_{binder}.colvar"
+    try:
+        df = plumed.read_as_pandas(colvar_file)
+    except FileNotFoundError:
+        # If the file doesn't exist, continue to the next iteration
+        print(f"Colvar file {colvar_file} does not exist")
+        return
+
+    ax1.plot(df["time"] * TIMESTEP * OPES_PACE, df["cmap"], label=binder)
+    ax2.plot(df["time"] * TIMESTEP * OPES_PACE, df["d"], label=binder)
+
+    ax1.set_title("CMAP")
+    ax1.set_xlabel("Time")
+    ax1.set_ylabel("CMAP")
+    ax1.legend()
+
+    ax2.set_title("Distance")
+    ax2.set_xlabel("Time")
+    ax2.set_ylabel("Distance")
+    ax2.legend()
+
+    plt.tight_layout()
+    plt.savefig(f"{directory}/colvar_trajectories.png", dpi=300)
+
+
+def consider_walls(df):
+    # compine opes.bias + uwall.bias and create a new column total_bias
+    df["total_bias"] = df["opes.bias"] + df["uwall.bias"]
+    return df
+
+
+def get_sigma(directory, target, binder, run, cv):
+    # get the sigma from the kernels file
+    kernels_file = f"{directory}/{target}_{binder}.kernels"
+    df = plumed.read_as_pandas(kernels_file)
+    sigma = df[f"sigma_{cv}"].iloc[-1]
+    return str(sigma.item())
+
+
+def compute_FES(directory, target, binder, run, recompute=False):
+    colvar_file = f"{directory}/{target}_{binder}.colvar"
+    df = plumed.read_as_pandas(colvar_file)
+    df = consider_walls(df)
+    # save df into file as colvar
+    plumed.write_pandas(df, f"{directory}/{target}_{binder}_with_walls.colvar")
+
+    sigma_cmap = get_sigma(directory, target, binder, run, "cmap")
+    sigma_d = get_sigma(directory, target, binder, run, "d")
+
+    # if the output file exists, skip the computation
+    if not os.path.exists(f"{directory}/{target}_{binder}_fes.dat") or recompute:
+        if recompute:
+            logger.info(f"Recomputing FES for {target} {binder} {run}")
+        else:
+            logger.info(f"Computing FES for {target} {binder} {run}")
+        # run the script FES_from_Reweighting.py
+        subprocess.run(
+            [
+                "python",
+                "FES_from_Reweighting.py",
+                "--colvar",
+                f"{directory}/{target}_{binder}_with_walls.colvar",
+                "--outfile",
+                f"{directory}/{target}_{binder}_fes.dat",
+                "--sigma",
+                f"{sigma_cmap},{sigma_d}",
+                "--temp",
+                "300",
+                "--bias",
+                "opes.bias",
+                "--cv",
+                "cmap,d",
+            ]
+        )
+
+    # plot the 2d FES
+    plot_2d_fes(directory, target, binder, run)
+
+
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+
+def plot_2d_fes(directory, target, binder, run):
+    # Read FES data
+    data = plumed.read_as_pandas(f"{directory}/{target}_{binder}_fes.dat")
+
+    # Reshape data for contour plot (assuming 101x101 grid like in example)
+    cmap = np.array(data["cmap"]).reshape(101, 101)
+    d = np.array(data["d"]).reshape(101, 101)
+    fes = np.array(data["file.free"]).reshape(101, 101)
+
+    # Create figure and axis
+    fig, ax = plt.subplots(figsize=(8, 6))  # Add figure size for better proportions
+
+    # Add contour lines
+    ax.contour(cmap, d, fes, levels=range(0, 120, 5), linewidths=0.5, colors="k")
+    ax.set_xlabel("Contact Map [# of contacts]")
+    ax.set_ylabel("Distance between COMs [nm]")
+
+    # Add filled contours
+    cntr = ax.contourf(cmap, d, fes, levels=range(0, 120, 5), cmap=plt.cm.jet)
+
+    # Add colorbar
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad="20%")
+    cbar = plt.colorbar(cntr, cax=cax, label="FES [kJ/mol]")
+    cbar.ax.yaxis.set_label_position("left")
+
+    # Add kBT scale
+    k_B = 0.0083144621  # Boltzmann constant in kJ/(mol*K)
+    TEMP = 300
+    cbar_kBT = cbar.ax.twinx()
+    cbar_kBT.set_ylim(cbar.vmin / (k_B * TEMP), cbar.vmax / (k_B * TEMP))
+    cbar_kBT.set_ylabel("FES [kBT]", rotation=270, labelpad=15)
+
+    plt.title(f"{target} {binder} (run {run})")
+    plt.tight_layout()
+    plt.savefig(f"{directory}/fes_2d.png", dpi=300)
+    plt.close()
+
+
+def main():
+    # List of all systems
+    # systems = ['A-synuclein_alpha', 'A-synuclein_general', 'CD28_alpha', 'CD28_beta', 'CD28_partial']
+    systems = ["A-synuclein_general"]
+    date = "241029"
+    num_runs = 5
+    recompute = True
+
+    for system in systems:
+        target, binder = system.split("_")
+        for run in range(1, num_runs + 1):
+            directory = f"../../data/241010_FoldingUponBinding/output/{date}/{target}/{binder}_{run}"
+            # check system exists, if not write it
+            if not os.path.exists(directory):
+                print(f"System {system} does not exist for experiment {date}")
+                continue
+            plot_colvar_trajectories(directory, target, binder, run)
+            compute_FES(directory, target, binder, run, recompute)
+
+
+if __name__ == "__main__":
+    main()

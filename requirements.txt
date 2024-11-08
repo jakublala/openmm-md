@@ -4,3 +4,5 @@ mdtraj
 pdbfixer
 matplotlib
 biopython
+h5py
+numba
