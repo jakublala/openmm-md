@@ -25,3 +25,4 @@ pymol-pngs/
 *mp4
 
 sync_log.txt
+*.h5py
