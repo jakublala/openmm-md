@@ -54,6 +54,9 @@ def save_fes(outfile: str, cv1_bins: np.ndarray, cv2_bins: Optional[np.ndarray],
         f.create_dataset('fes', data=fes)
         f.attrs['description'] = 'Free Energy Surface'
         f.attrs['units'] = 'kJ/mol'
+        f.attrs['cvs'] = cvs
+        f.attrs['1st_axis'] = cvs[0]
+        f.attrs['2nd_axis'] = cvs[1] if len(cvs) > 1 else None
 
 def compute_fes(
         colvar_df: pd.DataFrame,
@@ -79,7 +82,7 @@ def compute_fes(
     assert len(cvs) in [1, 2], "Only 1D and 2D FES are supported"
     assert len(sigma) == len(cvs), "Number of bandwidths must match number of CVs"
 
-    N_BINS = 100
+    N_BINS = 200
     kbT = kB * temp
 
     # Step 1: Compute the weights for the trajectory
