@@ -3,6 +3,7 @@ output.zip
 tmp/
 __pycache__
 mymd.egg-info
+.ruff_cache/
 
 *.dcd
 
@@ -23,3 +24,6 @@ openmm*
 
 pymol-pngs/
 *mp4
+
+sync_log.txt
+*.h5py
