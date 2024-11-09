@@ -23,7 +23,7 @@ def plot_colvar_trajectories(directory, target, binder, run):
     # get the colvar trajectory
     colvar_file = f"{directory}/{target}_{binder}.colvar"
     try:
-        df = plumed.read_as_pandas(colvar_file)
+        df = read_colvar_file(colvar_file)
     except FileNotFoundError:
         # If the file doesn't exist, continue to the next iteration
         print(f"Colvar file {colvar_file} does not exist")
@@ -51,11 +51,17 @@ def consider_walls(df):
     df["total_bias"] = df["opes.bias"] + df["uwall.bias"]
     return df
 
-
 def get_sigma(directory, target, binder, run, cv):
     # get the sigma from the kernels file
     kernels_file = f"{directory}/{target}_{binder}.kernels"
-    df = plumed.read_as_pandas(kernels_file)
+    df = pd.read_table(
+        kernels_file,
+        dtype=float,
+        sep=r"\s+",
+        comment="#",
+        header=None,
+        names=["time", "cmap", "d", "sigma_cmap", "sigma_d", "height", "logweight"]
+    )
     sigma = df[f"sigma_{cv}"].iloc[-1]
     return sigma.item()
 
@@ -135,7 +141,6 @@ def plot_2d_fes(directory, target, binder, run):
     cbar_kBT.set_ylabel("FES [kBT]", rotation=270, labelpad=15)
 
     plt.title(f"{target} {binder} (run {run})")
-    plt.tight_layout()
     plt.savefig(f"{directory}/fes_2d.png", dpi=300)
     plt.close()
 
@@ -143,10 +148,31 @@ def get_sigmas(directory, target, binder, run, cvs):
     assert len(cvs) == 2, "Only 2D FES are supported"
     return [get_sigma(directory, target, binder, run, cv) for cv in cvs]
 
+# compute FES
+def read_colvar_file(filename):
+    # Read first line to get column names
+    with open(filename) as f:
+        header_line = f.readline().strip()
+    
+    # Parse column names from FIELDS line
+    if not header_line.startswith('#! FIELDS'):
+        raise ValueError("First line must start with '#! FIELDS'")
+    column_names = header_line.replace('#! FIELDS', '').strip().split()
+    
+    # Read data using column names from file
+    colvar_df = pd.read_table(
+        filename,
+        dtype=float,
+        sep=r"\s+",
+        comment="#", 
+        header=None,
+        names=column_names
+    )
+    return colvar_df
+
 def main():
     # List of all systems
-    # systems = ['A-synuclein_alpha', 'A-synuclein_general', 'CD28_alpha', 'CD28_beta', 'CD28_partial']
-    systems = ["A-synuclein_general"]
+    systems = ['A-synuclein_alpha', 'A-synuclein_general', 'CD28_alpha', 'CD28_beta', 'CD28_partial']
     date = "241029"
     num_runs = 5
     recompute = True
@@ -154,18 +180,17 @@ def main():
     for system in systems:
         target, binder = system.split("_")
         for run in range(1, num_runs + 1):
+            logger.info(f"Processing {system} run {run}")
             directory = f"../../data/241010_FoldingUponBinding/output/{date}/{target}/{binder}_{run}"
             # check system exists, if not write it
             if not os.path.exists(directory):
-                print(f"System {system} does not exist for experiment {date}")
+                logger.warning(f"System {system} does not exist for experiment {date}")
                 continue
             plot_colvar_trajectories(directory, target, binder, run)
-            
-
-            # compute FES
-            colvar_df = plumed.read_as_pandas(f"{directory}/{target}_{binder}.colvar")
+                
+            colvar_df = read_colvar_file(f"{directory}/{target}_{binder}.colvar")
             _, _, _ = compute_fes(
-                colvar_df, 
+                colvar_df,
                 sigma=get_sigmas(directory, target, binder, run, ['cmap', 'd']), 
                 temp=300, 
                 cvs=['cmap', 'd'], 
