@@ -67,8 +67,6 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 def plot_2d_fes(fes, cv1_bins, cv2_bins, cvs, ax):
     cv1, cv2 = cvs
 
-    # Add contour lines
-    ax.contour(cv1_bins, cv2_bins, fes, levels=range(0, 120, 5), linewidths=0.5, colors="k")
     ax.set_xlabel(cv1)
     ax.set_ylabel(cv2)
 

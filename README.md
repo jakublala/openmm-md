@@ -97,5 +97,7 @@ export LD_LIBRARY_PATH="/home/jakub/anaconda3/envs/openmm/lib:$LD_LIBRARY_PATH"
 ### Getting data from rclone / onedrive
 ```
 cd openmm-md
-rclone sync onedrive:data/241010_FoldingUponBinding data/241010_FoldingUponBinding
+rclone sync --ignore-size --retries 5 --low-level-retries 15 onedrive:data/241010_FoldingUponBinding data/241010_FoldingUponBinding
 ```
+
+
