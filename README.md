@@ -102,8 +102,14 @@ rclone sync --ignore-size --retries 5 --low-level-retries 15 onedrive:data/24101
 
 
 ### Dockerfile
+Building docker image.
 ```
-docker build -t debug_image .
-
-
+docker build -t jakublala/openmm-md:latest .
+docker push jakublala/openmm-md:latest
 ```
+Use it in a jobscript with PBS job scheduler.
+Note that the current (latest) image supports CUDA 11.8! I am not sure if that has to be the same as the one loaded? Maybe not... :/
+```
+module load apptainer
+apptainer pull docker://jakublala/openmm-md:latest
+
