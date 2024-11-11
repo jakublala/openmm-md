@@ -14,6 +14,8 @@ logger = logging.getLogger(__name__)
 def fixer(filepath=None, output_dir=None):
     if filepath is None:
         raise ValueError('filepath is required')
+    if output_dir is None:
+        raise ValueError('output_dir is required')
     
     file = os.path.basename(filepath).split('.')[0]
 
