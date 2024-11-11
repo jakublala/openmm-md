@@ -207,6 +207,83 @@ def plot_everything(directory, target, binder, run):
     )
     plt.close()
 
+
+def plot_all_fes(directory, target, binder, num_runs):
+    # plot all the FES for a given system in a single plot
+    # make it scalable so that you have the same number of columns as runs
+    # first row: full FES
+    # second row: 1D FES along first CV
+    # third row: 1D FES along second CV
+
+    # Calculate figure width based on number of runs to maintain square subplots
+    # Height is fixed at 15 inches, width scales with number of runs
+    fig_height = 15
+    subplot_size = fig_height / 3  # Each subplot should be square
+    fig_width = subplot_size * num_runs * 1.2  # Add 20% more width for spacing
+    
+    # Create figure with square-looking subplots
+    fig = plt.figure(figsize=(fig_width, fig_height))
+    fig.suptitle(f"{binder=} and {target=}", fontsize=16, y=0.98)
+
+    # Use gridspec with adjusted spacing
+    gs = fig.add_gridspec(3, num_runs, wspace=0.3, hspace=0.3, top=0.95)
+    axs = np.empty((3, num_runs), dtype=object)
+    
+    # Create subplots using gridspec
+    for i in range(3):
+        for j in range(num_runs):
+            axs[i,j] = fig.add_subplot(gs[i,j])
+            if i == 0:  # Add run number at the top of each column
+                axs[i,j].set_title(f"run={j+1}", pad=5)  # Reduced pad value
+
+    cv1_mins = []
+    cv1_maxs = []
+    cv2_mins = []
+    cv2_maxs = []
+
+    for run in range(1, num_runs + 1):
+        fes_filepath = f"{directory}/{binder}_{run}/{target}_{binder}_fes.h5py"
+        cvs, fes, cv1_bins, cv2_bins = load_fes(fes_filepath)
+        axs[0, run - 1] = plot_2d_fes(fes, cv1_bins, cv2_bins, cvs, axs[0, run - 1])
+        axs[1, run - 1], axs[2, run - 1] = plot_1d_fes(fes, cv1_bins, cv2_bins, cvs, axs[1:3, run - 1])
+
+        cv1_mins.append(cv1_bins[0])
+        cv1_maxs.append(cv1_bins[-1])
+        cv2_mins.append(cv2_bins[0])
+        cv2_maxs.append(cv2_bins[-1])
+
+    cv1_min = min(cv1_mins)
+    cv1_max = max(cv1_maxs)
+    cv2_min = min(cv2_mins)
+    cv2_max = max(cv2_maxs)
+
+    # set limits on all subplots
+    # first row, use the cv1 and so for each of the axis
+    for j in range(num_runs):
+        axs[0, j].set_xlim(cv1_min, cv1_max)
+        axs[0, j].set_ylim(cv2_min, cv2_max)
+    # second row, change based on cv1
+    for j in range(num_runs):
+        axs[1, j].set_xlim(cv1_min, cv1_max)
+    # third row, change based on cv2
+    for j in range(num_runs):
+        # this one is flipped
+        axs[2, j].set_xlim(cv2_max, cv2_min)
+    
+
+
+    plt.savefig(
+        f"{directory}/{binder}_all_fes.png",
+        dpi=300,
+        bbox_inches='tight',
+        facecolor='white',
+        edgecolor='none'
+    )
+    plt.close()
+
+    return    
+
+
 def run(date, systems, num_runs, recompute, collect_plots):
     for system in systems:
         target, binder = system.split("_")
@@ -236,15 +313,22 @@ def run(date, systems, num_runs, recompute, collect_plots):
                 os.makedirs(save_dir, exist_ok=True)
                 shutil.copy(f"{directory}/analysis_summary.png", f"{save_dir}/{target}_{binder}_{run}.png")
 
+        if collect_plots:
+            system_directory = "/".join(directory.split("/")[:-1])
+            plot_all_fes(system_directory, target, binder, num_runs)
+            shutil.copy(f"{system_directory}/{binder}_all_fes.png", f"{save_dir}/{target}_{binder}_all_fes.png")
+
+
 
 
 def main():
-    systems = ['A-synuclein_alpha', 'A-synuclein_general', 'CD28_alpha', 'CD28_beta', 'CD28_partial']
+    systems = ['A-synuclein_alpha', 'A-synuclein_general', 'CD28_alpha', 'CD28_beta', 'CD28_partial', 'CD28_general']
     date = "241029"
     num_runs = 5
-    recompute = True
+    recompute = False
     collect_plots = True
     run(date, systems, num_runs, recompute, collect_plots)
+    date = "241028"
     systems = ['p53_1', 'p53_2', 'p53_end', 'SUMO_1', 'SUMO_1c']
     run(date, systems, num_runs, recompute, collect_plots)
    
