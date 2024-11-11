@@ -125,6 +125,7 @@ def opes(
         #Equilibrate
         print('Equilibrating...')
         simulation.context.setVelocitiesToTemperature(temperature)
+        # TODO: make it random, by having the number of steps be also somewhat number
         simulation.step(equilibrationSteps)
 
     # Add PLUMED bias

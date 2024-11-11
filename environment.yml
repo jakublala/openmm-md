@@ -1,0 +1,14 @@
+name: base
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - openmm
+  - swig
+  - pip
+  - numpy
+  - cmake
+  - git
+  - make
+  - gcc
+  - gxx

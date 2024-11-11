@@ -4,3 +4,7 @@ mdtraj
 pdbfixer
 matplotlib
 biopython
+h5py
+numba
+notion-client
+python-dotenv

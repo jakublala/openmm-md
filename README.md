@@ -92,3 +92,12 @@ export LD_LIBRARY_PATH="/home/jakub/anaconda3/envs/openmm/lib:$LD_LIBRARY_PATH"
 
 ### Getting data from HX1 to Workstation
 `scp -r jl24018@login.hx1.hpc.ic.ac.uk:/gpfs/home/jl24018/projects/openmm-md/scripts/241010_FoldingUponBinding/output/output.zip output.zip`
+
+
+### Getting data from rclone / onedrive
+```
+cd openmm-md
+rclone sync --ignore-size --retries 5 --low-level-retries 15 onedrive:data/241010_FoldingUponBinding data/241010_FoldingUponBinding
+```
+
+

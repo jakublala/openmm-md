@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l select=1:ncpus=16:mem=96gb:ngpus=1:gpu_type=RTX6000
+#PBS -l select=1:ncpus=32:mem=96gb:ngpus=1:gpu_type=RTX6000
 #PBS -l walltime=72:0:0
 
 cd $PBS_O_WORKDIR
