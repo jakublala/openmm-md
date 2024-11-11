@@ -322,65 +322,100 @@ def plot_all_fes(directory, target, binder, num_runs):
 from matplotlib.animation import FuncAnimation, PillowWriter
 from tqdm import tqdm
 
+from concurrent.futures import ThreadPoolExecutor
+from functools import partial
+
+def process_single_run(run, directory, target, binder, shared_fig, shared_axes):
+    cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{binder}_{run}/{target}_{binder}_fes.h5py")
+    colvar_df = read_colvar_file(f"{directory}/{binder}_{run}/{target}_{binder}.colvar")
+    
+    # Get trajectory data (subsample)
+    cv1_traj = colvar_df[cvs[0]].values[::1000]
+    cv2_traj = colvar_df[cvs[1]].values[::1000]
+    
+    ax = shared_axes[run-1]
+    
+    # Plot FES
+    cntr = ax.contourf(cv1_bins, cv2_bins, fes, levels=range(0, 120, 5), cmap=plt.cm.jet)
+    plt.colorbar(cntr, ax=ax, label="FES [kJ/mol]")
+    
+    # Initialize trajectory line and point
+    line, = ax.plot([], [], 'k-', alpha=0.8, linewidth=1)
+    point, = ax.plot([], [], 'ko', markersize=8)
+    
+    ax.set_xlabel(cvs[0])
+    ax.set_ylabel(cvs[1])
+    ax.set_title(f"Run {run}")
+    
+    return {
+        'ax': ax,
+        'line': line,
+        'point': point,
+        'cv1_traj': cv1_traj,
+        'cv2_traj': cv2_traj
+    }
+
 def plot_colvar_traj_in_fes(directory, target, binder, num_runs):
-    for run in range(1, num_runs + 1):
-        cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{binder}_{run}/{target}_{binder}_fes.h5py")
-        colvar_df = read_colvar_file(f"{directory}/{binder}_{run}/{target}_{binder}.colvar")
+    # Create a wide figure to accommodate all runs
+    fig_width = 6 * num_runs  # 6 inches per subplot
+    fig, axes = plt.subplots(1, num_runs, figsize=(fig_width, 6))
+    if num_runs == 1:
+        axes = [axes]
+    
+    # Process all runs in parallel
+    with ThreadPoolExecutor() as executor:
+        process_run = partial(process_single_run, 
+                            directory=directory, 
+                            target=target, 
+                            binder=binder, 
+                            shared_fig=fig, 
+                            shared_axes=axes)
         
-        # Get full trajectory data
-        cv1_traj = colvar_df[cvs[0]].values
-        cv2_traj = colvar_df[cvs[1]].values
+        run_data = list(executor.map(process_run, range(1, num_runs + 1)))
+    
+    # Find the maximum trajectory length
+    max_frames = max(len(data['cv1_traj']) for data in run_data)
+    
+    def init():
+        elements = []
+        for data in run_data:
+            data['line'].set_data([], [])
+            data['point'].set_data([], [])
+            elements.extend([data['line'], data['point']])
+        return elements
 
-        # only get every 500th point
-        cv1_traj = cv1_traj[::1000]
-        cv2_traj = cv2_traj[::1000]
-
-
-        # Create figure and axis
-        fig, ax = plt.subplots(figsize=(8, 6))
-        
-        # Plot initial FES
-        cntr = ax.contourf(cv1_bins, cv2_bins, fes, levels=range(0, 120, 5), cmap=plt.cm.jet)
-        plt.colorbar(cntr, label="FES [kJ/mol]")
-        
-        # Initialize trajectory line and point
-        line, = ax.plot([], [], 'k-', alpha=0.8, linewidth=1)
-        point, = ax.plot([], [], 'ko', markersize=8)
-        
-        # Set axis labels and limits
-        ax.set_xlabel(cvs[0])
-        ax.set_ylabel(cvs[1])
-        
-        def init():
-            line.set_data([], [])
-            point.set_data([], [])
-            return line, point
-
-        def animate(frame):
+    def animate(frame):
+        elements = []
+        for data in run_data:
+            # Handle different trajectory lengths
+            curr_frame = min(frame, len(data['cv1_traj'])-1)
+            
             # Update trajectory line
-            line.set_data(cv1_traj[:frame], cv2_traj[:frame])
+            data['line'].set_data(data['cv1_traj'][:curr_frame], 
+                                data['cv2_traj'][:curr_frame])
             # Update current point
-            point.set_data([cv1_traj[frame]], [cv2_traj[frame]])
-            return line, point
+            data['point'].set_data([data['cv1_traj'][curr_frame]], 
+                                 [data['cv2_traj'][curr_frame]])
+            elements.extend([data['line'], data['point']])
+        return elements
 
-
-        # Create animation with tqdm progress bar
-        assert len(cv1_traj) == len(cv2_traj), "CV1 and CV2 must have the same length"
-        frames = tqdm(range(len(cv1_traj)), desc="Generating animation")
-        anim = FuncAnimation(
-            fig, 
-            animate, 
-            init_func=init,
-            frames=frames, 
-            interval=20,  # 20ms between frames
-            blit=True
-        )
-        
-        # Save as GIF
-        writer = PillowWriter(fps=30)
-        anim.save(f"{directory}/{target}_{binder}_trajectory.gif", writer=writer)
-        logger.info("Saved plotted gif trajectory of CVs in FES")
-        plt.close()
+    # Create animation with progress bar
+    frames = tqdm(range(max_frames), desc="Generating animation")
+    anim = FuncAnimation(
+        fig, 
+        animate, 
+        init_func=init,
+        frames=frames, 
+        interval=20,
+        blit=True
+    )
+    
+    # Adjust layout and save
+    plt.tight_layout()
+    writer = PillowWriter(fps=30)
+    anim.save(f"{directory}/{target}_{binder}_all_trajectories.gif", writer=writer)
+    logger.info("Saved combined trajectory animation")
+    plt.close()
 
 
 def run(date, systems, num_runs, recompute, collect_plots):
@@ -393,6 +428,9 @@ def run(date, systems, num_runs, recompute, collect_plots):
             if not os.path.exists(directory):
                 logger.warning(f"System {system} does not exist for experiment {date}")
                 continue
+
+            if target == "SUMO":
+                target = "sumo"
             
             colvar_df = read_colvar_file(f"{directory}/{target}_{binder}.colvar")
             if recompute or not os.path.exists(f"{directory}/{target}_{binder}_fes.h5py"):
@@ -412,10 +450,13 @@ def run(date, systems, num_runs, recompute, collect_plots):
                 os.makedirs(save_dir, exist_ok=True)
                 shutil.copy(f"{directory}/analysis_summary.png", f"{save_dir}/{target}_{binder}_{run}.png")
 
-        plot_colvar_traj_in_fes(directory, target, binder, num_runs)
-
-        if collect_plots:
+        
+        if collect_plots:        
             system_directory = "/".join(directory.split("/")[:-1])
+                
+            plot_colvar_traj_in_fes(system_directory, target, binder, num_runs)
+            shutil.copy(f"{system_directory}/{target}_{binder}_all_trajectories.gif", f"{save_dir}/{target}_{binder}_all_trajectories.gif")
+
             plot_all_fes(system_directory, target, binder, num_runs)
             shutil.copy(f"{system_directory}/{binder}_all_fes.png", f"{save_dir}/{target}_{binder}_all_fes.png")
 
@@ -433,8 +474,10 @@ def main():
     collect_plots = True
     run(date, systems, num_runs, recompute, collect_plots)
     date = "241028"
-    systems = ['p53_1', 'p53_2', 'p53_end', 'SUMO_1', 'SUMO_1c']
+    systems = ['p53_1', 'p53_2', 'p53_end']
     run(date, systems, num_runs, recompute, collect_plots)
+    # systems = ['SUMO_1', 'SUMO_1c']
+    # run(date, systems, num_runs, recompute, collect_plots)
    
 
 if __name__ == "__main__":
