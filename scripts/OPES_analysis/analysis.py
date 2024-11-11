@@ -319,6 +319,68 @@ def plot_all_fes(directory, target, binder, num_runs):
 
     return    
 
+from matplotlib.animation import FuncAnimation, PillowWriter
+from tqdm import tqdm
+
+def plot_colvar_traj_in_fes(directory, target, binder, num_runs):
+    for run in range(1, num_runs + 1):
+        cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{binder}_{run}/{target}_{binder}_fes.h5py")
+        colvar_df = read_colvar_file(f"{directory}/{binder}_{run}/{target}_{binder}.colvar")
+        
+        # Get full trajectory data
+        cv1_traj = colvar_df[cvs[0]].values
+        cv2_traj = colvar_df[cvs[1]].values
+
+        # only get every 500th point
+        cv1_traj = cv1_traj[::1000]
+        cv2_traj = cv2_traj[::1000]
+
+
+        # Create figure and axis
+        fig, ax = plt.subplots(figsize=(8, 6))
+        
+        # Plot initial FES
+        cntr = ax.contourf(cv1_bins, cv2_bins, fes, levels=range(0, 120, 5), cmap=plt.cm.jet)
+        plt.colorbar(cntr, label="FES [kJ/mol]")
+        
+        # Initialize trajectory line and point
+        line, = ax.plot([], [], 'k-', alpha=0.8, linewidth=1)
+        point, = ax.plot([], [], 'ko', markersize=8)
+        
+        # Set axis labels and limits
+        ax.set_xlabel(cvs[0])
+        ax.set_ylabel(cvs[1])
+        
+        def init():
+            line.set_data([], [])
+            point.set_data([], [])
+            return line, point
+
+        def animate(frame):
+            # Update trajectory line
+            line.set_data(cv1_traj[:frame], cv2_traj[:frame])
+            # Update current point
+            point.set_data([cv1_traj[frame]], [cv2_traj[frame]])
+            return line, point
+
+
+        # Create animation with tqdm progress bar
+        assert len(cv1_traj) == len(cv2_traj), "CV1 and CV2 must have the same length"
+        frames = tqdm(range(len(cv1_traj)), desc="Generating animation")
+        anim = FuncAnimation(
+            fig, 
+            animate, 
+            init_func=init,
+            frames=frames, 
+            interval=20,  # 20ms between frames
+            blit=True
+        )
+        
+        # Save as GIF
+        writer = PillowWriter(fps=30)
+        anim.save(f"{directory}/{target}_{binder}_trajectory.gif", writer=writer)
+        logger.info("Saved plotted gif trajectory of CVs in FES")
+        plt.close()
 
 
 def run(date, systems, num_runs, recompute, collect_plots):
@@ -350,19 +412,24 @@ def run(date, systems, num_runs, recompute, collect_plots):
                 os.makedirs(save_dir, exist_ok=True)
                 shutil.copy(f"{directory}/analysis_summary.png", f"{save_dir}/{target}_{binder}_{run}.png")
 
+        plot_colvar_traj_in_fes(directory, target, binder, num_runs)
+
         if collect_plots:
             system_directory = "/".join(directory.split("/")[:-1])
             plot_all_fes(system_directory, target, binder, num_runs)
             shutil.copy(f"{system_directory}/{binder}_all_fes.png", f"{save_dir}/{target}_{binder}_all_fes.png")
 
+        
+
 
 
 
 def main():
+    global num_runs
     systems = ['A-synuclein_alpha', 'A-synuclein_general', 'CD28_alpha', 'CD28_beta', 'CD28_partial', 'CD28_general']
     date = "241029"
     num_runs = 5
-    recompute = True
+    recompute = False
     collect_plots = True
     run(date, systems, num_runs, recompute, collect_plots)
     date = "241028"
