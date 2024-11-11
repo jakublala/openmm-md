@@ -2,8 +2,8 @@ name: base
 channels:
   - conda-forge
 dependencies:
-  - python=3.9
-  - openmm
+  - python=3.12
+  - openmm=8.2
   - swig
   - pip
   - numpy

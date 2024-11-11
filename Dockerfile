@@ -16,6 +16,9 @@ ARG MAMBA_DOCKERFILE_ACTIVATE=1
 RUN micromamba install -y -n base -f /tmp/environment.yml && \
     micromamba clean --all --yes
 
+# Test installation of OpenMM
+RUN python -m openmm.testInstallation
+
 # Install PLUMED with OPES module
 RUN git clone https://github.com/plumed/plumed2 \
     && cd plumed2 \
