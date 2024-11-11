@@ -7,8 +7,17 @@ dependencies:
   - swig
   - pip
   - numpy
+  - numba
+  - pdbfixer
+  - biopython
+  - matplotlib
+  - mdtraj
+  - fire
+  - h5py
   - cmake
   - git
   - make
   - gcc
   - gxx
+  - notion-client
+  - python-dotenv

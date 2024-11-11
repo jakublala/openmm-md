@@ -101,3 +101,9 @@ rclone sync --ignore-size --retries 5 --low-level-retries 15 onedrive:data/24101
 ```
 
 
+### Dockerfile
+```
+docker build -t debug_image .
+
+
+```
