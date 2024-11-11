@@ -36,6 +36,12 @@ def main(
         output_dir=None,
         ):
 
+    if output_dir is None:
+        raise ValueError('Output directory is required')
+    
+    logger.info(f"Output directory: {output_dir}")
+
+
     if isinstance(device_index, tuple) or isinstance(device_index, list):
         # this might happen if we send in CUDA_VISIBIBLE_DEVICES, which get converted to a tuple/list
         device_index = ",".join(str(x) for x in device_index)

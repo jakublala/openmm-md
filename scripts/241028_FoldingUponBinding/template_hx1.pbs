@@ -15,7 +15,9 @@ OUTPUT_DIR=${OUTPUT_DIR}
 TIMESTEP=${TIMESTEP:-2}      # Default to 2 if not specified
 MDTIME=${MDTIME:-2}         # Default to 2 if not specified
 
-python ../../src/main.py \
+export LD_LIBRARY_PATH=/gpfs/home/jl24018/mambaforge-pypy3/envs/openmm/lib:$LD_LIBRARY_PATH
+
+python ../../src/plumed/main.py \
     --filepath "../../$INPUT_PATH" \
     --device_index 'nan' \
     --device 'cuda' \
