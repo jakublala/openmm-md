@@ -3,7 +3,7 @@ import shutil
 import numpy as np
 import matplotlib.pyplot as plt
 import h5py
-
+import re
 import logging
 
 from src.analysis.fes import compute_fes
@@ -110,6 +110,42 @@ def read_colvar_file(filename):
         header=None,
         names=column_names
     )
+
+    # remove the unbiased bit
+    # PLUMED:   adaptive SIGMA will be used, with ADAPTIVE_SIGMA_STRIDE = 5000
+    # PLUMED:     thus the first x kernel depositions will be skipped, x = ADAPTIVE_SIGMA_STRIDE/PACE = 10
+    # get the pace from the _plumed.dat file
+    filename = filename.replace(".colvar", "_plumed.dat")
+    with open(filename, "r") as f:
+        content = f.read()
+    
+    # depositing kernels
+    pace_pattern = r"opes:\s*OPES_METAD[\s\S]*?PACE=(\d+)"
+    match = re.search(pace_pattern, content)
+    if match:
+        pace = int(match.group(1))
+        logger.info(f"Pace value: {pace}")
+    else:
+        raise ValueError("PACE not found in the file")
+    
+    # printing to COLVAR file
+    stride_pattern = r"PRINT.*STRIDE=(\d+)"
+    match = re.search(stride_pattern, content)
+    if match:
+        stride = int(match.group(1))
+        logger.info(f"Stride value: {stride}")
+    else:
+        raise ValueError("Stride not found in the file")
+    
+    # assume first x = 10 kernel depositions are the ones to skip
+    # compute how many printing steps correspond to that
+    num_steps = pace * 10
+    strides_to_skip = num_steps // stride
+    logger.info(f"Skipping {strides_to_skip} steps")
+
+    # look at the opes.bias in the strides_to_skip steps and assert they are constant
+    assert colvar_df["opes.bias"].iloc[:strides_to_skip].std() < 1e-6, "opes.bias is not constant in non-biased part"
+    colvar_df = colvar_df.iloc[strides_to_skip:]
     return colvar_df
 
 def plot_1d_fes(fes, cv1_bins, cv2_bins, cvs, axs):
@@ -284,6 +320,7 @@ def plot_all_fes(directory, target, binder, num_runs):
     return    
 
 
+
 def run(date, systems, num_runs, recompute, collect_plots):
     for system in systems:
         target, binder = system.split("_")
@@ -325,7 +362,7 @@ def main():
     systems = ['A-synuclein_alpha', 'A-synuclein_general', 'CD28_alpha', 'CD28_beta', 'CD28_partial', 'CD28_general']
     date = "241029"
     num_runs = 5
-    recompute = False
+    recompute = True
     collect_plots = True
     run(date, systems, num_runs, recompute, collect_plots)
     date = "241028"
