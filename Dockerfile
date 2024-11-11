@@ -49,12 +49,9 @@ RUN git clone https://github.com/openmm/openmm-plumed \
     && cd ../.. \
     && rm -rf openmm-plumed
 
-# For your package installation, you have two options:
-# 1. Install during build (uncomment and modify the following):
-# COPY . /app
-# RUN pip install -e /app
-
-# 2. Use a volume mount during runtime (recommended for development)
-# Then you would mount your code directory when running the container
-
+# For development, we'll use volume mounting
+# Do NOT install the package during build
 WORKDIR /app
+
+# Note: When running the container, mount your code directory like:
+# docker run -v /path/to/your/code:/app ...
