@@ -8,7 +8,7 @@ mymd.egg-info
 *.dcd
 
 .vscode/
-
+.env
 
 # experimental data
 OPES_100ns/

@@ -13,8 +13,13 @@ COPY --chown=$MAMBA_USER:$MAMBA_USER environment.yml /tmp/environment.yml
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
 
 # Install conda packages
+# Note: this is a bit problematic, as changes in environment.yml are not reflected alone
+# in the image change, so need to manually update the image
 RUN micromamba install -y -n base -f /tmp/environment.yml && \
     micromamba clean --all --yes
+
+# Test installation of OpenMM
+RUN python -m openmm.testInstallation
 
 # Install PLUMED with OPES module
 RUN git clone https://github.com/plumed/plumed2 \
@@ -46,12 +51,9 @@ RUN git clone https://github.com/openmm/openmm-plumed \
     && cd ../.. \
     && rm -rf openmm-plumed
 
-# For your package installation, you have two options:
-# 1. Install during build (uncomment and modify the following):
-# COPY . /app
-# RUN pip install -e /app
-
-# 2. Use a volume mount during runtime (recommended for development)
-# Then you would mount your code directory when running the container
-
+# For development, we'll use volume mounting
+# Do NOT install the package during build
 WORKDIR /app
+
+# Note: When running the container, mount your code directory like:
+# docker run -v /path/to/your/code:/app ...

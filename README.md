@@ -100,10 +100,6 @@ cd openmm-md
 rclone sync --ignore-size --retries 5 --low-level-retries 15 onedrive:data/241010_FoldingUponBinding data/241010_FoldingUponBinding
 ```
 
-
-
-
-
 ### What should be in the metadata config of a simulation?
 - `type`: OPES or MD or fixed bias MD
 - `temp`: temperature
@@ -112,3 +108,27 @@ rclone sync --ignore-size --retries 5 --low-level-retries 15 onedrive:data/24101
 - `checkpoint frequency`
 - `logging frequency`
 - `OPES things, PLUMED things`
+### Dockerfile
+Building docker image.
+```
+docker build -t jakublala/openmm-md:latest .
+docker push jakublala/openmm-md:latest
+```
+Use it in a jobscript with PBS job scheduler.
+Note that the current (latest) image supports CUDA 11.8! I am not sure if that has to be the same as the one loaded? Maybe not... :/
+```
+module load apptainer
+apptainer pull docker://jakublala/openmm-md:latest
+```
+
+Run interactively (debugging and development):
+```
+docker run -it jakublala/openmm-md
+```
+
+
+Check some python code in Apptainer
+```
+apptainer exec openmm-md_v1.0.0.sif python -c "import numpy; print(numpy.__version__)"
+```
+
