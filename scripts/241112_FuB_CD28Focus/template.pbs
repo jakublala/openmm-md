@@ -1,0 +1,33 @@
+#!/bin/bash
+#PBS -l select=1:ncpus=16:mem=96gb:ngpus=1:gpu_type=RTX6000
+#PBS -l walltime=72:0:0
+
+cd $PBS_O_WORKDIR
+cat $PBS_NODEFILE
+
+# Set thread limits
+export OMP_NUM_THREADS=16
+export MKL_NUM_THREADS=16
+export OPENBLAS_NUM_THREADS=16
+export VECLIB_MAXIMUM_THREADS=16
+export NUMEXPR_NUM_THREADS=16
+
+module load anaconda3/personal
+source activate openmm
+module load cuda/11.4.2
+
+# Read input parameters
+INPUT_PATH=${INPUT_PATH}
+OUTPUT_DIR=${OUTPUT_DIR}
+TIMESTEP=${TIMESTEP:-2}      # Default to 2 if not specified
+MDTIME=${MDTIME:-500}        # Default to 500 if not specified
+RESTART_RFILE=${RESTART_RFILE:-None}
+
+python ../../src/plumed/main.py \
+    --filepath "../../$INPUT_PATH" \
+    --device_index "nan" \
+    --device "cuda" \
+    --timestep $TIMESTEP \
+    --mdtime $MDTIME \
+    --restart_rfile $RESTART_RFILE \
+    --output_dir "../../$OUTPUT_DIR"

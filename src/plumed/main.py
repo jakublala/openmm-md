@@ -34,6 +34,8 @@ def main(
         pace=500,
         device='cuda',
         output_dir=None,
+        padding=None,
+        upper_wall_at=None,
         ):
 
     if output_dir is None:
@@ -96,7 +98,8 @@ def main(
                 device_index=str(device_index),
                 constraints=None,
                 device=device,
-                output_dir=output_dir
+                output_dir=output_dir,
+                padding=padding
                 )
             
     else:
@@ -146,6 +149,9 @@ def main(
     # create the input for OPES
     from src.plumed.io import create_opes_input
     temperature = 300
+    if upper_wall_at is None:
+        raise ValueError('Upper wall at is required')
+
     config = {
         'pace': pace,
         'barrier': barrier,
@@ -154,7 +160,11 @@ def main(
         'cutoff': CUTOFF,
         'restart_rfile': restart_rfile,
         'state_wstride': chk_interval,
+        'upper_wall.at': upper_wall_at,
+        'upper_wall.exp': 6,
+        'upper_wall.kappa': 1000.0,
     }
+
     create_opes_input(
         filepath=filepath, 
         config=config,
