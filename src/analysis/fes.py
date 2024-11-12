@@ -58,6 +58,23 @@ def save_fes(outfile: str, cv1_bins: np.ndarray, cv2_bins: Optional[np.ndarray],
         f.attrs['1st_axis'] = cvs[0]
         f.attrs['2nd_axis'] = cvs[1] if len(cvs) > 1 else None
 
+
+def load_fes(filepath: str):
+    with h5py.File(filepath, "r") as f:
+        cvs = f.attrs['cvs']
+        fes = f["fes"][:]
+        cv1_bins = f[f"{cvs[0]}_bins"][:]
+        cv2_bins = f[f"{cvs[1]}_bins"][:]
+        first_axis = f.attrs['1st_axis']
+        second_axis = f.attrs['2nd_axis']
+
+    assert first_axis in cvs and second_axis in cvs, "First and second axis must be in CVs"
+    assert first_axis != second_axis, "First and second axis must be different"
+    assert first_axis == cvs[0] and second_axis == cvs[1], "First axis must be the first CV and second axis must be the second CV"
+    assert fes.shape[0] == len(cv1_bins) and fes.shape[1] == len(cv2_bins), "FES must have the same shape as the CV bins"
+    return cvs, fes, cv1_bins, cv2_bins
+
+
 def compute_fes(
         colvar_df: pd.DataFrame,
         sigma: List[float],
@@ -65,6 +82,7 @@ def compute_fes(
         cvs: List[str],
         outfile: str,
         bias: Optional[List[str]] = None,
+        n_bins: int = 200
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Compute free energy surface from collective variables and bias
     
@@ -82,7 +100,6 @@ def compute_fes(
     assert len(cvs) in [1, 2], "Only 1D and 2D FES are supported"
     assert len(sigma) == len(cvs), "Number of bandwidths must match number of CVs"
 
-    N_BINS = 200
     kbT = kB * temp
 
     # Step 1: Compute the weights for the trajectory
@@ -96,14 +113,15 @@ def compute_fes(
     # Step 3: Compute the FES
     if len(cvs) == 1:
         logger.info("Computing 1D FES")
-        cv1_bins, fes = compute_1d_fes(colvar_df, cvs[0], kde, N_BINS, kbT)
+        cv1_bins, fes = compute_1d_fes(colvar_df, cvs[0], kde, n_bins, kbT)
         cv2_bins = None
     else:
         logger.info("Computing 2D FES")
-        cv1_bins, cv2_bins, fes = compute_2d_fes(colvar_df, cvs, kde, N_BINS, kbT)
+        cv1_bins, cv2_bins, fes = compute_2d_fes(colvar_df, cvs, kde, n_bins, kbT)
 
     # Save results
-    logger.info(f"Saving FES as {outfile}")
-    save_fes(outfile, cv1_bins, cv2_bins, fes, cvs)
+    if outfile is not None:
+        logger.info(f"Saving FES as {outfile}")
+        save_fes(outfile, cv1_bins, cv2_bins, fes, cvs)
 
     return cv1_bins, cv2_bins, fes
