@@ -81,7 +81,7 @@ def plot_all_fes_from_data(fes_data, outfile, target, binder, cvs, labels):
         for j in range(num_runs):
             axs[i,j] = fig.add_subplot(gs[i,j])
             if i == 0:  # Add run number at the top of each column
-                axs[i,j].set_title(labels, pad=5)
+                axs[i,j].set_title(labels[j], pad=5)
 
     cv1_mins = []
     cv1_maxs = []
