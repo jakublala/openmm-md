@@ -112,4 +112,16 @@ Note that the current (latest) image supports CUDA 11.8! I am not sure if that h
 ```
 module load apptainer
 apptainer pull docker://jakublala/openmm-md:latest
+```
+
+Run interactively (debugging and development):
+```
+docker run -it jakublala/openmm-md
+```
+
+
+Check some python code in Apptainer
+```
+apptainer exec openmm-md_v1.0.0.sif python -c "import numpy; print(numpy.__version__)"
+```
 
