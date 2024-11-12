@@ -55,7 +55,7 @@ def opes(
     if device == 'cuda':
         platform = Platform.getPlatformByName('CUDA')
     elif device == 'cpu':
-        platform = Platform.getPlatformByName('CPU')
+        platform = Platform.getPlatformByName('OpenCL')
     else:
         raise ValueError(f'Invalid device: {device}')
 
