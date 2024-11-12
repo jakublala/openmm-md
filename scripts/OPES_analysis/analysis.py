@@ -240,9 +240,6 @@ def run(date, systems, num_runs, recompute, collect_plots):
             if not os.path.exists(directory):
                 logger.warning(f"System {system} does not exist for experiment {date}")
                 continue
-
-            if target == "SUMO":
-                target = "sumo"
             
             colvar_df = read_colvar_file(f"{directory}/{target}_{binder}.colvar")
             if recompute or not os.path.exists(f"{directory}/{target}_{binder}_fes.h5py"):
@@ -278,18 +275,18 @@ def run(date, systems, num_runs, recompute, collect_plots):
 
 def main():
     global num_runs
-    systems = ['A-synuclein_alpha', 'A-synuclein_general', 'CD28_alpha', 'CD28_beta', 'CD28_partial', 'CD28_general']
+    systems = [
+        'A-synuclein_alpha', 'A-synuclein_general', 
+        'CD28_alpha', 'CD28_beta', 'CD28_partial', 'CD28_general',
+        'p53_1', 'p53_2', 'p53_end',
+        'sumo_1', 'sumo_1c'
+    ]
     date = "241029"
     num_runs = 5
-    recompute = False
+    recompute = True
     collect_plots = True
     run(date, systems, num_runs, recompute, collect_plots)
-    date = "241028"
-    systems = ['p53_1', 'p53_2', 'p53_end']
-    run(date, systems, num_runs, recompute, collect_plots)
-    # systems = ['SUMO_1', 'SUMO_1c']
-    # run(date, systems, num_runs, recompute, collect_plots)
-   
+    
 
 if __name__ == "__main__":
     main()
