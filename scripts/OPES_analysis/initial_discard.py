@@ -18,7 +18,7 @@ def process_discard(discard, colvar_df, sigmas):
     logger.info(f"Processing discard {discard} of the trajectory.")
     # Create copy of dataframe with discarded steps
     num_steps = len(colvar_df)
-    num_steps_to_discard = int(num_steps * discard)
+    num_steps_to_discard = int(num_steps * discard) if discard is not None else 0
     df_subset = colvar_df.iloc[num_steps_to_discard:].copy()
     
     # Compute FES for this subset
@@ -36,7 +36,7 @@ def process_discard(discard, colvar_df, sigmas):
 from src.analysis.plot import plot_all_fes_from_data
 def run(date, systems, num_runs):
     # discard first 1/10, 1/5, 1/4, 1/3, and 1/2 of the trajectory
-    discard_ranges = [1/10, 1/5, 1/4, 1/3, 1/2]
+    discard_ranges = [None, 1/10, 1/5, 1/4, 1/3]
 
     cvs = ['cmap', 'd']
 
