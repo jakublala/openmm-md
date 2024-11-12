@@ -101,3 +101,14 @@ rclone sync --ignore-size --retries 5 --low-level-retries 15 onedrive:data/24101
 ```
 
 
+
+
+
+### What should be in the metadata config of a simulation?
+- `type`: OPES or MD or fixed bias MD
+- `temp`: temperature
+- `timestep`: time step in fs
+- `padding`: how large is the water padding
+- `checkpoint frequency`
+- `logging frequency`
+- `OPES things, PLUMED things`
