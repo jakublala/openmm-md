@@ -18,6 +18,7 @@ def minimize(
         constraints=None,
         device="cuda",
         output_dir=None,
+        padding=None,
         ):
     """
     Uses the OpenMM library (i.e. LBFGS) to minimize the energy of a given PDB file.
@@ -48,9 +49,11 @@ def minimize(
     logger.info('Adding hydrogens...')
     modeller.addHydrogens(forcefield, pH=7.0)
     logger.info('Adding solvent...')
-    padding_nm = 2
-    logger.info(f'Padding solvent by {padding_nm} nm')
-    modeller.addSolvent(forcefield, padding=padding_nm*nanometer)
+    if padding is None:
+        padding = 1 # 1 nm
+        logger.warning(f'Padding is not set, using default value of {padding} nm')
+    logger.info(f'Padding solvent by {padding} nm')
+    modeller.addSolvent(forcefield, padding=padding * nanometer)
 
     # modeller could also add a membrane or ions (ionic strength of the solvent)
     system = forcefield.createSystem(modeller.topology, nonbondedMethod=PME,

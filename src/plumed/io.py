@@ -24,6 +24,8 @@ def create_opes_input(
     chain_A_indices = traj.topology.select(f'chainid 0')
     chain_B_indices = traj.topology.select(f'chainid 1')
 
+    # TODO: add assertions that the wall is at a lower distance
+    # than half of the diagonal
 
     # Create atom mapping and get contact indices
     from src.plumed.cv import get_interface_contact_indices
@@ -87,7 +89,7 @@ cmap: CONTACTMAP ...
 
     plumed_content += f"""\tSTATE_WFILE={output_dir}/{filename}.state\n\tSTATE_WSTRIDE={config['state_wstride']}
 ...
-uwall: UPPER_WALLS ARG=d AT=3.0 KAPPA=150.0 EXP=2 EPS=1 OFFSET=0
+uwall: UPPER_WALLS ARG=d AT={config['upper_wall.at']} KAPPA=150.0 EXP={config['upper_wall.exp']} EPS=1 OFFSET=0
 PRINT ARG=cmap,d,opes.*,uwall.bias STRIDE={config['stride']} FILE={output_dir}/{filename}.colvar
 """
     with open(f'{output_dir}/{filename}_plumed.dat', 'w') as f:
