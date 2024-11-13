@@ -27,3 +27,5 @@ pymol-pngs/
 
 sync_log.txt
 *.h5py
+
+.DS_Store

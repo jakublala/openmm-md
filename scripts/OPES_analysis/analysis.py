@@ -5,10 +5,8 @@ import matplotlib.pyplot as plt
 import logging
 
 from src.analysis.fes import compute_fes
-from src.analysis.colvar import read_colvar_file
-from src.analysis.kernels import get_sigmas
-    
 from src.analysis.plot import plot_2d_fes, plot_1d_fes
+
 from src.analysis.fes import load_fes
 
 logger = logging.getLogger(__name__)
@@ -45,7 +43,6 @@ def consider_walls(df):
     df["total_bias"] = df["opes.bias"] + df["uwall.bias"]
     return df
 
-from src.analysis.plot import plot_all_fes_from_data
 def plot_all_fes(directory, target, binder, num_runs, labels):
     """Load FES data and create plots
     
@@ -62,6 +59,7 @@ def plot_all_fes(directory, target, binder, num_runs, labels):
         _, fes, cv1_bins, cv2_bins = load_fes(fes_filepath)
         fes_data.append((cv1_bins, cv2_bins, fes))
 
+    plot_all_fes_from_data(fes_data, directory,target, binder, labels=labels)
     outfile = f"{directory}/{binder}_all_fes.png"
     plot_all_fes_from_data(fes_data, outfile, target, binder, ['cmap', 'd'], labels)
 
@@ -262,6 +260,8 @@ def run(date, system, num_runs, recompute, collect_plots):
         shutil.copy(f"{system_directory}/{target}_{binder}_all_trajectories.gif", f"{save_dir}/{target}_{binder}_all_trajectories.gif")
         plot_all_fes(system_directory, target, binder, num_runs, labels=[f"{run=}" for run in range(1, num_runs + 1)])
         shutil.copy(f"{system_directory}/{binder}_all_fes.png", f"{save_dir}/{target}_{binder}_all_fes.png")
+
+        
 
         
 

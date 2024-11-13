@@ -27,22 +27,32 @@ def main(
         device_index=0,
         mdtime=100, # in ns
         timestep=4,
-        device="cuda"
+        device="cuda",
+        output_dir=None,
+        split_chains=None
         ):
+    if split_chains is None:
+        raise ValueError('Split chains is required')
     if filepath is None:
         raise ValueError('Filepath is required')
+    if output_dir is None:
+        raise ValueError('Output directory is required')
 
     filename = os.path.basename(filepath).split('.')[0]
 
     print(f'==================== Running {filename} ====================')
     
-    if not os.path.exists(f'tmp/{filename}'):
-        os.makedirs(f'tmp/{filename}')
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
 
     # 1. load the PDB and fix errors
     from fixer import fixer
-    fixer(filepath=filepath)
+    fixer(
+        filepath=filepath, 
+        output_dir=output_dir,
+        split_chains=split_chains
+        )
 
     # 2. minimize the structure with LBFGS and H atoms mobile
     from relax import minimize
@@ -51,7 +61,8 @@ def main(
         max_iterations=0, 
         device_index=str(device_index),
         constraints=None,
-        device=device
+        device=device,
+        output_dir=output_dir
         )
     
     # 3. run NPT relaxation / equilibriation
@@ -87,7 +98,8 @@ def main(
             mdtime=mdtime, 
             device_index=str(device_index),
             timestep=timestep,
-            device=device
+            device=device,
+            output_dir=output_dir
             )
         
     except Exception as e:
