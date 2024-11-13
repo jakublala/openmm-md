@@ -2,15 +2,14 @@ import os
 import shutil
 import numpy as np
 import matplotlib.pyplot as plt
-import h5py
-import re
 import logging
 
 from src.analysis.fes import compute_fes
-from src.constants import kB
 from src.analysis.colvar import read_colvar_file
 from src.analysis.kernels import get_sigmas
     
+from src.analysis.plot import plot_2d_fes, plot_1d_fes
+from src.analysis.fes import load_fes
 
 logger = logging.getLogger(__name__)
 
@@ -63,11 +62,8 @@ def plot_all_fes(directory, target, binder, num_runs, labels):
         _, fes, cv1_bins, cv2_bins = load_fes(fes_filepath)
         fes_data.append((cv1_bins, cv2_bins, fes))
 
-    plot_all_fes_from_data(fes_data, directory,target, binder, labels=labels)
-
-from src.analysis.plot import plot_2d_fes, plot_1d_fes
-from src.analysis.fes import load_fes
-# compute FES
+    outfile = f"{directory}/{binder}_all_fes.png"
+    plot_all_fes_from_data(fes_data, outfile, target, binder, ['cmap', 'd'], labels)
 
 def plot_bias(colvar_df, ax):
     ax.plot(colvar_df["time"] * TIMESTEP * OPES_PACE, colvar_df["opes.bias"] + colvar_df["uwall.bias"], label='total')
@@ -230,63 +226,62 @@ def plot_colvar_traj_in_fes(directory, target, binder, num_runs):
     plt.close()
 
 
-def run(date, systems, num_runs, recompute, collect_plots):
-    for system in systems:
-        target, binder = system.split("_")
-        for run in range(1, num_runs + 1):
-            logger.info(f"Processing {system} run {run}")
-            directory = f"../../data/241010_FoldingUponBinding/output/{date}/{target}/{binder}_{run}"
-            # check system exists, if not write it
-            if not os.path.exists(directory):
-                logger.warning(f"System {system} does not exist for experiment {date}")
-                continue
+def run(date, system, num_runs, recompute, collect_plots):
+    target, binder = system.split("_")
+    for run in range(1, num_runs + 1):
+        logger.info(f"Processing {system} run {run}")
+        directory = f"../../data/241010_FoldingUponBinding/output/{date}/{target}/{binder}_{run}"
+        # check system exists, if not write it
+        if not os.path.exists(directory):
+            logger.warning(f"System {system} does not exist for experiment {date}")
+            continue
+        
+        colvar_df = read_colvar_file(f"{directory}/{target}_{binder}.colvar")
+        if recompute or not os.path.exists(f"{directory}/{target}_{binder}_fes.h5py"):
+            _, _, _ = compute_fes(
+                colvar_df,
+                sigma=get_sigmas(directory, target, binder, run, ['cmap', 'd']), 
+                temp=300, 
+                cvs=['cmap', 'd'], 
+                outfile=f"{directory}/{target}_{binder}_fes.h5py", 
+                bias=['opes.bias', 'uwall.bias']
+            )
+
+        plot_everything(directory, target, binder, run)
+
+        if collect_plots:
+            save_dir = f"../../data/241010_FoldingUponBinding/output/{date}/plots"
+            os.makedirs(save_dir, exist_ok=True)
+            shutil.copy(f"{directory}/analysis_summary.png", f"{save_dir}/{target}_{binder}_{run}.png")
+
+    
+    if collect_plots:        
+        system_directory = "/".join(directory.split("/")[:-1])
             
-            colvar_df = read_colvar_file(f"{directory}/{target}_{binder}.colvar")
-            if recompute or not os.path.exists(f"{directory}/{target}_{binder}_fes.h5py"):
-                _, _, _ = compute_fes(
-                    colvar_df,
-                    sigma=get_sigmas(directory, target, binder, run, ['cmap', 'd']), 
-                    temp=300, 
-                    cvs=['cmap', 'd'], 
-                    outfile=f"{directory}/{target}_{binder}_fes.h5py", 
-                    bias=['opes.bias', 'uwall.bias']
-                )
-
-            plot_everything(directory, target, binder, run)
-
-            if collect_plots:
-                save_dir = f"../../data/241010_FoldingUponBinding/output/{date}/plots"
-                os.makedirs(save_dir, exist_ok=True)
-                shutil.copy(f"{directory}/analysis_summary.png", f"{save_dir}/{target}_{binder}_{run}.png")
-
-        
-        if collect_plots:        
-            system_directory = "/".join(directory.split("/")[:-1])
-                
-            plot_colvar_traj_in_fes(system_directory, target, binder, num_runs)
-            shutil.copy(f"{system_directory}/{target}_{binder}_all_trajectories.gif", f"{save_dir}/{target}_{binder}_all_trajectories.gif")
-            plot_all_fes(system_directory, target, binder, num_runs, labels=[f"{run=}" for run in range(1, num_runs + 1)])
-            shutil.copy(f"{system_directory}/{binder}_all_fes.png", f"{save_dir}/{target}_{binder}_all_fes.png")
+        plot_colvar_traj_in_fes(system_directory, target, binder, num_runs)
+        shutil.copy(f"{system_directory}/{target}_{binder}_all_trajectories.gif", f"{save_dir}/{target}_{binder}_all_trajectories.gif")
+        plot_all_fes(system_directory, target, binder, num_runs, labels=[f"{run=}" for run in range(1, num_runs + 1)])
+        shutil.copy(f"{system_directory}/{binder}_all_fes.png", f"{save_dir}/{target}_{binder}_all_fes.png")
 
         
 
 
 
 
-def main():
+def main(system):
     global num_runs
-    systems = [
-        'A-synuclein_alpha', 'A-synuclein_general', 
-        'CD28_alpha', 'CD28_beta', 'CD28_partial', 'CD28_general',
-        'p53_1', 'p53_2', 'p53_end',
-        'sumo_1', 'sumo_1c'
-    ]
+    # systems = [
+    #     'A-synuclein_alpha', 'A-synuclein_general', 
+    #     'CD28_alpha', 'CD28_beta', 'CD28_partial', 'CD28_general',
+    #     'p53_1', 'p53_2', 'p53_end',
+    #     'sumo_1', 'sumo_1c'
+    # ]
     date = "241029"
     num_runs = 5
-    recompute = True
+    recompute = False
     collect_plots = True
-    run(date, systems, num_runs, recompute, collect_plots)
+    run(date, system, num_runs, recompute, collect_plots)
     
-
+import fire
 if __name__ == "__main__":
-    main()
+    fire.Fire(main)

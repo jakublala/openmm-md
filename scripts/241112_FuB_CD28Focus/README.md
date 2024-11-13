@@ -16,6 +16,6 @@ python ../../src/plumed/main.py \
     --mdtime 500 \
     --output_dir "../../data/241010_FoldingUponBinding/output/241112/CD28/alpha_1" \
     --barrier 200 \
-    --padding 5 \
+    --padding 1 \
     --upper_wall_at 5
 ```
