@@ -1,16 +1,21 @@
 import mdtraj as md
 import numpy as np
 import itertools
-import os
+
+from src.models import ContactMap, Contact, Residue
 
 import logging
 logger = logging.getLogger(__name__)
 
-def get_interface_contact_indices(
-        filename, 
-        cutoff=0.8, # in angstroms
-        chains='AB',
-        output_dir=None
+def remove_non_protein_elements(traj):
+    return traj.atom_slice(traj.topology.select('protein'))
+
+def get_contact_map(
+        filename: str, 
+        cutoff: float = 0.8, # in angstroms
+        output_dir: str = None,
+        spot1_residue_ids: list[int] = None,
+        spot2_residue_ids: list[int] = None,
         ):
     """
     Creates a contact residue map for a given system.
@@ -20,59 +25,51 @@ def get_interface_contact_indices(
 
     if output_dir is None:
         raise ValueError('Output directory is required')
-
-    # HACK: as of now, mdtraj cannot deal with overflow residue numbers
-    # so for this task, let's manually remove all non-protein elements
-    import tempfile
-
-    # go through all lines of the pdb until you find TER of chain B and then remove all lines until you find the next chain A TER and add END
-    with open(f'{output_dir}/{filename}_solvated.pdb', 'r') as file:
-        lines = file.readlines()
-
-    # find the index of the TER line for chain B
-    ter_b_index = None
-    for i, line in enumerate(lines):
-        if line.startswith('TER') and line.split()[3] == chains[1]:
-            ter_b_index = i
-            break
-    lines = lines[:ter_b_index]
     
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdb') as temp_file:
-        for line in lines:
-            temp_file.write(line.encode())
-        temp_file.write(b'END\n')
-        temp_filename = temp_file.name
-    
-    traj = md.load(temp_filename)
+    if spot1_residue_ids is None or spot2_residue_ids is None:
+        raise ValueError('Contact indices are required')
 
+    traj = md.load(f'{output_dir}/{filename}_solvated.pdb')
+    traj = remove_non_protein_elements(traj)
 
-    # one is water, one is heteroatoms (ions)
-    # HACK: this might actually break if there's a system with no ions, i.e. proteins have neutral charge 
-    assert len([i for i in traj.topology.chains]) == 2 + 2, "Only two chains are supported"
-
-    chain_A_indices = traj.topology.select(f'chainid 0 and name CA')
-    chain_B_indices = traj.topology.select(f'chainid 1 and name CA')
-
-    # Ensure atom_pairs is a 2D array
-    atom_pairs = np.array(list(itertools.product(chain_A_indices, chain_B_indices)))
-
+    atom_pairs = list(itertools.product(spot1_residue_ids, spot2_residue_ids))
     distances = md.compute_distances(traj, atom_pairs)
+    contact_atom_indices = [atom_pairs[i] for i in np.where(distances < cutoff)[1]] 
 
-    logger.info(f'{len(distances)} distances computed')
+    contact_map = ContactMap()
+    for i, j in contact_atom_indices:
+        binder_residue_index = traj.topology.atom(i).residue.index + 1
+        binder_residue_chain_id = traj.topology.atom(i).residue.chain.chain_id
+        inf_residue_index = traj.topology.atom(j).residue.index + 1
+        inf_residue_chain_id = traj.topology.atom(j).residue.chain.chain_id
+        residue1 = Residue(
+            index=binder_residue_index,
+            chain_id=binder_residue_chain_id
+        )
+        residue2 = Residue(
+            index=inf_residue_index,
+            chain_id=inf_residue_chain_id
+        )
+        contact_map.append(
+            Contact(
+                residue1=residue1,
+                residue2=residue2
+            )
+        )
+    return contact_map
 
-    # compute how many indices for each chain
-    logger.info(f"chain A has {len(chain_A_indices)} indices")
-    logger.info(f"chain B has {len(chain_B_indices)} indices")
+
+def get_contact_content(filename, config, output_dir):
+
+    contact_residues = get_interface_contact_indices(
+        filename, 
+        cutoff=config['cutoff'], 
+        output_dir=output_dir,
+        spot1_indices=config['spot1_indices'],
+        spot2_indices=config['spot2_indices']
+        )
     
+    # Generate PLUMED input content
+    contact_str = '\n'.join(f"\tATOMS{i+1}=@CA-A_{a},@CA-B_{b}" for i, (a, b) in enumerate(contact_residues))
 
-    contact_CA_indices = atom_pairs[np.where(distances < cutoff)[1]] 
-
-    contact_residues = []
-    for i, j in contact_CA_indices:
-        contact_residues.append([traj.topology.atom(i).residue.index + 1, traj.topology.atom(j).residue.index + 1 - len(chain_A_indices)])
-    # this now gives the global residue indices
-
-    os.remove(temp_filename)
-
-    return contact_residues
-
+    

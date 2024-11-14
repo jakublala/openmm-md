@@ -7,6 +7,7 @@ from openmm import Platform
 import logging
 logger = logging.getLogger(__name__)
 
+from src.plumed.utils import get_checkpoint_interval
 
 def opes(
         filename, 
@@ -17,7 +18,6 @@ def opes(
         restart_checkpoint=None, 
         device='cuda', 
         output_dir=None, 
-        chk_interval=None,
         logging_frequency=None,
         ):
     """Run an OpenMM molecular dynamics simulation with OPES (On-the-fly Probability Enhanced Sampling).
@@ -41,8 +41,6 @@ def opes(
         Computation device to use. Options are 'cuda', 'cpu', or 'opencl'.
     output_dir : str, required
         Directory path for all input and output files.
-    chk_interval : int, optional
-        Number of steps between saving checkpoint files. Defaults to steps equivalent to 1 ns.
     logging_frequency : float, required
         Frequency (in picoseconds) for trajectory and state data reporting.
 
@@ -124,10 +122,10 @@ def opes(
                 totalSteps=steps,
                 separator='\t'
             )
-    if chk_interval is None:
-        logger.warning("Checkpoint interval not specified, using default of every 1 ns")
-        chk_interval = int(1 * nanoseconds / dt)
-    checkpointReporter = CheckpointReporter(f'{output_dir}/{filename}.chk', chk_interval)
+    checkpointReporter = CheckpointReporter(
+        f'{output_dir}/{filename}.chk', 
+        get_checkpoint_interval(timestep)
+        )
 
 
     # Prepare the Simulation

@@ -72,7 +72,7 @@ def plot_rational_switching_function():
     plt.title(f'Rational Switching Function\n r0 = {r0}, d0 = {d0}, n = {n}, m = {m}')
     plt.axhline(y=0, color='k', linestyle='-', alpha=0.3)
     plt.axvline(x=0, color='k', linestyle='-', alpha=0.3)
-    plt.savefig(f'output/rational_switching_function.png', dpi=300)
+    plt.savefig('output/rational_switching_function.png', dpi=300)
 
     plt.show()
 

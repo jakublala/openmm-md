@@ -1,7 +1,6 @@
 from openmm.app import *
 from openmm import *
 from openmm.unit import nanometer, picosecond, picoseconds, kelvin, nanosecond
-from sys import stdout
 import fire
 import time
 from mdareporter import MDAReporter

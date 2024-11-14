@@ -8,7 +8,6 @@ OPES_PACE = 500
 TEMP = 300
 from src.constants import kB
 from src.analysis.deltaG import marginalize_fes
-from src.analysis.fes import load_fes
 
 
 def plot_1d_fes(fes, cv1_bins, cv2_bins, cvs, axs):
