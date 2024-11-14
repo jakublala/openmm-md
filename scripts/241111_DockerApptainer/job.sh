@@ -27,15 +27,24 @@ cd $TMPDIR
 module load apptainer
 module load cuda/11.8
 
-apptainer pull --force openmm-md.sif docker://jakublala/openmm-md:latest
+apptainer pull --force openmm-md.sif docker://jakublala/openmm-md:v1.0.2
 
-apptainer exec openmm-md.sif bash -c "pip install -e $HOME/projects/openmm-md && python $HOME/projects/openmm-md/src/plumed/main.py \
-    --filepath 'data/241109_INFconstruct/input/PQ19/PQ19_B30L4.pdb' \
+# apptainer shell --no-home --bind $HOME/Scratch --bind $HOME/projects openmm-md_v1.0.2.sif
+
+# Define the Python command
+PYTHON_CMD="python $HOME/projects/openmm-md/src/plumed/main.py \
+    --filepath 'data/241109_INFconstruct/input/Z1/Z1-B50W.pdb' \
     --device_index 'nan' \
     --device 'cuda' \
     --timestep 2 \
     --mdtime 5 \
-    --output_dir 'data/241111_DockerApptainer/output'"
+    --output_dir 'data/241109_INFconstruct/output/Z1-B50W/241113'"
+
+# Execute the command using apptainer
+apptainer exec --no-home --bind $HOME/Scratch --bind $HOME/projects \
+    openmm-md.sif bash -c \
+    "pip install -e $HOME/projects/openmm-md && \
+    $PYTHON_CMD"
 
 # 10. Preferably, tar-up (archive) all output files onto the shared scratch area
 tar zcvf $HOME/Scratch/files_from_job_$JOB_ID.tar.gz $TMPDIR
