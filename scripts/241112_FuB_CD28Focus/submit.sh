@@ -7,114 +7,55 @@ submit_simulation() {
     local timestep=${4:-2}
     local mdtime=${5:-500}
     local restart_rfile=${6:-None}
+    local barrier=${7:-200}
+    local padding=${8:-5}
+    local upper_wall=${9:-5}
 
-    qsub -N $job_name -v INPUT_PATH="$input_path",OUTPUT_DIR="$output_dir",TIMESTEP="$timestep",MDTIME="$mdtime",RESTART_RFILE="$restart_rfile" template.pbs
+    qsub -N "$job_name" \
+        -v "INPUT_PATH=$input_path,OUTPUT_DIR=$output_dir,TIMESTEP=$timestep,MDTIME=$mdtime,RESTART_RFILE=$restart_rfile,BARRIER=$barrier,PADDING=$padding,UPPER_WALL=$upper_wall" \
+        template.pbs
 }
 
-# A-synuclein simulations - selected runs
-submit_simulation "data/241010_FoldingUponBinding/input/A-synuclein/A-synuclein_alpha.pdb" \
-                 "data/241010_FoldingUponBinding/output/241010/A-synuclein/alpha_2" \
-                 "asyn_alpha_2" \
+# CD28-G-UW5P2 (5nm upper wall, 2nm padding)
+submit_simulation "data/241112_FuB_CD28Focus/input/CD28/CD28_general.pdb" \
+                 "data/241010_FoldingUponBinding/output/241112/CD28/CD28-G-UW5P2" \
+                 "cd28_uw5p2" \
                  2 \
                  500 \
-                 "../../data/241010_FoldingUponBinding/output/241029/A-synuclein/alpha_2/A-synuclein_alpha.state"
+                 "None" \
+                 200 \
+                 2 \
+                 5
 
-submit_simulation "data/241010_FoldingUponBinding/input/A-synuclein/A-synuclein_general.pdb" \
-                 "data/241010_FoldingUponBinding/output/241010/A-synuclein/general_2" \
-                 "asyn_general_2" \
+# CD28-G-UW5P4 (5nm upper wall, 4nm padding)
+submit_simulation "data/241112_FuB_CD28Focus/input/CD28/CD28_general.pdb" \
+                 "data/241010_FoldingUponBinding/output/241112/CD28/CD28-G-UW5P4" \
+                 "cd28_uw5p4" \
                  2 \
                  500 \
-                 "../../data/241010_FoldingUponBinding/output/241029/A-synuclein/general_2/A-synuclein_general.state"
+                 "None" \
+                 200 \
+                 4 \
+                 5
 
-submit_simulation "data/241010_FoldingUponBinding/input/A-synuclein/A-synuclein_general.pdb" \
-                 "data/241010_FoldingUponBinding/output/241010/A-synuclein/general_3" \
-                 "asyn_general_3" \
+# CD28-G-UW8P4 (8nm upper wall, 4nm padding)
+submit_simulation "data/241112_FuB_CD28Focus/input/CD28/CD28_G-UW8P4" \
+                 "data/241010_FoldingUponBinding/output/241112/CD28/CD28-G-UW8P4" \
+                 "cd28_uw8p4" \
                  2 \
                  500 \
-                 "../../data/241010_FoldingUponBinding/output/241029/A-synuclein/general_3/A-synuclein_general.state"
+                 "None" \
+                 200 \
+                 4 \
+                 8
 
-
-
-# # A-synuclein simulations
-# for i in {1..5}; do
-#     submit_simulation "data/241010_FoldingUponBinding/input/A-synuclein/A-synuclein_alpha.pdb" \
-#                      "data/241010_FoldingUponBinding/output/241028/A-synuclein/alpha_$i" \
-#                      "asyn_alpha_$i" \
-#                      2 \
-#                      500 \
-#                      "../../data/241010_FoldingUponBinding/output/241029/A-synuclein/alpha_$i/A-synuclein_alpha.state"
-
-#     submit_simulation "data/241010_FoldingUponBinding/input/A-synuclein/A-synuclein_general.pdb" \
-#                      "data/241010_FoldingUponBinding/output/241028/A-synuclein/general_$i" \
-#                      "asyn_general_$i" \
-#                      2 \
-#                      500 \
-#                      "../../data/241010_FoldingUponBinding/output/241029/A-synuclein/general_$i/A-synuclein_general.state"
-# done
-
-# # CD28 simulations
-# for i in {1..5}; do
-#     submit_simulation "data/241010_FoldingUponBinding/input/CD28/CD28_alpha.pdb" \
-#                      "data/241010_FoldingUponBinding/output/241028/CD28/alpha_$i" \
-#                      "cd28_alpha_$i" \
-#                      2 \
-#                      500 \
-#                      "../../data/241010_FoldingUponBinding/output/241029/CD28/alpha_$i/CD28_alpha.state"
-
-#     submit_simulation "data/241010_FoldingUponBinding/input/CD28/CD28_beta.pdb" \
-#                      "data/241010_FoldingUponBinding/output/241028/CD28/beta_$i" \
-#                      "cd28_beta_$i" \
-#                      2 \
-#                      500 \
-#                      "../../data/241010_FoldingUponBinding/output/241029/CD28/beta_$i/CD28_beta.state"
-
-#     submit_simulation "data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb" \
-#                      "data/241010_FoldingUponBinding/output/241028/CD28/general_$i" \
-#                      "cd28_general_$i" \
-#                      2 \
-#                      500 \
-#                      "../../data/241010_FoldingUponBinding/output/241029/CD28/general_$i/CD28_general.state"
-
-#     submit_simulation "data/241010_FoldingUponBinding/input/CD28/CD28_partial.pdb" \
-#                      "data/241010_FoldingUponBinding/output/241028/CD28/partial_$i" \
-#                      "cd28_partial_$i" \
-#                      2 \
-#                      500 \
-#                      "../../data/241010_FoldingUponBinding/output/241029/CD28/partial_$i/CD28_partial.state"
-# done
-
-# # p53 simulations
-# for i in {1..5}; do
-#     submit_simulation "data/241010_FoldingUponBinding/input/p53/p53_1.pdb" \
-#                      "data/241010_FoldingUponBinding/output/241028/p53/1_$i" \
-#                      "p53_1_$i" \
-#                      2 \
-#                      500
-
-#     submit_simulation "data/241010_FoldingUponBinding/input/p53/p53_2.pdb" \
-#                      "data/241010_FoldingUponBinding/output/241028/p53/2_$i" \
-#                      "p53_2_$i" \
-#                      2 \
-#                      500
-
-#     submit_simulation "data/241010_FoldingUponBinding/input/p53/p53_end.pdb" \
-#                      "data/241010_FoldingUponBinding/output/241028/p53/end_$i" \
-#                      "p53_end_$i" \
-#                      2 \
-#                      500
-# done
-
-# # SUMO simulations
-# for i in {1..5}; do
-#     submit_simulation "data/241010_FoldingUponBinding/input/SUMO/sumo1.pdb" \
-#                      "data/241010_FoldingUponBinding/output/241028/SUMO/1_$i" \
-#                      "sumo1_$i" \
-#                      2 \
-#                      500
-
-#     submit_simulation "data/241010_FoldingUponBinding/input/SUMO/sumo1c.pdb" \
-#                      "data/241010_FoldingUponBinding/output/241028/SUMO/1c_$i" \
-#                      "sumo1c_$i" \
-#                      2 \
-#                      500
-# done
+# python ../../src/plumed/main.py \
+#     --filepath "../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb" \
+#     --device_index "nan" \
+#     --device "cuda" \
+#     --timestep 2 \
+#     --mdtime 500 \
+#     --output_dir "../../data/241010_FoldingUponBinding/output/241112/CD28/alpha_1" \
+#     --barrier 200 \
+#     --padding 5 \
+#     --upper_wall_at 5
