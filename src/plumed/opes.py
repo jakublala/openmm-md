@@ -1,7 +1,8 @@
 from openmm import *
 from openmm.app import *
 from openmm.unit import *
-
+from openmmplumed import PlumedForce
+from openmm import Platform
 
 import logging
 logger = logging.getLogger(__name__)
@@ -16,8 +17,60 @@ def opes(
         restart_checkpoint=None, 
         device='cuda', 
         output_dir=None, 
-        chk_interval=None
+        chk_interval=None,
+        logging_frequency=None,
         ):
+    """Run an OpenMM molecular dynamics simulation with OPES (On-the-fly Probability Enhanced Sampling).
+
+    Parameters
+    ----------
+    filename : str
+        Base name for input/output files. The function expects '{filename}_solvated.pdb' as input
+        and will generate various output files using this base name.
+    mdtime : float
+        Total simulation time in nanoseconds.
+    timestep : float
+        Integration timestep multiplier. The actual timestep will be 0.001 * timestep picoseconds.
+    device_index : str, default='0'
+        GPU device index to use for CUDA calculations.
+    temperature : float, default=300
+        Simulation temperature in Kelvin.
+    restart_checkpoint : str, optional
+        Path to a checkpoint file to restart simulation from.
+    device : str, default='cuda'
+        Computation device to use. Options are 'cuda', 'cpu', or 'opencl'.
+    output_dir : str, required
+        Directory path for all input and output files.
+    chk_interval : int, optional
+        Number of steps between saving checkpoint files. Defaults to steps equivalent to 1 ns.
+    logging_frequency : float, required
+        Frequency (in picoseconds) for trajectory and state data reporting.
+
+    Returns
+    -------
+    None
+        The function saves various output files to the specified output directory:
+        - {filename}.dcd: Trajectory file
+        - {filename}.out: Simulation statistics and progress
+        - {filename}.chk: Checkpoint files
+        
+    Notes
+    -----
+    The simulation uses the AMBER14 force field with TIP3P water model and includes:
+    - PME (Particle Mesh Ewald) for long-range interactions
+    - 1.0 nm nonbonded cutoff
+    - Hydrogen bond constraints
+    - Rigid water molecules
+    - Langevin middle integrator for temperature control
+    
+    The simulation includes an equilibration phase (1 ns) if not starting from a checkpoint,
+    and applies PLUMED bias according to a script specified in '{filename}_plumed.dat'.
+
+    Raises
+    ------
+    ValueError
+        If output_dir is not specified or if an invalid device is selected.
+    """
 
     if output_dir is None:
         raise ValueError('Output directory is required')
@@ -43,23 +96,8 @@ def opes(
     steps = int(mdtime * nanoseconds / dt)
     equilibrationSteps = int(1 * nanosecond / dt)
 
-    from openmm import Platform
 
-    # List all available platforms
-    logger.info("Available Platforms:")
-    for i in range(Platform.getNumPlatforms()):
-        platform = Platform.getPlatform(i)
-        logger.info(f"{i+1}. {platform.getName()}")
-    
-
-    if device == 'cuda':
-        platform = Platform.getPlatformByName('CUDA')
-    elif device == 'cpu':
-        platform = Platform.getPlatformByName('OpenCL')
-    else:
-        raise ValueError(f'Invalid device: {device}')
-
-    traj_interval = int(100 * picoseconds / dt)
+    traj_interval = int(logging_frequency * picoseconds / dt)
 
     from mdareporter import MDAReporter
     trajReporter = MDAReporter(
@@ -108,13 +146,18 @@ def opes(
     integrator = LangevinMiddleIntegrator(temperature, friction, dt)
     integrator.setConstraintTolerance(constraintTolerance)
     
-    if device_index == 'nan':
-        simulation = Simulation(topology, system, integrator, platform)
-    else:
-        logger.info(f"Using device index {device_index} of type {type(device_index)}")
-        device_index = "0,1" # HACK: as these seem to be already taking into account what is visible with CUDA only
+    properties = None
+    if device == "cuda":
+        platform = Platform.getPlatformByName('CUDA')
         properties = {'DeviceIndex': device_index}
-        simulation = Simulation(topology, system, integrator, platform, properties)
+    elif device == "cpu":
+        platform = Platform.getPlatformByName('CPU')
+    elif device == "opencl":
+        platform = Platform.getPlatformByName('OpenCL')
+    else:
+        raise ValueError('Invalid device')
+
+    simulation = Simulation(topology, system, integrator, platform, properties)
     
     if restart_checkpoint: 
         simulation.loadCheckpoint(restart_checkpoint)
@@ -132,7 +175,6 @@ def opes(
     with open(f'{output_dir}/{filename}_plumed.dat', 'r') as file:
         script = file.read()
 
-    from openmmplumed import PlumedForce
     plumed_force = PlumedForce(script)
     system.addForce(plumed_force)
     

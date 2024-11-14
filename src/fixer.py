@@ -11,7 +11,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def fixer(filepath=None, output_dir=None):
+def fixer(filepath=None, output_dir=None, split_chains=True):
     if filepath is None:
         raise ValueError('filepath is required')
     if output_dir is None:
@@ -36,22 +36,22 @@ def fixer(filepath=None, output_dir=None):
             if abs(all_ids[i] - all_ids[i + 1]) > 2:
                 indices_to_break.append(i)
 
-    chains = {'A': [], 'B': [], 'C': []}
+        chains = {'A': [], 'B': [], 'C': []}
 
-    new_structure = Structure(file)
-    new_model = Model(0)
-    new_structure.add(new_model)
+        new_structure = Structure(file)
+        new_model = Model(0)
+        new_structure.add(new_model)
 
-    for model in structure:
-        for chain in model:
-            residues = [i for i in chain.get_residues()]
-            if len(indices_to_break) > 1:
-                chains['A'] = residues[0:indices_to_break[0]+1]
-                chains['B'] = residues[indices_to_break[0]+1:indices_to_break[1]+1]
-                chains['C'] = residues[indices_to_break[1]+1:]
-            else:
-                chains['A'] = residues[0:indices_to_break[0]+1]
-                chains['B'] = residues[indices_to_break[0]+1:]
+        for model in structure:
+            for chain in model:
+                residues = [i for i in chain.get_residues()]
+                if len(indices_to_break) > 1:
+                    chains['A'] = residues[0:indices_to_break[0]+1]
+                    chains['B'] = residues[indices_to_break[0]+1:indices_to_break[1]+1]
+                    chains['C'] = residues[indices_to_break[1]+1:]
+                else:
+                    chains['A'] = residues[0:indices_to_break[0]+1]
+                    chains['B'] = residues[indices_to_break[0]+1:]
 
         residue_id = 1
         for chain_id, residues in chains.items():

@@ -22,6 +22,9 @@ OUTPUT_DIR=${OUTPUT_DIR}
 TIMESTEP=${TIMESTEP:-2}      # Default to 2 if not specified
 MDTIME=${MDTIME:-500}        # Default to 500 if not specified
 RESTART_RFILE=${RESTART_RFILE:-None}
+BARRIER=${BARRIER:-200}      # Default to 200 if not specified
+PADDING=${PADDING:-5}        # Default to 5 if not specified
+UPPER_WALL=${UPPER_WALL:-5}  # Default to 5 if not specified
 
 python ../../src/plumed/main.py \
     --filepath "../../$INPUT_PATH" \
@@ -30,4 +33,7 @@ python ../../src/plumed/main.py \
     --timestep $TIMESTEP \
     --mdtime $MDTIME \
     --restart_rfile $RESTART_RFILE \
-    --output_dir "../../$OUTPUT_DIR"
+    --output_dir "../../$OUTPUT_DIR" \
+    --barrier $BARRIER \
+    --padding $PADDING \
+    --upper_wall_at $UPPER_WALL

@@ -1,12 +1,4 @@
 #!/bin/bash
-#PBS -lselect=1:ncpus=256:mem=920gb
-#PBS -lwalltime=4:0:0
-#PBS -N openmm-cpu
-
-cd $PBS_O_WORKDIR
-cat $PBS_NODEFILE
-
-module load anaconda3/personal
 source activate openmm
 
 # Set OpenMM CPU threads to match PBS allocation
@@ -20,6 +12,6 @@ python ../../src/plumed/main.py \
     --mdtime 2 \
     --device_index 'nan' \
     --device "cpu" \
-    --output_dir "../../data/241010_FoldingUponBinding/output/241114/p53_CPU" \
+    --output_dir "../../data/241010_FoldingUponBinding/output/241114/p53_CPU_workstation" \
     --split_chains True \
     --logging_frequency 1
