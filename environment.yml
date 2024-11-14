@@ -12,6 +12,7 @@ dependencies:
   - biopython
   - matplotlib
   - mdtraj
+  - mdanalysis
   - fire
   - h5py
   - cmake
@@ -25,3 +26,6 @@ dependencies:
   - hydra-core
   - openmmtools
   - ruff
+  - pip
+  - pip:
+    - openmm-mdanalysis-reporter

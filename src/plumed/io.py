@@ -20,8 +20,8 @@ def assert_config(config):
 
 def create_plumed_input(
         filepath, 
-        config=None,
         output_dir=None,
+        config=None,
         mode: Literal['single-chain', 'two-chain'] = 'single-chain',
         ):
     # only works for two specific CVs!!!
@@ -40,8 +40,8 @@ def create_plumed_input(
     contact_map = get_contact_map(
         filename=filename, 
         output_dir=output_dir,
-        spot1_residue_indices=config['spot1_residue_indices'],
-        spot2_residue_indices=config['spot2_residue_indices']
+        spot1_residues=config['spot1_residues'],
+        spot2_residues=config['spot2_residues']
         )
     
     print(contact_map)

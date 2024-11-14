@@ -1,21 +1,26 @@
 import mdtraj as md
+import mdanalysis as mda
 import numpy as np
+import logging
 import itertools
 
 from src.models import ContactMap, Contact, Residue
+from src.models import Segment
 
-import logging
 logger = logging.getLogger(__name__)
 
-def remove_non_protein_elements(traj):
-    return traj.atom_slice(traj.topology.select('protein'))
+def remove_non_protein_elements(universe):
+    # note: there's a bug in mdtraj where traj.atom_slice(traj.topology.select('protein'))
+    # loses the information about the chain id
+
+    return universe
 
 def get_contact_map(
         filename: str, 
         cutoff: float = 0.8, # in angstroms
         output_dir: str = None,
-        spot1_residue_ids: list[int] = None,
-        spot2_residue_ids: list[int] = None,
+        spot1_residues: Segment = None,
+        spot2_residues: Segment = None,
         ):
     """
     Creates a contact residue map for a given system.
@@ -26,22 +31,23 @@ def get_contact_map(
     if output_dir is None:
         raise ValueError('Output directory is required')
     
-    if spot1_residue_ids is None or spot2_residue_ids is None:
+    if spot1_residues is None or spot2_residues is None:
         raise ValueError('Contact indices are required')
 
-    traj = md.load(f'{output_dir}/{filename}_solvated.pdb')
-    traj = remove_non_protein_elements(traj)
+    universe = mda.Universe(f'{output_dir}/{filename}_solvated.pdb')
+    universe = remove_non_protein_elements(universe)
 
-    atom_pairs = list(itertools.product(spot1_residue_ids, spot2_residue_ids))
-    distances = md.compute_distances(traj, atom_pairs)
+    atom_pairs = list(itertools.product(spot1_residues.ids, spot2_residues.ids))
+    distances = md.compute_distances(universe, atom_pairs)
     contact_atom_indices = [atom_pairs[i] for i in np.where(distances < cutoff)[1]] 
 
     contact_map = ContactMap()
     for i, j in contact_atom_indices:
-        binder_residue_index = traj.topology.atom(i).residue.index + 1
-        binder_residue_chain_id = traj.topology.atom(i).residue.chain.chain_id
-        inf_residue_index = traj.topology.atom(j).residue.index + 1
-        inf_residue_chain_id = traj.topology.atom(j).residue.chain.chain_id
+        binder_residue_index = universe.topology.atom(i).residue.index + 1
+        binder_residue_chain_id = universe.topology.atom(i).residue.chain.chain_id
+        inf_residue_index = universe.topology.atom(j).residue.index + 1
+        inf_residue_chain_id = universe.topology.atom(j).residue.chain.chain_id
+        import pdb; pdb.set_trace()
         residue1 = Residue(
             index=binder_residue_index,
             chain_id=binder_residue_chain_id

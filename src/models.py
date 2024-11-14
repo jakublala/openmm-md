@@ -8,6 +8,10 @@ class Residue(pydantic.BaseModel):
 class Segment(pydantic.BaseModel):
     residues: list[Residue] = pydantic.Field(default_factory=list)
 
+    @property
+    def ids(self):
+        return [residue.index for residue in self.residues]
+
 class Contact(pydantic.BaseModel):
     residue1: Residue
     residue2: Residue  
