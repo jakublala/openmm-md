@@ -67,16 +67,15 @@ def stability(
 
     properties = None
     if device == "cuda":
-        try:
-            platform = Platform.getPlatformByName('CUDA')
-            properties = {'DeviceIndex': device_index}
-        except:
-            print('CUDA not available, using OpenCL')
-            platform = Platform.getPlatformByName('OpenCL')
+        platform = Platform.getPlatformByName('CUDA')
+        properties = {'DeviceIndex': device_index}
     elif device == "cpu":
+        platform = Platform.getPlatformByName('CPU')
+    elif device == "opencl":
         platform = Platform.getPlatformByName('OpenCL')
     else:
         raise ValueError('Invalid device')
+
     simulation = Simulation(pdb.topology, system, integrator, platform, properties)
     print('platform used:', simulation.context.getPlatform().getName())
     if restart:

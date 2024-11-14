@@ -36,6 +36,7 @@ def main(
         output_dir=None,
         padding=None,
         upper_wall_at=None,
+        logging_frequency=100,
         ):
 
     if output_dir is None:
@@ -182,7 +183,8 @@ def main(
         restart_checkpoint=restart_checkpoint,
         device=device,
         output_dir=output_dir,
-        chk_interval=chk_interval
+        chk_interval=chk_interval,
+        logging_frequency=logging_frequency
         )
 
 def restart(filename=None):
