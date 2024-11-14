@@ -24,13 +24,8 @@ def create_opes_input(
     chain_A_indices = traj.topology.select(f'chainid 0')
     chain_B_indices = traj.topology.select(f'chainid 1')
 
-    # can you open the pdb and get the unit cell size?
-    pdb_parser = PDBParser()
-    structure = pdb_parser.get_structure('protein', f'{output_dir}/{filename}_fixed.pdb')
-    unit_cell_size = structure.get_cell_lengths_and_angles()
-    logger.info(f"Unit cell size: {unit_cell_size}")
-    assert 0 == 1
-
+    # TODO: add assertions that the wall is at a lower distance
+    # than half of the diagonal
 
     # Create atom mapping and get contact indices
     from src.plumed.cv import get_interface_contact_indices

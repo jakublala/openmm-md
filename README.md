@@ -132,3 +132,27 @@ Check some python code in Apptainer
 apptainer exec openmm-md_v1.0.0.sif python -c "import numpy; print(numpy.__version__)"
 ```
 
+### Dockerfile
+Building docker image.
+```
+docker build -t jakublala/openmm-md:latest .
+docker push jakublala/openmm-md:latest
+```
+Use it in a jobscript with PBS job scheduler.
+Note that the current (latest) image supports CUDA 11.8! I am not sure if that has to be the same as the one loaded? Maybe not... :/
+```
+module load apptainer
+apptainer pull docker://jakublala/openmm-md:latest
+```
+
+Run interactively (debugging and development):
+```
+docker run -it jakublala/openmm-md
+```
+
+
+Check some python code in Apptainer
+```
+apptainer exec openmm-md_v1.0.0.sif python -c "import numpy; print(numpy.__version__)"
+```
+

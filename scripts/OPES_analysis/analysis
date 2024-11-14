@@ -1,0 +1,11 @@
+#!/bin/bash
+#SBATCH --job-name={system}
+
+# load environment
+source activate openmm
+
+# load environment
+source activate openmm
+
+python analysis.py --system {system}
+python initial_discard.py --system {system}

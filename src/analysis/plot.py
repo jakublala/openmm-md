@@ -26,17 +26,16 @@ def plot_1d_fes(fes, cv1_bins, cv2_bins, cvs, axs):
     ax2.plot(cv2_bins, fes_1d)
     ax2.set_xlabel(cv2)
     ax2.set_ylabel("FES [kJ/mol]")
-    ax2.invert_xaxis()
     return ax1, ax2
 
-def plot_2d_fes(fes, cv1_bins, cv2_bins, cvs, ax):
+def plot_2d_fes(fes, cv1_bins, cv2_bins, cvs, ax, levels=None):
     cv1, cv2 = cvs
 
     ax.set_xlabel(cv1)
     ax.set_ylabel(cv2)
 
     # Add filled contours
-    cntr = ax.contourf(cv1_bins, cv2_bins, fes, levels=range(0, 120, 5), cmap=plt.cm.jet)
+    cntr = ax.contourf(cv1_bins, cv2_bins, fes, levels=levels, cmap=plt.cm.jet)
 
     # Add colorbar
     divider = make_axes_locatable(ax)
@@ -88,10 +87,16 @@ def plot_all_fes_from_data(fes_data, outfile, target, binder, cvs, labels):
     cv2_mins = []
     cv2_maxs = []
 
+    # Need to set levels across all FES runs
+    # Get min and max energy across all runs
+    min_energy = min([fes.min() for fes in fes_data])
+    max_energy = max([fes.max() for fes in fes_data])
+    levels = np.arange(min_energy, max_energy, 10)
+
     for run in range(num_runs):
         cv1_bins, cv2_bins, fes = fes_data[run]
         
-        axs[0, run] = plot_2d_fes(fes, cv1_bins, cv2_bins, cvs, axs[0, run])
+        axs[0, run] = plot_2d_fes(fes, cv1_bins, cv2_bins, cvs, axs[0, run], levels=levels)
         axs[1, run], axs[2, run] = plot_1d_fes(fes, cv1_bins, cv2_bins, cvs, axs[1:3, run])
 
         cv1_mins.append(cv1_bins[0])
@@ -106,10 +111,18 @@ def plot_all_fes_from_data(fes_data, outfile, target, binder, cvs, labels):
 
     # set limits on all subplots
     for j in range(num_runs):
+        # fes 2d plot
         axs[0, j].set_xlim(cv1_min, cv1_max)
         axs[0, j].set_ylim(cv2_min, cv2_max)
+        # fes 1d plots
         axs[1, j].set_xlim(cv1_min, cv1_max)
-        axs[2, j].set_xlim(cv2_max, cv2_min)  # Flipped for third row
+        axs[2, j].set_xlim(cv2_min, cv2_max)
+
+    # set ylimits on all subplots
+    for j in range(num_runs):
+        axs[1, j].set_ylim(min_energy, max_energy)
+        axs[2, j].set_ylim(min_energy, max_energy)
+
 
     plt.savefig(
         outfile,
