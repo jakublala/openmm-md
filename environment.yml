@@ -21,3 +21,6 @@ dependencies:
   - gxx
   - notion-client
   - python-dotenv
+  - pydantic
+  - hydra-core
+  - openmmtools

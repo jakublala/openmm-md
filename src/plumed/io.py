@@ -1,25 +1,31 @@
 import os
-from Bio.PDB import PDBParser
+from src.plumed.cv import get_interface_contact_indices
+import mdtraj as md
 
 import logging
 logger = logging.getLogger(__name__)
-
+    
 def create_opes_input(
         filepath, 
         config=None,
-        type='opes',
         output_dir=None
         ):
     filename = os.path.basename(filepath).split('.')[0]
 
     if config is None:
         raise ValueError('Config is required')
-    
+    if config['type'] is None:
+        raise ValueError('Type of PLUMED simulation is required')
     if output_dir is None:
         raise ValueError('Output directory is required')
+    
+    # if the plumed.dat file already exists, skip this step
+    if os.path.exists(f"{output_dir}/{filename}_plumed.dat"):
+        logger.info(f"PLUMED input file already exists, skipping this step")
+        logger.info(f"This is likely because we are running a plumed.dat that is not the basic one.")
+        return
 
     # get atom ids of atoms in each chain
-    import mdtraj as md
     traj = md.load(f"{output_dir}/{filename}_fixed.pdb")
     chain_A_indices = traj.topology.select(f'chainid 0')
     chain_B_indices = traj.topology.select(f'chainid 1')
@@ -27,9 +33,7 @@ def create_opes_input(
     # TODO: add assertions that the wall is at a lower distance
     # than half of the diagonal
 
-    # Create atom mapping and get contact indices
-    from src.plumed.cv import get_interface_contact_indices
-    
+
     contact_residues = get_interface_contact_indices(filename, cutoff=config['cutoff'], output_dir=output_dir)
     
     # Generate PLUMED input content
@@ -58,7 +62,8 @@ def create_opes_input(
         binder_residues.append(residue_id)
     binder_residues = list(set(binder_residues))
     com_residues_binder = ','.join(f"@CA-A_{i}" for i in binder_residues)
-    
+
+
     plumed_content = f"""MOLINFO STRUCTURE={output_dir}/{filename}_fixed.pdb
 chain_A: GROUP ATOMS={chain_A_indices[0]+1}-{chain_A_indices[-1]+1}
 chain_B: GROUP ATOMS={chain_B_indices[0]+2}-{chain_B_indices[-1]+2}
@@ -72,12 +77,14 @@ cmap: CONTACTMAP ...
 \tSUM
 ...
 """
-    if type == 'opes_explore':
+    
+    if config['type'] == 'opes-explore':
         plumed_content += "opes: OPES_METAD_EXPLORE ...\n"
-    elif type == 'opes':
+    elif config['type'] == 'opes':
         plumed_content += "opes: OPES_METAD ...\n"
     else:
-        raise ValueError(f"Invalid type: {type}")
+        raise ValueError(f"Invalid type: {config['type']}")
+    
     plumed_content += f"""\tARG=cmap,d PACE={config['pace']} BARRIER={config['barrier']}
 \tTEMP={config['temperature']}
 \tFILE={output_dir}/{filename}.kernels

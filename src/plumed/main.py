@@ -36,10 +36,15 @@ def main(
         output_dir=None,
         padding=None,
         upper_wall_at=None,
+        plumed_type=None,
+        split_chains=None,
         ):
 
     if output_dir is None:
         raise ValueError('Output directory is required')
+    
+    if plumed_type is None:
+        raise ValueError('Type of PLUMED simulation is required')
     
     logger.info(f"Output directory: {output_dir}")
 
@@ -86,7 +91,11 @@ def main(
             logger.info('No minimized pdb file found, running relaxation...')
             # 1. load the PDB and fix errors
             from src.fixer import fixer
-            fixer(filepath=filepath, output_dir=output_dir)
+            fixer(
+                filepath=filepath, 
+                output_dir=output_dir,
+                split_chains=split_chains
+                )
             logger.info("Fixing successful.")
             
 
@@ -153,6 +162,7 @@ def main(
         raise ValueError('Upper wall at is required')
 
     config = {
+        'type': plumed_type,
         'pace': pace,
         'barrier': barrier,
         'temperature': temperature,
@@ -168,7 +178,6 @@ def main(
     create_opes_input(
         filepath=filepath, 
         config=config,
-        type='opes',
         output_dir=output_dir
         )
 
