@@ -17,8 +17,8 @@ submit_simulation() {
 }
 
 # CD28-G-UW5P2 (5nm upper wall, 2nm padding)
-submit_simulation "data/241112_FuB_CD28Focus/input/CD28/CD28_general.pdb" \
-                 "data/241010_FoldingUponBinding/output/241112/CD28/CD28-G-UW5P2" \
+submit_simulation "data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb" \
+                 "data/241010_FoldingUponBinding/output/CD28-G-UW5P2/241115" \
                  "cd28_uw5p2" \
                  2 \
                  500 \
@@ -28,8 +28,8 @@ submit_simulation "data/241112_FuB_CD28Focus/input/CD28/CD28_general.pdb" \
                  5
 
 # CD28-G-UW5P4 (5nm upper wall, 4nm padding)
-submit_simulation "data/241112_FuB_CD28Focus/input/CD28/CD28_general.pdb" \
-                 "data/241010_FoldingUponBinding/output/241112/CD28/CD28-G-UW5P4" \
+submit_simulation "data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb" \
+                 "data/241010_FoldingUponBinding/output/CD28-G-UW5P4/241115" \
                  "cd28_uw5p4" \
                  2 \
                  500 \
@@ -39,8 +39,8 @@ submit_simulation "data/241112_FuB_CD28Focus/input/CD28/CD28_general.pdb" \
                  5
 
 # CD28-G-UW8P4 (8nm upper wall, 4nm padding)
-submit_simulation "data/241112_FuB_CD28Focus/input/CD28/CD28_G-UW8P4" \
-                 "data/241010_FoldingUponBinding/output/241112/CD28/CD28-G-UW8P4" \
+submit_simulation "data/241010_FoldingUponBinding/input/CD28/CD28_G-UW8P4" \
+                 "data/241010_FoldingUponBinding/output/CD28-G-UW8P4/241115" \
                  "cd28_uw8p4" \
                  2 \
                  500 \
