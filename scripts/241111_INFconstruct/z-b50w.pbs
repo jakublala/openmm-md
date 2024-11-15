@@ -22,4 +22,6 @@ python ../../src/plumed/main.py \
     --timestep $TIMESTEP \
     --mdtime $MDTIME \
     --output_dir "../../$OUTPUT_DIR" \
-    --split_chains False
+    --split_chains False \
+    --plumed_type 'opes-explore' \
+    --barrier 200
