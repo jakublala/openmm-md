@@ -18,7 +18,7 @@
 # Set the working directory to somewhere in your scratch space.
 #$ -wd /home/mmm1486/Scratch/openmm-md
 
-#$ -P Free
+#$ -P Gold
 #$ -A Imperial_Mat
 
 # Change into temporary directory to run work
@@ -43,8 +43,7 @@ PYTHON_CMD="python $HOME/projects/openmm-md/src/plumed/main.py \
 # Execute the command using apptainer
 apptainer exec --no-home --bind $HOME/Scratch --bind $HOME/projects \
     openmm-md.sif bash -c \
-    "pip install -e $HOME/projects/openmm-md && \
-    $PYTHON_CMD"
+    "export PYTHONPATH=$HOME/projects/openmm-md:$PYTHONPATH && $PYTHON_CMD"
 
 # 10. Preferably, tar-up (archive) all output files onto the shared scratch area
 tar zcvf $HOME/Scratch/files_from_job_$JOB_ID.tar.gz $TMPDIR
