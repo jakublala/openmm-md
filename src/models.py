@@ -2,8 +2,12 @@ import pydantic
 import numpy as np
 class Residue(pydantic.BaseModel):
     index: int
+    global_index: int
     chain_id: str
     indexing: int
+
+    def __str__(self):
+        return f"@CA-{self.chain_id}_{self.index}"
 
 class Segment(pydantic.BaseModel):
     residues: list[Residue] = pydantic.Field(default_factory=list)

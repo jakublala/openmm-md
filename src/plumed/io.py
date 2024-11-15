@@ -41,7 +41,8 @@ def create_plumed_input(
         filename=filename, 
         output_dir=output_dir,
         spot1_residues=config['spot1_residues'],
-        spot2_residues=config['spot2_residues']
+        spot2_residues=config['spot2_residues'],
+        mode=mode
         )
     
     plumed_content = get_plumed_content(
@@ -75,6 +76,10 @@ def get_plumed_content(
         assert spot1_segment.indexing == spot2_segment.indexing == 1, (
             f"Expected indexing 1 for both spot1 and spot2, got {spot1_segment.indexing} and {spot2_segment.indexing}"
         )
+    spot1_com_CAs = sorted(set([str(c.residue1) for c in contact_map.contacts]))
+    spot2_com_CAs = sorted(set([str(c.residue2) for c in contact_map.contacts]))
+    spot1_com_CAs = ",".join(spot1_com_CAs)
+    spot2_com_CAs = ",".join(spot2_com_CAs)
 
     if mode == 'single-chain':
         whole_molecules_content = "WHOLEMOLECULES ENTITY0=@protein"
@@ -82,19 +87,9 @@ def get_plumed_content(
         whole_molecules_content = f"""chain_A: GROUP ATOMS=@protein-A
 chain_B: GROUP ATOMS=@protein-B
 WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B"""
-# this might not work later on when I do two chains
-
-    if mode == 'single-chain':
-        com_content = f"""c1: COM ATOMS={spot1_segment}
-c2: COM ATOMS={spot2_segment}
-"""
-    elif mode == 'two-chain':
-        com_content = f"""c1: COM ATOMS=@protein-A
-c2: COM ATOMS=@protein-B
-"""
-        
+    com_content = f"""c1: COM ATOMS={spot1_com_CAs}
+c2: COM ATOMS={spot2_com_CAs}"""
     
-
     plumed_content = f"""MOLINFO STRUCTURE={output_dir}/{filename}_fixed.pdb
 {whole_molecules_content}
 {com_content}
@@ -136,12 +131,17 @@ PRINT ARG=cmap,d,opes.*,uwall.bias STRIDE={config['stride']} FILE={output_dir}/{
 def write_pymol_commands(filename, output_dir, contact_map: ContactMap):
     # assuming indexing of 1
     # TODO: do proper assertion
-    binding_site_1_str = '+'.join(str(i.residue1.index) for i in contact_map.contacts)
-    binding_site_2_str = '+'.join(str(i.residue2.index) for i in contact_map.contacts)
+    residues_site_1 = set([i.residue1.index for i in contact_map.contacts])
+    residues_site_2 = set([i.residue2.index for i in contact_map.contacts])
+    binding_site_1_str = '+'.join(str(i) for i in residues_site_1)
+    binding_site_2_str = '+'.join(str(i) for i in residues_site_2)
     site_1_chain_id = contact_map.contacts[0].residue1.chain_id
     site_2_chain_id = contact_map.contacts[0].residue2.chain_id
     # Write PyMOL visualization commands
     pymol_commands = f"""load {output_dir}/{filename}_fixed.pdb
+
+# First color everything blue
+color blue, all
 
 # Then color binding site residues yellow
 select binding_site, resi {binding_site_1_str} and chain {site_1_chain_id}

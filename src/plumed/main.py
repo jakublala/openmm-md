@@ -4,6 +4,7 @@ import logging
 from src.plumed.opes import opes
 from src.relax import minimize
 from src.fixer import fixer
+from src.plumed.io import create_plumed_input
 
 logging.basicConfig(
     level=logging.INFO, 
@@ -23,7 +24,11 @@ def main(
         split_chains=None,
         logging_frequency=100,
         config=None, # only contains opes stuff for now
+        chain_mode=None,
         ):
+    
+    if chain_mode is None:
+        raise ValueError('Chain mode is required')
 
     if output_dir is None:
         raise ValueError('Output directory is required')
@@ -83,6 +88,15 @@ def main(
             
     else:
         raise NotImplementedError("Restarting from checkpoint not implemented yet")
+    
+    create_plumed_input(
+        filepath=filepath, 
+        output_dir=output_dir,
+        config=config,
+        mode=chain_mode
+        )
+
+
         
     opes(
         filename=filename, 

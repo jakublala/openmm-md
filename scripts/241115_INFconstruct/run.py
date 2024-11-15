@@ -31,10 +31,20 @@ if __name__ == '__main__':
 
     # 1 - indexed
     spot1_residues = Segment(residues=[
-        Residue(index=i, chain_id='A', indexing=1) for i in range(1, BINDER_LENGTH + 1)
+        Residue(
+            index=i, 
+            global_index=i,
+            chain_id='A', 
+            indexing=1
+        ) for i in range(1, BINDER_LENGTH + 1)
     ])
     spot2_residues = Segment(residues=[
-        Residue(index=i, chain_id='A', indexing=1) for i in range(
+        Residue(
+            index=i, 
+            global_index=i,
+            chain_id='A',
+            indexing=1
+        ) for i in range(
             NON_INF_LENGTH + 55 + 1,
             NON_INF_LENGTH + 135 + 1
             )
@@ -56,14 +66,6 @@ if __name__ == '__main__':
         'spot2_residues': spot2_residues
     }
 
-    create_plumed_input(
-        filepath=FILEPATH, 
-        output_dir=OUTPUT_DIR,
-        config=config,
-        mode='single-chain'
-        )
-
-
     # 2. RUN MINIMIZATION AND SIMULATION
     main(
         filepath=FILEPATH,
@@ -75,5 +77,6 @@ if __name__ == '__main__':
         device='cuda',
         split_chains=False,
         logging_frequency=LOGGING_FREQUENCY,
-        config=config
+        config=config,
+        chain_mode='single-chain'
     )
