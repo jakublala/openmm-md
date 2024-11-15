@@ -1,7 +1,6 @@
 from openmm.app import *
 from openmm import *
 from openmm.unit import nanometer, picosecond, picoseconds, kelvin, kilojoules_per_mole, nanosecond, bar, amu
-from sys import stdout
 import fire
 import logging
 import numpy as np

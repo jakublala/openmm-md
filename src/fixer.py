@@ -21,10 +21,10 @@ def fixer(filepath=None, output_dir=None, split_chains=True):
 
     logger.info(f"Fixing PDB protein file {file}...")
 
-    logger.info('Splitting chains...')
     structure = PDBParser().get_structure('protein', filepath)
     
     if split_chains:
+        logger.info('Splitting chains... (usually run from ESMFold outputs where chains are not split)')
         all_ids = []
         for model in structure:
             for chain in model:
@@ -62,6 +62,7 @@ def fixer(filepath=None, output_dir=None, split_chains=True):
                 residue_id += 1
             new_model.add(new_chain)
     else:
+        logger.info('Not splitting chains, assuming that this is a single construct of a single chain; or everything is already split correctly.')
         new_structure = structure
 
     io = PDBIO()

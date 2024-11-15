@@ -1,17 +1,14 @@
 from src.analysis.fes import compute_fes
 import os
 import logging
-from joblib import Parallel, delayed
 
 
 logger = logging.getLogger(__name__)
 
 from src.analysis.colvar import read_colvar_file
 from src.analysis.kernels import get_sigmas
-from src.analysis.plot import plot_2d_fes
             
 # Process each discard range in parallel
-from concurrent.futures import ThreadPoolExecutor
 
             
 def process_discard(discard, colvar_df, sigmas):

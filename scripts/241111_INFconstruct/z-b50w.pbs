@@ -11,7 +11,7 @@ source activate openmm
 
 # Read input parameters
 INPUT_PATH="data/241109_INFconstruct/input/Z1-B50W.pdb"
-OUTPUT_DIR="data/241109_INFconstruct/output/Z1-B50W/241113"
+OUTPUT_DIR="data/241109_INFconstruct/output/Z1-B50W/241114"
 TIMESTEP=2 
 MDTIME=500
 
@@ -22,4 +22,6 @@ python ../../src/plumed/main.py \
     --timestep $TIMESTEP \
     --mdtime $MDTIME \
     --output_dir "../../$OUTPUT_DIR" \
-    --split_chains False
+    --split_chains False \
+    --plumed_type 'opes-explore' \
+    --barrier 200
