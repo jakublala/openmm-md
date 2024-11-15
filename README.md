@@ -149,6 +149,9 @@ Run interactively (debugging and development):
 ```
 docker run -it jakublala/openmm-md
 ```
+```
+docker run -it -v $HOME/phd/openmm-md:/app jakublala/openmm-md
+```
 
 
 Check some python code in Apptainer
