@@ -39,7 +39,7 @@ submit_simulation "data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb" \
                  5
 
 # CD28-G-UW8P4 (8nm upper wall, 4nm padding)
-submit_simulation "data/241010_FoldingUponBinding/input/CD28/CD28_G-UW8P4" \
+submit_simulation "data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb" \
                  "data/241010_FoldingUponBinding/output/CD28-G-UW8P4/241115" \
                  "cd28_uw8p4" \
                  2 \

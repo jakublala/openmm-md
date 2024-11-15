@@ -1,5 +1,5 @@
 #!/bin/bash
-#PBS -l select=1:ncpus=16:mem=96gb:ngpus=1:gpu_type=RTX6000
+#PBS -l select=1:ncpus=16:mem=48gb:ngpus=1
 #PBS -l walltime=72:0:0
 
 cd $PBS_O_WORKDIR
@@ -13,6 +13,7 @@ export VECLIB_MAXIMUM_THREADS=16
 export NUMEXPR_NUM_THREADS=16
 
 module load anaconda3/personal
+eval "$(~/anaconda3/bin/conda shell.bash hook)"
 source activate openmm
 module load cuda/11.4.2
 
@@ -36,4 +37,7 @@ python ../../src/plumed/main.py \
     --output_dir "../../$OUTPUT_DIR" \
     --barrier $BARRIER \
     --padding $PADDING \
-    --upper_wall_at $UPPER_WALL
+    --upper_wall_at $UPPER_WALL \
+    --plumed_type "opes" \
+    --split_chains True \
+    --logging_frequency 100 \

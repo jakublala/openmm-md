@@ -45,11 +45,6 @@ def get_interface_contact_indices(
     
     traj = md.load(temp_filename)
 
-
-    # one is water, one is heteroatoms (ions)
-    # HACK: this might actually break if there's a system with no ions, i.e. proteins have neutral charge 
-    assert len([i for i in traj.topology.chains]) == 2 + 2, "Only two chains are supported"
-
     chain_A_indices = traj.topology.select(f'chainid 0 and name CA')
     chain_B_indices = traj.topology.select(f'chainid 1 and name CA')
 
