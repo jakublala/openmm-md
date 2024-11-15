@@ -1,5 +1,6 @@
 import os
 import logging
+from typing import Optional, Literal
 
 from src.plumed.opes import opes
 from src.relax import minimize
@@ -24,7 +25,7 @@ def main(
         split_chains=None,
         logging_frequency=100,
         config=None, # only contains opes stuff for now
-        chain_mode=None,
+        chain_mode: Optional[Literal['single-chain', 'two-chain']] = None,
         ):
     
     if chain_mode is None:
