@@ -3,6 +3,7 @@ from openmm.app import *
 from openmm.unit import *
 from openmmplumed import PlumedForce
 from openmm import Platform
+from mdareporter import MDAReporter
 
 import logging
 logger = logging.getLogger(__name__)
@@ -97,7 +98,6 @@ def opes(
 
     traj_interval = int(logging_frequency * picoseconds / dt)
 
-    from mdareporter import MDAReporter
     trajReporter = MDAReporter(
             f'{output_dir}/{filename}.dcd', 
             traj_interval, 
@@ -146,11 +146,14 @@ def opes(
     
     properties = None
     if device == "cuda":
+        logger.info(f'Using CUDA device {device_index}')
         platform = Platform.getPlatformByName('CUDA')
         properties = {'DeviceIndex': device_index}
     elif device == "cpu":
+        logger.info('Using CPU')
         platform = Platform.getPlatformByName('CPU')
     elif device == "opencl":
+        logger.info('Using OpenCL')
         platform = Platform.getPlatformByName('OpenCL')
     else:
         raise ValueError('Invalid device')

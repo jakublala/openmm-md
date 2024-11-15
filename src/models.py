@@ -1,5 +1,5 @@
 import pydantic
-
+import numpy as np
 class Residue(pydantic.BaseModel):
     index: int
     chain_id: str
@@ -10,7 +10,19 @@ class Segment(pydantic.BaseModel):
 
     @property
     def ids(self):
-        return [residue.index for residue in self.residues]
+        return np.array([residue.index for residue in self.residues])
+    
+    @property
+    def indexing(self):
+        return self.residues[0].indexing
+
+    # validation
+    @pydantic.validate_arguments
+    def validate(self):
+        assert np.all(residue.indexing == self.indexing for residue in self.residues), "All residues must have the same indexing"
+
+    def __str__(self):
+        return ','.join(f"@CA-{residue.chain_id}_{residue.index}" for residue in self.residues)
 
 class Contact(pydantic.BaseModel):
     residue1: Residue

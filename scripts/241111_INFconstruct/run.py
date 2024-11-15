@@ -1,4 +1,4 @@
-import mdtraj
+import MDAnalysis as mda
 from src.plumed.main import main
 from src.plumed.io import create_plumed_input
 from src.plumed.utils import get_checkpoint_interval
@@ -21,10 +21,12 @@ if __name__ == '__main__':
     LINKER2_LENGTH = 10
     INF_LENGTH = 161
 
-    nresidues = mdtraj.load(FILEPATH).topology.n_residues
+    NON_INF_LENGTH = BINDER_LENGTH + LINKER1_LENGTH + PROTEASE_LENGTH + LINKER2_LENGTH
+
+    nresidues = mda.Universe(FILEPATH)._topology.n_residues
     assert nresidues == (
-        BINDER_LENGTH + LINKER1_LENGTH + PROTEASE_LENGTH + LINKER2_LENGTH + INF_LENGTH
-        ), f"Expected {BINDER_LENGTH + LINKER1_LENGTH + PROTEASE_LENGTH + LINKER2_LENGTH + INF_LENGTH} residues, got {nresidues}"
+        NON_INF_LENGTH + INF_LENGTH
+        ), f"Expected {NON_INF_LENGTH + INF_LENGTH} residues, got {nresidues}"
 
 
     # 1 - indexed
@@ -33,8 +35,8 @@ if __name__ == '__main__':
     ])
     spot2_residues = Segment(residues=[
         Residue(index=i, chain_id='A', indexing=1) for i in range(
-            BINDER_LENGTH + LINKER1_LENGTH + 1, 
-            BINDER_LENGTH + LINKER1_LENGTH + PROTEASE_LENGTH + 1
+            NON_INF_LENGTH + 55 + 1,
+            NON_INF_LENGTH + 135 + 1
             )
     ])
 

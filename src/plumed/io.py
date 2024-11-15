@@ -3,6 +3,9 @@ from src.plumed.cv import get_contact_map
 import mdtraj as md
 from typing import Literal
 
+from src.models import ContactMap, Segment
+from typing import Optional
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -44,44 +47,37 @@ def create_plumed_input(
         spot2_residues=config['spot2_residues']
         )
     
-    print(contact_map)
-
-    assert 0 == 1
-
-
-    binding_site_residues = []
-    for _, j in contact_residues:
-        # assuming second chain is the target and thus has the binding site
-        binding_site_residues.append(j)
-    com_residues = [f"@CA-B_{i}" for i in binding_site_residues]
-    logger.info(f"The binding site has {len(com_residues)} residues")
-    com_residues_binding_site = ','.join(com_residues)
-
-
-    binder_residues = []
-    for i in chain_A_indices:
-        atom_id = i
-        residue_id = topology.atom(atom_id).residue.index + 1
-        binder_residues.append(residue_id)
-    binder_residues = list(set(binder_residues))
-    com_residues_binder = ','.join(f"@CA-A_{i}" for i in binder_residues)
-
-    plumed_content = get_plumed_content(config, output_dir, filename, binder_residues, com_residues_binder, com_residues_binding_site)
+    plumed_content = get_plumed_content(
+        config=config, 
+        output_dir=output_dir, 
+        filename=filename, 
+        contact_map=contact_map,
+        mode=mode,
+        spot1_segment=config['spot1_residues'],
+        spot2_segment=config['spot2_residues']
+        )
 
     with open(f'{output_dir}/{filename}_plumed.dat', 'w') as f:
         f.write(plumed_content)
 
-    write_pymol_commands(filename, binding_site_residues, contact_residues, output_dir)
+    write_pymol_commands(filename, output_dir, contact_map)
 
 
 def get_plumed_content(
-        config, 
-        output_dir,
-        filename,
+        config: dict, 
+        output_dir: str,
+        filename: str,
+        contact_map: ContactMap,
         mode: Literal['single-chain', 'two-chain'] = 'single-chain',
-        
-        ):
+        spot1_segment: Optional[Segment] = None,
+        spot2_segment: Optional[Segment] = None,
+        ) -> str:
     # TODO: rewrite this in a proper PLUMED SCHEMA
+
+    if spot1_segment is not None and spot2_segment is not None:
+        assert spot1_segment.indexing == spot2_segment.indexing == 1, (
+            f"Expected indexing 1 for both spot1 and spot2, got {spot1_segment.indexing} and {spot2_segment.indexing}"
+        )
 
     if mode == 'single-chain':
         whole_molecules_content = "WHOLEMOLECULES ENTITY0=@protein"
@@ -92,8 +88,8 @@ WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B"""
 # this might not work later on when I do two chains
 
     if mode == 'single-chain':
-        com_content = f"""c1: COM ATOMS={com_residues_binder}
-c2: COM ATOMS={com_residues_binding_site}
+        com_content = f"""c1: COM ATOMS={spot1_segment}
+c2: COM ATOMS={spot2_segment}
 """
     elif mode == 'two-chain':
         com_content = f"""c1: COM ATOMS=@protein-A
@@ -107,7 +103,7 @@ c2: COM ATOMS=@protein-B
 {com_content}
 d: DISTANCE ATOMS=c1,c2
 cmap: CONTACTMAP ... 
-{contact_content}
+{contact_map}
 \tSWITCH={{RATIONAL R_0={config['cutoff']}}}
 \tSUM
 ...
@@ -140,24 +136,22 @@ PRINT ARG=cmap,d,opes.*,uwall.bias STRIDE={config['stride']} FILE={output_dir}/{
     return plumed_content
 
 
-def write_pymol_commands(filename, binding_site_residues, contact_residues, output_dir):
+def write_pymol_commands(filename, output_dir, contact_map: ContactMap):
+    # assuming indexing of 1
+    # TODO: do proper assertion
+    binding_site_1_str = '+'.join(str(i.residue1.index) for i in contact_map.contacts)
+    binding_site_2_str = '+'.join(str(i.residue2.index) for i in contact_map.contacts)
+    site_1_chain_id = contact_map.contacts[0].residue1.chain_id
+    site_2_chain_id = contact_map.contacts[0].residue2.chain_id
     # Write PyMOL visualization commands
     pymol_commands = f"""load {output_dir}/{filename}_fixed.pdb
 
-# Color chain B (target) in gray first
-select target, chain B
-color gray50, target
-
 # Then color binding site residues yellow
-select binding_site, resi {'+'.join(str(i) for i in binding_site_residues)} and chain B
+select binding_site, resi {binding_site_1_str} and chain {site_1_chain_id}
 color green, binding_site
 
-# Color chain A (binder) in blue
-select binder, chain A
-color marine, binder
-
 # Color contact residues in chain A in red
-select binder_contacts, resi {'+'.join(str(i) for i, _ in contact_residues)} and chain A
+select binder_contacts, resi {binding_site_2_str} and chain {site_2_chain_id}
 color red, binder_contacts
 
 # Set nice visualization
