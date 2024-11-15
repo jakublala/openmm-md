@@ -1,16 +1,35 @@
-import mdtraj as md
+import MDAnalysis as mda
+from MDAnalysis.analysis.distances import contact_matrix
 import numpy as np
-import itertools
-import os
-
 import logging
+from typing import Optional
+
+from src.models import ContactMap, Contact, Residue
+from src.models import Segment
+
 logger = logging.getLogger(__name__)
 
-def get_interface_contact_indices(
-        filename, 
-        cutoff=0.8, # in angstroms
-        chains='AB',
-        output_dir=None
+def get_CA_universe(universe):
+    # note: there's a bug in mdtraj where traj.atom_slice(traj.topology.select('protein'))
+    # loses the information about the chain id
+    # hence moved to MDAnalysis
+    return mda.Merge(universe.select_atoms('name CA'))
+
+def filter_contact_residue_ids(
+        contact_residue_ids: np.ndarray, 
+        spot1_residues: Segment, 
+        spot2_residues: Segment
+        ) -> np.ndarray:
+    mask1 = np.isin(contact_residue_ids[:, 0], spot1_residues.ids)
+    mask2 = np.isin(contact_residue_ids[:, 1], spot2_residues.ids)
+    return contact_residue_ids[mask1 & mask2]
+
+def get_contact_map(
+        filename: str, 
+        cutoff: float = 0.8, # in angstroms
+        output_dir: str = None,
+        spot1_residues: Optional[Segment] = None,
+        spot2_residues: Optional[Segment] = None,
         ):
     """
     Creates a contact residue map for a given system.
@@ -21,53 +40,43 @@ def get_interface_contact_indices(
     if output_dir is None:
         raise ValueError('Output directory is required')
 
-    # HACK: as of now, mdtraj cannot deal with overflow residue numbers
-    # so for this task, let's manually remove all non-protein elements
-    import tempfile
+    universe = mda.Universe(f'{output_dir}/{filename}_solvated.pdb')
+    chain_ids = np.concatenate(universe.segments.chainIDs)
+    universe = get_CA_universe(universe)
 
-    # go through all lines of the pdb until you find TER of chain B and then remove all lines until you find the next chain A TER and add END
-    with open(f'{output_dir}/{filename}_solvated.pdb', 'r') as file:
-        lines = file.readlines()
+    cmatrix = contact_matrix(
+        universe.atoms,
+        cutoff=cutoff*10,
+        box=universe.dimensions, 
+        )
+    np.fill_diagonal(cmatrix, False)
+    contact_residue_ids = np.argwhere(cmatrix)
+    contact_residue_ids += 1 # mda is 1-indexed
+    if spot1_residues is None and spot2_residues is None:
+        logger.info('No spot definition provided, using all contacts')
+    else:
+        contact_residue_ids = filter_contact_residue_ids(contact_residue_ids, spot1_residues, spot2_residues)
 
-    # find the index of the TER line for chain B
-    ter_b_index = None
-    for i, line in enumerate(lines):
-        if line.startswith('TER') and line.split()[3] == chains[1]:
-            ter_b_index = i
-            break
-    lines = lines[:ter_b_index]
-    
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdb') as temp_file:
-        for line in lines:
-            temp_file.write(line.encode())
-        temp_file.write(b'END\n')
-        temp_filename = temp_file.name
-    
-    traj = md.load(temp_filename)
-
-    chain_A_indices = traj.topology.select(f'chainid 0 and name CA')
-    chain_B_indices = traj.topology.select(f'chainid 1 and name CA')
-
-    # Ensure atom_pairs is a 2D array
-    atom_pairs = np.array(list(itertools.product(chain_A_indices, chain_B_indices)))
-
-    distances = md.compute_distances(traj, atom_pairs)
-
-    logger.info(f'{len(distances)} distances computed')
-
-    # compute how many indices for each chain
-    logger.info(f"chain A has {len(chain_A_indices)} indices")
-    logger.info(f"chain B has {len(chain_B_indices)} indices")
-    
-
-    contact_CA_indices = atom_pairs[np.where(distances < cutoff)[1]] 
-
-    contact_residues = []
-    for i, j in contact_CA_indices:
-        contact_residues.append([traj.topology.atom(i).residue.index + 1, traj.topology.atom(j).residue.index + 1 - len(chain_A_indices)])
-    # this now gives the global residue indices
-
-    os.remove(temp_filename)
-
-    return contact_residues
-
+    contact_map = ContactMap()
+    for spot1_residue_index, spot2_residue_index in contact_residue_ids:
+        spot1_residue_chain_id = chain_ids[spot1_residue_index]
+        spot2_residue_chain_id = chain_ids[spot2_residue_index]
+        assert spot1_residue_chain_id is not None, f"Chain ID is None for spot1 residue {spot1_residue_index}"
+        assert spot2_residue_chain_id is not None, f"Chain ID is None for spot2 residue {spot2_residue_index}"
+        residue1 = Residue(
+            index=spot1_residue_index,
+            chain_id=spot1_residue_chain_id,
+            indexing=1
+        )
+        residue2 = Residue(
+            index=spot2_residue_index,
+            chain_id=spot2_residue_chain_id,
+            indexing=1
+        )
+        contact_map.contacts.append(
+            Contact(
+                residue1=residue1,
+                residue2=residue2
+            )
+        )
+    return contact_map

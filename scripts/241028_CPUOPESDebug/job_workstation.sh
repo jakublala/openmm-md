@@ -14,4 +14,5 @@ python ../../src/plumed/main.py \
     --device "cpu" \
     --output_dir "../../data/241010_FoldingUponBinding/output/241114/p53_CPU_workstation" \
     --split_chains True \
-    --logging_frequency 1
+    --logging_frequency 1 \
+    --plumed_type "opes" \

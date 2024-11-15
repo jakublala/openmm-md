@@ -66,7 +66,6 @@ def main(
         )
     
     # 3. run NPT relaxation / equilibriation
-    from relax import relax_md_npt
     # # 3a. relax water
     # relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix='protein')
     # # 3b. relax protein

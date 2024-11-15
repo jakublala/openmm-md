@@ -12,6 +12,7 @@ dependencies:
   - pdbfixer
   - biopython
   - matplotlib
+  - mdanalysis
   - fire
   - h5py
   - cmake
@@ -24,6 +25,8 @@ dependencies:
   - pydantic
   - hydra-core
   - openmmtools
+  - ruff
   - pip
   - pip:
+    - openmm-mdanalysis-reporter
     - mdtraj

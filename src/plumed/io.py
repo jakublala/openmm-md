@@ -1,82 +1,114 @@
 import os
-from src.plumed.cv import get_interface_contact_indices
+from src.plumed.cv import get_contact_map
 import mdtraj as md
+from typing import Literal
+
+from src.models import ContactMap, Segment
+from typing import Optional
 
 import logging
 logger = logging.getLogger(__name__)
-    
-def create_opes_input(
-        filepath, 
-        config=None,
-        output_dir=None
-        ):
-    filename = os.path.basename(filepath).split('.')[0]
 
+def assert_config(config):
     if config is None:
         raise ValueError('Config is required')
     if config['type'] is None:
         raise ValueError('Type of PLUMED simulation is required')
+    if config['pace'] is None:
+        raise ValueError('Pace is required')
+    if config['barrier'] is None:
+        raise ValueError('Barrier is required')
+    if config['temperature'] is None:
+        raise ValueError('Temperature is required')
+
+def create_plumed_input(
+        filepath, 
+        output_dir=None,
+        config=None,
+        mode: Literal['single-chain', 'two-chain'] = 'single-chain',
+        ):
+    # only works for two specific CVs!!!
+    filename = os.path.basename(filepath).split('.')[0]
+
+    assert_config(config)
+
     if output_dir is None:
         raise ValueError('Output directory is required')
     
-    # if the plumed.dat file already exists, skip this step
-    if os.path.exists(f"{output_dir}/{filename}_plumed.dat"):
-        logger.info(f"PLUMED input file already exists, skipping this step")
-        logger.info(f"This is likely because we are running a plumed.dat that is not the basic one.")
-        return
-
     # get atom ids of atoms in each chain
-    traj = md.load(f"{output_dir}/{filename}_fixed.pdb")
-    chain_A_indices = traj.topology.select(f'chainid 0')
-    chain_B_indices = traj.topology.select(f'chainid 1')
-
-    # TODO: add assertions that the wall is at a lower distance
-    # than half of the diagonal
-
-
-    contact_residues = get_interface_contact_indices(filename, cutoff=config['cutoff'], output_dir=output_dir)
+    topology = md.load(f"{output_dir}/{filename}_fixed.pdb").topology
     
-    # Generate PLUMED input content
-    contact_str = '\n'.join(f"\tATOMS{i+1}=@CA-A_{a},@CA-B_{b}" for i, (a, b) in enumerate(contact_residues))
+    # TODO: add assertions that the wall is at a lower distance than half of the diagonal
 
-    # assume
-    # chain A is the binder
-    # chain B is the target
+    contact_map = get_contact_map(
+        filename=filename, 
+        output_dir=output_dir,
+        spot1_residues=config['spot1_residues'],
+        spot2_residues=config['spot2_residues']
+        )
+    
+    plumed_content = get_plumed_content(
+        config=config, 
+        output_dir=output_dir, 
+        filename=filename, 
+        contact_map=contact_map,
+        mode=mode,
+        spot1_segment=config['spot1_residues'],
+        spot2_segment=config['spot2_residues']
+        )
 
-    # assert that chain A is shorter
-    assert len(chain_A_indices) < len(chain_B_indices), "Chain A is not the binder"
+    with open(f'{output_dir}/{filename}_plumed.dat', 'w') as f:
+        f.write(plumed_content)
 
-    binding_site_residues = []
-    for _, j in contact_residues:
-        # assuming second chain is the target and thus has the binding site
-        binding_site_residues.append(j)
-    com_residues = [f"@CA-B_{i}" for i in binding_site_residues]
-    logger.info(f"The binding site has {len(com_residues)} residues")
-    com_residues_binding_site = ','.join(com_residues)
+    write_pymol_commands(filename, output_dir, contact_map)
 
 
-    binder_residues = []
-    for i in chain_A_indices:
-        atom_id = i
-        residue_id = traj.topology.atom(atom_id).residue.index + 1
-        binder_residues.append(residue_id)
-    binder_residues = list(set(binder_residues))
-    com_residues_binder = ','.join(f"@CA-A_{i}" for i in binder_residues)
+def get_plumed_content(
+        config: dict, 
+        output_dir: str,
+        filename: str,
+        contact_map: ContactMap,
+        mode: Literal['single-chain', 'two-chain'] = 'single-chain',
+        spot1_segment: Optional[Segment] = None,
+        spot2_segment: Optional[Segment] = None,
+        ) -> str:
+    # TODO: rewrite this in a proper PLUMED SCHEMA
 
+    if spot1_segment is not None and spot2_segment is not None:
+        assert spot1_segment.indexing == spot2_segment.indexing == 1, (
+            f"Expected indexing 1 for both spot1 and spot2, got {spot1_segment.indexing} and {spot2_segment.indexing}"
+        )
+
+    if mode == 'single-chain':
+        whole_molecules_content = "WHOLEMOLECULES ENTITY0=@protein"
+    elif mode == 'two-chain':
+        whole_molecules_content = f"""chain_A: GROUP ATOMS=@protein-A
+chain_B: GROUP ATOMS=@protein-B
+WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B"""
+# this might not work later on when I do two chains
+
+    if mode == 'single-chain':
+        com_content = f"""c1: COM ATOMS={spot1_segment}
+c2: COM ATOMS={spot2_segment}
+"""
+    elif mode == 'two-chain':
+        com_content = f"""c1: COM ATOMS=@protein-A
+c2: COM ATOMS=@protein-B
+"""
+        
+    
 
     plumed_content = f"""MOLINFO STRUCTURE={output_dir}/{filename}_fixed.pdb
-chain_A: GROUP ATOMS={chain_A_indices[0]+1}-{chain_A_indices[-1]+1}
-chain_B: GROUP ATOMS={chain_B_indices[0]+2}-{chain_B_indices[-1]+2}
-WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B
-c1: COM ATOMS={com_residues_binder}
-c2: COM ATOMS={com_residues_binding_site}
+{whole_molecules_content}
+{com_content}
 d: DISTANCE ATOMS=c1,c2
 cmap: CONTACTMAP ... 
-{contact_str}
+{contact_map}
 \tSWITCH={{RATIONAL R_0={config['cutoff']}}}
 \tSUM
 ...
 """
+    
     
     if config['type'] == 'opes-explore':
         plumed_content += "opes: OPES_METAD_EXPLORE ...\n"
@@ -84,11 +116,13 @@ cmap: CONTACTMAP ...
         plumed_content += "opes: OPES_METAD ...\n"
     else:
         raise ValueError(f"Invalid type: {config['type']}")
-    
     plumed_content += f"""\tARG=cmap,d PACE={config['pace']} BARRIER={config['barrier']}
 \tTEMP={config['temperature']}
 \tFILE={output_dir}/{filename}.kernels
 """
+    
+
+
     if config['restart_rfile'] is not None:
         plumed_content += f"\tSTATE_RFILE={config['restart_rfile']}\n\tRESTART=YES\n"
     else:
@@ -99,32 +133,25 @@ cmap: CONTACTMAP ...
 uwall: UPPER_WALLS ARG=d AT={config['upper_wall.at']} KAPPA=150.0 EXP={config['upper_wall.exp']} EPS=1 OFFSET=0
 PRINT ARG=cmap,d,opes.*,uwall.bias STRIDE={config['stride']} FILE={output_dir}/{filename}.colvar
 """
-    with open(f'{output_dir}/{filename}_plumed.dat', 'w') as f:
-        f.write(plumed_content)
-
-    write_pymol_commands(filename, binding_site_residues, contact_residues, output_dir)
+    return plumed_content
 
 
-
-
-def write_pymol_commands(filename, binding_site_residues, contact_residues, output_dir):
+def write_pymol_commands(filename, output_dir, contact_map: ContactMap):
+    # assuming indexing of 1
+    # TODO: do proper assertion
+    binding_site_1_str = '+'.join(str(i.residue1.index) for i in contact_map.contacts)
+    binding_site_2_str = '+'.join(str(i.residue2.index) for i in contact_map.contacts)
+    site_1_chain_id = contact_map.contacts[0].residue1.chain_id
+    site_2_chain_id = contact_map.contacts[0].residue2.chain_id
     # Write PyMOL visualization commands
     pymol_commands = f"""load {output_dir}/{filename}_fixed.pdb
 
-# Color chain B (target) in gray first
-select target, chain B
-color gray50, target
-
 # Then color binding site residues yellow
-select binding_site, resi {'+'.join(str(i) for i in binding_site_residues)} and chain B
+select binding_site, resi {binding_site_1_str} and chain {site_1_chain_id}
 color green, binding_site
 
-# Color chain A (binder) in blue
-select binder, chain A
-color marine, binder
-
 # Color contact residues in chain A in red
-select binder_contacts, resi {'+'.join(str(i) for i, _ in contact_residues)} and chain A
+select binder_contacts, resi {binding_site_2_str} and chain {site_2_chain_id}
 color red, binder_contacts
 
 # Set nice visualization
