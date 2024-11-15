@@ -59,7 +59,7 @@ if __name__ == '__main__':
         'cutoff': 0.8,
         'restart_rfile': None,
         'state_wstride': get_checkpoint_interval(TIMESTEP),
-        'upper_wall.at': 5,
+        'upper_wall.at': 13,
         'upper_wall.exp': 6,
         'upper_wall.kappa': 1000.0,
         'spot1_residues': spot1_residues,
@@ -78,5 +78,6 @@ if __name__ == '__main__':
         split_chains=False,
         logging_frequency=LOGGING_FREQUENCY,
         config=config,
+        padding=14,
         chain_mode='single-chain'
     )
