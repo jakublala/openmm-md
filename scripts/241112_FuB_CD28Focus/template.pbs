@@ -12,10 +12,10 @@ export OPENBLAS_NUM_THREADS=16
 export VECLIB_MAXIMUM_THREADS=16
 export NUMEXPR_NUM_THREADS=16
 
-module load anaconda3/personal
-eval "$(~/anaconda3/bin/conda shell.bash hook)"
-source activate openmm
-module load cuda/11.4.2
+module load CUDA/11.8.0
+module load apptainer
+apptainer pull openmm-md.sif docker://jakublala/openmm-md
+
 
 # Read input parameters
 INPUT_PATH=${INPUT_PATH}
@@ -27,7 +27,7 @@ BARRIER=${BARRIER:-200}      # Default to 200 if not specified
 PADDING=${PADDING:-5}        # Default to 5 if not specified
 UPPER_WALL=${UPPER_WALL:-5}  # Default to 5 if not specified
 
-python ../../src/plumed/main.py \
+PYTHON_CMD="python ../../src/plumed/main.py \
     --filepath "../../$INPUT_PATH" \
     --device_index "nan" \
     --device "cuda" \
@@ -41,3 +41,10 @@ python ../../src/plumed/main.py \
     --plumed_type "opes" \
     --split_chains True \
     --logging_frequency 100 \
+
+"
+apptainer exec \
+    --no-home \
+    --bind $HOME/projects \
+    openmm-md.sif bash -c \
+    "export PYTHONPATH=$HOME/projects/openmm-md && $PYTHON_CMD"
