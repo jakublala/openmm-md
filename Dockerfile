@@ -21,6 +21,10 @@ RUN micromamba install -y -n base -f /tmp/environment.yml && \
 # Test installation of OpenMM
 RUN python -m openmm.testInstallation
 
+# Test installation of OpenMM and CUDA
+RUN python -c "import openmm as mm; print('Available platforms:', [mm.Platform.getPlatform(i).getName() for i in range(mm.Platform.getNumPlatforms())])"
+
+
 # Install PLUMED with OPES module
 RUN git clone https://github.com/plumed/plumed2 \
     && cd plumed2 \

@@ -35,9 +35,6 @@ def create_plumed_input(
     if output_dir is None:
         raise ValueError('Output directory is required')
     
-    # get atom ids of atoms in each chain
-    topology = md.load(f"{output_dir}/{filename}_fixed.pdb").topology
-    
     # TODO: add assertions that the wall is at a lower distance than half of the diagonal
 
     contact_map = get_contact_map(

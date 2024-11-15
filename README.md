@@ -149,10 +149,18 @@ Run interactively (debugging and development):
 ```
 docker run -it jakublala/openmm-md
 ```
-```
-docker run -it -v $HOME/phd/openmm-md:/app jakublala/openmm-md
-```
 
+On workstation
+```
+docker run -it \
+    --gpus all \
+    -v $HOME/phd/openmm-md:/app \
+    -w /app \
+    --user $(id -u):$(id -g) \
+    jakublala/openmm-md
+export PYTHONPATH=/app
+python run.py
+```
 
 Check some python code in Apptainer
 ```
