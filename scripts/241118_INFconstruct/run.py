@@ -7,7 +7,7 @@ from src.models import Segment, Residue
 if __name__ == '__main__':
     # Z-B50W
     FILEPATH = '../../data/241109_INFconstruct/input/Z1-B50W.pdb'
-    OUTPUT_DIR = '../../data/241109_INFconstruct/output/Z1-B50W/241118' 
+    OUTPUT_DIR = '../../data/241109_INFconstruct/output/Z1-B50W/241118_2' 
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
@@ -73,7 +73,7 @@ if __name__ == '__main__':
         temperature=TEMPERATURE,
         mdtime=MDTIME,
         timestep=TIMESTEP,
-        device_index='0',
+        device_index='0,1',
         device='cuda',
         split_chains=False,
         logging_frequency=LOGGING_FREQUENCY,
