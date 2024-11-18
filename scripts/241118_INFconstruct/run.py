@@ -66,6 +66,13 @@ if __name__ == '__main__':
         'spot2_residues': spot2_residues
     }
 
+    from src.utils import get_gpu_indices
+    import os
+    gpu_indices = get_gpu_indices()
+
+    print(f"CUDA_VISIBLE_DEVICES: {os.environ.get('CUDA_VISIBLE_DEVICES')}")
+    print(f"Using GPU indices: {gpu_indices}")
+
     # 2. RUN MINIMIZATION AND SIMULATION
     main(
         filepath=FILEPATH,
@@ -73,7 +80,7 @@ if __name__ == '__main__':
         temperature=TEMPERATURE,
         mdtime=MDTIME,
         timestep=TIMESTEP,
-        device_index='0,1',
+        device_index=gpu_indices,
         device='cuda',
         split_chains=False,
         logging_frequency=LOGGING_FREQUENCY,
