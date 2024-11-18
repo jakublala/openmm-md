@@ -1,10 +1,11 @@
 import os
 from src.plumed.cv import get_contact_map
-import mdtraj as md
 from typing import Literal
 
 from src.models import ContactMap, Segment
 from typing import Optional
+
+from src.plumed.utils import get_atom_ids_from_chain
 
 import logging
 logger = logging.getLogger(__name__)
@@ -84,8 +85,13 @@ def get_plumed_content(
     if mode == 'single-chain':
         whole_molecules_content = "WHOLEMOLECULES ENTITY0=@protein"
     elif mode == 'two-chain':
-        whole_molecules_content = f"""chain_A: GROUP ATOMS=@protein-A
-chain_B: GROUP ATOMS=@protein-B
+        atom_ids_chain_A = get_atom_ids_from_chain('A', filename, output_dir)
+        atom_ids_chain_B = get_atom_ids_from_chain('B', filename, output_dir)
+        group1_content = f"chain_A: GROUP ATOMS={",".join([f"{i}" for i in atom_ids_chain_A])}"
+        group2_content = f"chain_B: GROUP ATOMS={",".join([f"{i}" for i in atom_ids_chain_B])}"
+
+        whole_molecules_content = f"""{group1_content}
+{group2_content}
 WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B"""
     com_content = f"""c1: COM ATOMS={spot1_com_CAs}
 c2: COM ATOMS={spot2_com_CAs}"""
