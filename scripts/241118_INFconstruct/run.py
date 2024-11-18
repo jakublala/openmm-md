@@ -52,8 +52,8 @@ if __name__ == '__main__':
 
     config = {
         'type': 'opes-explore',
-        'pace': 500,
-        'barrier': 200,
+        'opes.pace': 500,
+        'opes.barrier': 200,
         'temperature': TEMPERATURE,
         'stride': 500,
         'cutoff': 0.8,

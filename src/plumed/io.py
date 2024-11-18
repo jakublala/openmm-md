@@ -15,10 +15,6 @@ def assert_config(config):
         raise ValueError('Config is required')
     if config['type'] is None:
         raise ValueError('Type of PLUMED simulation is required')
-    if config['pace'] is None:
-        raise ValueError('Pace is required')
-    if config['barrier'] is None:
-        raise ValueError('Barrier is required')
     if config['temperature'] is None:
         raise ValueError('Temperature is required')
 
@@ -109,16 +105,28 @@ cmap: CONTACTMAP ...
     
     
     if config['type'] == 'opes-explore':
-        plumed_content += "opes: OPES_METAD_EXPLORE ...\n"
-    elif config['type'] == 'opes':
-        plumed_content += "opes: OPES_METAD ...\n"
-    else:
-        raise ValueError(f"Invalid type: {config['type']}")
-    plumed_content += f"""\tARG=cmap,d PACE={config['pace']} BARRIER={config['barrier']}
+        plumed_content += f"""opes: OPES_METAD_EXPLORE ...
+\tARG=cmap,d PACE={config['opes.pace']} BARRIER={config['opes.barrier']}
 \tTEMP={config['temperature']}
 \tFILE={output_dir}/{filename}.kernels
+...
 """
-    
+    elif config['type'] == 'opes':
+        plumed_content += f"""opes: OPES_METAD ...
+\tARG=cmap,d PACE={config['opes.pace']} BARRIER={config['opes.barrier']}
+\tTEMP={config['temperature']}
+\tFILE={output_dir}/{filename}.kernels
+...
+"""
+    elif config['type'] == 'metad':
+        plumed_content += f"""metad: METAD ...
+\tARG=cmap,d PACE={config['metad.pace']} SIGMA={config['metad.sigma']} HEIGHT={config['metad.height']}
+\tGRID_MIN={config['metad.grid_min']} GRID_MAX  ={config['metad.grid_max']} GRID_BIN={config['metad.grid_bin']}
+\tTEMP={config['temperature']} BIASFACTOR={config['metad.biasfactor']}
+...
+"""
+    else:
+        raise ValueError(f"Invalid type: {config['type']}")
 
 
     if config['restart_rfile'] is not None:

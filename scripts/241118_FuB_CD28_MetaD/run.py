@@ -2,25 +2,31 @@ from src.plumed.main import main
 from src.plumed.utils import get_checkpoint_interval
 import fire
 
-def run(system, padding, upper_wall):
+def run():
     FILEPATH = '../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb'
-    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/{system}/241118'
+    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/CD28-G-MetaD/241118'
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 1
     TIMESTEP = 2
     MDTIME = 500
 
     # 1. PLUMED CONFIG
+    # CVs are cmap, d in that order
     config = {
-        'type': 'opes',
-        'opes.pace': 500,
-        'opes.barrier': 200,
+        'type': 'metad',
         'temperature': TEMPERATURE,
         'stride': 500,
         'cutoff': 0.8,
         'restart_rfile': None,
         'state_wstride': get_checkpoint_interval(TIMESTEP),
-        'upper_wall.at': upper_wall,
+        'metad.pace': 500,
+        'metad.sigma': "0.04,0.01",
+        'metad.height': "0.1,0.1",
+        'metad.grid_min': "0,0",
+        'metad.grid_max': "80,5",
+        'metad.grid_bin': 400,
+        'metad.biasfactor': 10,
+        'upper_wall.at': 5,
         'upper_wall.exp': 6,
         'upper_wall.kappa': 1000.0,
         'spot1_residues': None,
@@ -34,12 +40,12 @@ def run(system, padding, upper_wall):
         temperature=TEMPERATURE,
         mdtime=MDTIME,
         timestep=TIMESTEP,
-        device_index='0',
+        device_index='0,1',
         device='cuda',
         split_chains=True,
         logging_frequency=LOGGING_FREQUENCY,
         config=config,
-        padding=padding,
+        padding=2,
         chain_mode='two-chain'
     )
 
