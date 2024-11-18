@@ -4,9 +4,9 @@ import fire
 
 def run():
     FILEPATH = '../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb'
-    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/CD28-G-MetaD/241118'
+    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/CD28-G-MetaD/241118_4'
     TEMPERATURE = 300
-    LOGGING_FREQUENCY = 1
+    LOGGING_FREQUENCY = 100
     TIMESTEP = 2
     MDTIME = 500
 
@@ -21,17 +21,25 @@ def run():
         'state_wstride': get_checkpoint_interval(TIMESTEP),
         'metad.pace': 500,
         'metad.sigma': "0.04,0.01",
-        'metad.height': "0.1,0.1",
+        'metad.height': "0.1",
         'metad.grid_min': "0,0",
         'metad.grid_max': "80,5",
-        'metad.grid_bin': 400,
-        'metad.biasfactor': 10,
+        'metad.grid_bin': "200,200",
+        'metad.biasfactor': 50,
         'upper_wall.at': 5,
         'upper_wall.exp': 6,
         'upper_wall.kappa': 1000.0,
         'spot1_residues': None,
         'spot2_residues': None
     }
+
+    # print CUDA_VISIBLE_DEVICES
+    import os
+    print(os.environ['CUDA_VISIBLE_DEVICES'])
+
+    from src.utils import get_gpu_indices
+    gpu_indices = get_gpu_indices()
+    print(f"{gpu_indices=}")
 
     # 2. RUN MINIMIZATION AND SIMULATION
     main(
@@ -40,7 +48,7 @@ def run():
         temperature=TEMPERATURE,
         mdtime=MDTIME,
         timestep=TIMESTEP,
-        device_index='0,1',
+        device_index=gpu_indices,
         device='cuda',
         split_chains=True,
         logging_frequency=LOGGING_FREQUENCY,
