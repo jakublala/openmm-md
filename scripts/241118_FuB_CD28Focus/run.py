@@ -4,7 +4,7 @@ import fire
 
 def run(system, padding, upper_wall):
     FILEPATH = '../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb'
-    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/{system}/241115'
+    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/{system}/241118'
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 1
     TIMESTEP = 2
@@ -34,9 +34,9 @@ def run(system, padding, upper_wall):
         temperature=TEMPERATURE,
         mdtime=MDTIME,
         timestep=TIMESTEP,
-        device_index='0,1',
+        device_index='0',
         device='cuda',
-        split_chains=False,
+        split_chains=True,
         logging_frequency=LOGGING_FREQUENCY,
         config=config,
         padding=padding,

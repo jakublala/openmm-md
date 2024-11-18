@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# Get the template PBS file
+if [[ -f "hx1.pbs" ]]; then
+    TEMPLATE="hx1.pbs"
+elif [[ -f "cx3.pbs" ]]; then
+    TEMPLATE="cx3.pbs" 
+else
+    echo "No PBS template file found"
+    exit 1
+fi
+
+
 submit_simulation() {
     local system=$1
     local padding=${2:-5}
@@ -7,7 +18,7 @@ submit_simulation() {
 
     qsub -N "$system" \
         -v "SYSTEM=$system,PADDING=$padding,UPPER_WALL=$upper_wall" \
-        template.pbs
+        hx1.pbs
 }
 
 # CD28-G-UW5P2 (5nm upper wall, 2nm padding)

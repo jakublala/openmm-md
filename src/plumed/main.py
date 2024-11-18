@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def main(
         filepath=None, 
-        device_index=1,
+        device_index='0',
         mdtime=100, # in ns
         timestep=2,
         temperature=300,
