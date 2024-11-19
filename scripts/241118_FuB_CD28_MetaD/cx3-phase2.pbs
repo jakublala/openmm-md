@@ -1,6 +1,7 @@
 #!/bin/bash
 #PBS -l select=1:ncpus=16:mem=48gb:ngpus=1
 #PBS -l walltime=72:0:0
+#PBS -N metad-1
 
 cd $PBS_O_WORKDIR
 cat $PBS_NODEFILE
@@ -12,23 +13,12 @@ export OPENBLAS_NUM_THREADS=16
 export VECLIB_MAXIMUM_THREADS=16
 export NUMEXPR_NUM_THREADS=16
 
-module load apptainer
-apptainer pull openmm-md.sif docker://jakublala/openmm-md
+apptainer pull $HOME/projects/openmm-md/openmm-md.sif docker://jakublala/openmm-md
 
-
-# Read input parameters
-SYSTEM=${SYSTEM}
-PADDING=${PADDING:-5}        # Default to 5 if not specified
-UPPER_WALL=${UPPER_WALL:-5}  # Default to 5 if not specified
-
-PYTHON_CMD="python run.py \
-    --system $SYSTEM \
-    --padding $PADDING \
-    --upper_wall $UPPER_WALL \
-"
+PYTHON_CMD="python run.py --biasfactor 5 --output_dir '241119'"
 apptainer exec \
     --nv \
     --no-home \
     --bind $HOME/projects \
-    openmm-md.sif bash -c \
+    $HOME/projects/openmm-md/openmm-md.sif bash -c \
     "export PYTHONPATH=$HOME/projects/openmm-md && $PYTHON_CMD"
