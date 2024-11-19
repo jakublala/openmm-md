@@ -4,7 +4,7 @@ import fire
 
 def run(biasfactor: int, output_dir: str):
     FILEPATH = '../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb'
-    OUTPUT_DIR = f'{output_dir}'
+    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/CD28-G-MetaD/{output_dir}'
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
