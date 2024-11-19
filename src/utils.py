@@ -38,31 +38,23 @@ def get_gpu_indices():
     '0,1'
     """
     def get_gpu_index_from_uuid(uuid):
-        try:
-            result = subprocess.run(['nvidia-smi', '-L'], capture_output=True, text=True)
-            gpu_list = result.stdout.strip().split('\n')
-            
-            for i, gpu_info in enumerate(gpu_list):
-                if uuid in gpu_info:
-                    return str(i)
-            return '0'
-        except Exception as e:
-            print(f"Error getting GPU index from UUID: {e}")
-            return '0'
-
-    try:
-        # Get GPU UUIDs from environment
-        gpu_uuids = os.environ.get('CUDA_VISIBLE_DEVICES', '').split(',')
+        result = subprocess.run(['nvidia-smi', '-L'], capture_output=True, text=True)
+        gpu_list = result.stdout.strip().split('\n')
         
-        # Convert UUIDs to indices
-        gpu_indices = []
-        for uuid in gpu_uuids:
-            uuid = uuid.strip()
-            if uuid.startswith('GPU-'):
-                index = get_gpu_index_from_uuid(uuid)
-                gpu_indices.append(index)
+        for i, gpu_info in enumerate(gpu_list):
+            if uuid in gpu_info:
+                return str(i)
+        return '0'
         
-        return ','.join(sorted(gpu_indices)) if gpu_indices else '0'
-    except Exception as e:
-        print(f"Error getting GPU indices: {e}")
-        return '0'  # Default to GPU 0 if anything fails
+    # Get GPU UUIDs from environment
+    gpu_uuids = os.environ.get('CUDA_VISIBLE_DEVICES', '').split(',')
+    
+    # Convert UUIDs to indices
+    gpu_indices = []
+    for uuid in gpu_uuids:
+        uuid = uuid.strip()
+        if uuid.startswith('GPU-'):
+            index = get_gpu_index_from_uuid(uuid)
+            gpu_indices.append(index)
+    
+    return ','.join(gpu_indices) if gpu_indices else '0'

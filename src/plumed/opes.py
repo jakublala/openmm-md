@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 from src.plumed.utils import get_checkpoint_interval
 
-def opes(
+def run_plumed(
         filename, 
         mdtime, 
         timestep, 
@@ -21,8 +21,8 @@ def opes(
         output_dir=None, 
         logging_frequency=None,
         ):
-    """Run an OpenMM molecular dynamics simulation with OPES (On-the-fly Probability Enhanced Sampling).
-
+    """Run an OpenMM molecular dynamics simulation with Metadynamics or OPES (On-the-fly Probability Enhanced Sampling).
+    
     Parameters
     ----------
     filename : str
@@ -129,7 +129,7 @@ def opes(
 
 
     # Prepare the Simulation
-    print('Building system...')
+    logger.info('Building system...')
     topology = pdf.topology
     positions = pdf.positions
     system = forcefield.createSystem(
@@ -167,10 +167,16 @@ def opes(
         simulation.context.setPositions(positions)
     
         #Equilibrate
-        print('Equilibrating...')
+        logger.info('Equilibrating...')
         simulation.context.setVelocitiesToTemperature(temperature)
         # TODO: make it random, by having the number of steps be also somewhat number
         simulation.step(equilibrationSteps)
+
+        save_equilibrated_state(
+            simulation=simulation,
+            output_dir=output_dir,
+            filename=filename
+            )
 
     # Add PLUMED bias
     with open(f'{output_dir}/{filename}_plumed.dat', 'r') as file:
@@ -184,7 +190,7 @@ def opes(
     simulation.context.reinitialize(preserveState=True)
 
     # Simulate
-    print('Simulating...')
+    logger.info('Simulating...')
 
     simulation.reporters.append(trajReporter)
     simulation.reporters.append(dataReporter)
@@ -197,3 +203,12 @@ def opes(
     # i.e. extend the simulation if convergence is not reached
 
 
+def save_equilibrated_state(
+        simulation,
+        output_dir,
+        filename
+        ) -> None:
+    topology = simulation.system.topology
+    positions = simulation.context.getState(getPositions=True).getPositions()
+    PDBFile.writeFile(topology, positions, open(f'{output_dir}/{filename}_equilibrated.pdb', 'w'))
+    logger.info(f'Equilibrated state saved to {output_dir}/{filename}_equilibrated.pdb')

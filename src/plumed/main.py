@@ -2,7 +2,7 @@ import os
 import logging
 from typing import Optional, Literal
 
-from src.plumed.opes import opes
+from src.plumed.opes import run_plumed
 from src.relax import minimize
 from src.fixer import fixer
 from src.plumed.io import create_plumed_input
@@ -60,8 +60,19 @@ def main(
 
     logger.info(f'==================== Running {filename} ====================')
     logger.info(f"Running with timestep {timestep} fs and mdtime {mdtime} ns")
-    logger.info(f"Energy barrier {config['barrier']} kJ/mol for OPES")
-    logger.info(f"Pace {config['pace']} steps of depositing bias in OPES.")
+    if config['type'] in ['opes', 'opes-explore']:
+        logger.info(f"Energy barrier {config['opes.barrier']} kJ/mol for OPES")
+        logger.info(f"Pace {config['opes.pace']} steps of depositing bias in OPES.")
+    elif config['type'] == 'metad':
+        logger.info(f"Sigma {config['metad.sigma']} for MetaD")
+        logger.info(f"Height {config['metad.height']} for MetaD")
+        logger.info(f"Grid min {config['metad.grid_min']} for MetaD")
+        logger.info(f"Grid max {config['metad.grid_max']} for MetaD")
+        logger.info(f"Grid bin {config['metad.grid_bin']} for MetaD")
+        logger.info(f"Bias factor {config['metad.biasfactor']} for MetaD")
+    else:
+        raise NotImplementedError(f"Type {config['type']} not implemented")
+    
 
     
     if not restart:
@@ -99,7 +110,7 @@ def main(
 
 
         
-    opes(
+    run_plumed(
         filename=filename, 
         mdtime=mdtime, 
         device_index=str(device_index),
