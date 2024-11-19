@@ -165,7 +165,7 @@ def run_plumed(
         # no equilibration for system from checkpoint
     else:
         simulation.context.setPositions(positions)
-    
+
         #Equilibrate
         logger.info('Equilibrating...')
         simulation.context.setVelocitiesToTemperature(temperature)
@@ -208,7 +208,7 @@ def save_equilibrated_state(
         output_dir,
         filename
         ) -> None:
-    topology = simulation.system.topology
+    topology = simulation.topology
     positions = simulation.context.getState(getPositions=True).getPositions()
     PDBFile.writeFile(topology, positions, open(f'{output_dir}/{filename}_equilibrated.pdb', 'w'))
     logger.info(f'Equilibrated state saved to {output_dir}/{filename}_equilibrated.pdb')
