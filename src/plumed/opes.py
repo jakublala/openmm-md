@@ -73,8 +73,16 @@ def run_plumed(
 
     if output_dir is None:
         raise ValueError('Output directory is required')
+    
+    if os.path.exists(f'{output_dir}/{filename}_equilibrated.pdb'):
+        logger.info(f'Equilibrated state found at {output_dir}/{filename}_equilibrated.pdb')
+        logger.info('Skipping equilibration...')
+        pdf = PDBFile(f'{output_dir}/{filename}_equilibrated.pdb')
+        equilibrated = True
+    else:
+        pdf = PDBFile(f'{output_dir}/{filename}_solvated.pdb')
+        equilibrated = False
 
-    pdf = PDBFile(f'{output_dir}/{filename}_solvated.pdb')
 
     forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
 
@@ -163,6 +171,8 @@ def run_plumed(
     if restart_checkpoint: 
         simulation.loadCheckpoint(restart_checkpoint)
         # no equilibration for system from checkpoint
+    elif equilibrated:
+        simulation.context.setPositions(positions)
     else:
         simulation.context.setPositions(positions)
 
