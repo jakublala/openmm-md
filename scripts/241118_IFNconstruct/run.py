@@ -7,11 +7,11 @@ from src.models import Segment, Residue
 if __name__ == '__main__':
     # Z-B50W
     FILEPATH = '../../data/241109_INFconstruct/input/Z1-B50W.pdb'
-    OUTPUT_DIR = '../../data/241109_INFconstruct/output/Z1-B50W/241119_2' 
+    OUTPUT_DIR = '../../data/241109_INFconstruct/output/Z1-B50W/241119_2_160' 
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
-    MDTIME = 500
+    MDTIME = 2
 
     # 1. CREATE PLUMED INPUT
 

@@ -109,6 +109,8 @@ cmap: CONTACTMAP ...
 \tARG=cmap,d PACE={config['opes.pace']} BARRIER={config['opes.barrier']}
 \tTEMP={config['temperature']}
 \tFILE={output_dir}/{filename}.kernels
+\tSTATE_WFILE={output_dir}/{filename}.state
+\tSTATE_WSTRIDE={config['state_wstride']}
 ...
 """
     elif config['type'] == 'opes':
@@ -116,6 +118,8 @@ cmap: CONTACTMAP ...
 \tARG=cmap,d PACE={config['opes.pace']} BARRIER={config['opes.barrier']}
 \tTEMP={config['temperature']}
 \tFILE={output_dir}/{filename}.kernels
+\tSTATE_WFILE={output_dir}/{filename}.state
+\tSTATE_WSTRIDE={config['state_wstride']}
 ...
 """
     elif config['type'] == 'metad':
@@ -135,9 +139,6 @@ cmap: CONTACTMAP ...
     else:
         pass
 
-    if 'opes' in config['type']:
-        plumed_content += f"""\tSTATE_WFILE={output_dir}/{filename}.state\n\tSTATE_WSTRIDE={config['state_wstride']}
-..."""
     type_content = 'opes' if 'opes' in config['type'] else 'metad'
     plumed_content += f"""uwall: UPPER_WALLS ARG=d AT={config['upper_wall.at']} KAPPA=150.0 EXP={config['upper_wall.exp']} EPS=1 OFFSET=0
 PRINT ARG=cmap,d,{type_content}.*,uwall.bias STRIDE={config['stride']} FILE={output_dir}/{filename}.colvar
