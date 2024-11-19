@@ -138,9 +138,9 @@ cmap: CONTACTMAP ...
     if 'opes' in config['type']:
         plumed_content += f"""\tSTATE_WFILE={output_dir}/{filename}.state\n\tSTATE_WSTRIDE={config['state_wstride']}
 ..."""
-    
+    type_content = 'opes' if 'opes' in config['type'] else 'metad'
     plumed_content += f"""uwall: UPPER_WALLS ARG=d AT={config['upper_wall.at']} KAPPA=150.0 EXP={config['upper_wall.exp']} EPS=1 OFFSET=0
-PRINT ARG=cmap,d,opes.*,uwall.bias STRIDE={config['stride']} FILE={output_dir}/{filename}.colvar
+PRINT ARG=cmap,d,{type_content}.*,uwall.bias STRIDE={config['stride']} FILE={output_dir}/{filename}.colvar
 """
     return plumed_content
 

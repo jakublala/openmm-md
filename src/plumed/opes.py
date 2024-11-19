@@ -172,6 +172,12 @@ def run_plumed(
         # TODO: make it random, by having the number of steps be also somewhat number
         simulation.step(equilibrationSteps)
 
+        save_equilibrated_state(
+            simulation=simulation,
+            output_dir=output_dir,
+            filename=filename
+            )
+
     # Add PLUMED bias
     with open(f'{output_dir}/{filename}_plumed.dat', 'r') as file:
         script = file.read()
@@ -197,3 +203,12 @@ def run_plumed(
     # i.e. extend the simulation if convergence is not reached
 
 
+def save_equilibrated_state(
+        simulation,
+        output_dir,
+        filename
+        ) -> None:
+    topology = simulation.system.topology
+    positions = simulation.context.getState(getPositions=True).getPositions()
+    PDBFile.writeFile(topology, positions, open(f'{output_dir}/{filename}_equilibrated.pdb', 'w'))
+    logger.info(f'Equilibrated state saved to {output_dir}/{filename}_equilibrated.pdb')

@@ -4,7 +4,7 @@ import fire
 
 def run(biasfactor: int, output_dir: str):
     FILEPATH = '../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb'
-    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/CD28-G-MetaD/{output_dir}'
+    OUTPUT_DIR = f'{output_dir}'
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
@@ -21,7 +21,7 @@ def run(biasfactor: int, output_dir: str):
         'state_wstride': get_checkpoint_interval(TIMESTEP),
         'metad.pace': 500,
         'metad.sigma': "0.04,0.01",
-        'metad.height': "0.1",
+        'metad.height': 0.1,
         'metad.grid_min': "0,0",
         'metad.grid_max': "80,5",
         'metad.grid_bin': "200,200",
@@ -33,14 +33,13 @@ def run(biasfactor: int, output_dir: str):
         'spot2_residues': None
     }
 
-    # print CUDA_VISIBLE_DEVICES
     import os
-    print(os.environ['CUDA_VISIBLE_DEVICES'])
-
     from src.utils import get_gpu_indices
-    gpu_indices = get_gpu_indices()
-    print(f"{gpu_indices=}")
-
+    if 'CUDA_VISIBLE_DEVICES' in os.environ:
+        gpu_indices = get_gpu_indices()
+    else:
+        gpu_indices = None
+    
     # 2. RUN MINIMIZATION AND SIMULATION
     main(
         filepath=FILEPATH,
