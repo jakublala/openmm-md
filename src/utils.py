@@ -46,7 +46,8 @@ def get_gpu_indices():
                 if uuid in gpu_info:
                     return str(i)
             return '0'
-        except:
+        except Exception as e:
+            print(f"Error getting GPU index from UUID: {e}")
             return '0'
 
     try:
@@ -61,6 +62,7 @@ def get_gpu_indices():
                 index = get_gpu_index_from_uuid(uuid)
                 gpu_indices.append(index)
         
-        return ','.join(gpu_indices) if gpu_indices else '0'
-    except:
+        return ','.join(sorted(gpu_indices)) if gpu_indices else '0'
+    except Exception as e:
+        print(f"Error getting GPU indices: {e}")
         return '0'  # Default to GPU 0 if anything fails

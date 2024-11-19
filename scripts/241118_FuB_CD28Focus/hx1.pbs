@@ -18,6 +18,9 @@ PYTHON_CMD="python run.py \
     --padding $PADDING \
     --upper_wall $UPPER_WALL"
 
+# Add this before the main apptainer exec command to test CUDA
+apptainer exec --nv $HOME/openmm-md.sif nvidia-smi
+
 apptainer exec \
     --nv \
     --no-home \

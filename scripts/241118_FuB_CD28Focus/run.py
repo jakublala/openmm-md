@@ -6,7 +6,7 @@ def run(system, padding, upper_wall):
     FILEPATH = '../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb'
     OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/{system}/241118'
     TEMPERATURE = 300
-    LOGGING_FREQUENCY = 1
+    LOGGING_FREQUENCY = 100
     TIMESTEP = 2
     MDTIME = 500
 

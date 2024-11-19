@@ -7,11 +7,11 @@ from src.models import Segment, Residue
 if __name__ == '__main__':
     # Z-B50W
     FILEPATH = '../../data/241109_INFconstruct/input/Z1-B50W.pdb'
-    OUTPUT_DIR = '../../data/241109_INFconstruct/output/Z1-B50W/241118_2' 
+    OUTPUT_DIR = '../../data/241109_INFconstruct/output/Z1-B50W/241119_2' 
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
-    MDTIME = 2
+    MDTIME = 500
 
     # 1. CREATE PLUMED INPUT
 
@@ -50,6 +50,9 @@ if __name__ == '__main__':
             )
     ])
 
+    upper_wall_at = (3.8 * (LINKER1_LENGTH + PROTEASE_LENGTH + LINKER2_LENGTH)) / 10 / 2
+    padding = upper_wall_at + 1
+
     config = {
         'type': 'opes-explore',
         'pace': 500,
@@ -66,12 +69,12 @@ if __name__ == '__main__':
         'spot2_residues': spot2_residues
     }
 
-    from src.utils import get_gpu_indices
     import os
-    gpu_indices = get_gpu_indices()
-
-    print(f"CUDA_VISIBLE_DEVICES: {os.environ.get('CUDA_VISIBLE_DEVICES')}")
-    print(f"Using GPU indices: {gpu_indices}")
+    from src.utils import get_gpu_indices
+    if 'CUDA_VISIBLE_DEVICES' in os.environ:
+        gpu_indices = get_gpu_indices()
+    else:
+        gpu_indices = None
 
     # 2. RUN MINIMIZATION AND SIMULATION
     main(
@@ -85,6 +88,6 @@ if __name__ == '__main__':
         split_chains=False,
         logging_frequency=LOGGING_FREQUENCY,
         config=config,
-        padding=14,
+        padding=padding,
         chain_mode='single-chain'
     )
