@@ -123,6 +123,7 @@ cmap: CONTACTMAP ...
 \tARG=cmap,d PACE={config['metad.pace']} SIGMA={config['metad.sigma']} HEIGHT={config['metad.height']}
 \tGRID_MIN={config['metad.grid_min']} GRID_MAX={config['metad.grid_max']} GRID_BIN={config['metad.grid_bin']}
 \tTEMP={config['temperature']} BIASFACTOR={config['metad.biasfactor']}
+\tFILE={output_dir}/{filename}.hills
 ...
 """
     else:
@@ -134,9 +135,11 @@ cmap: CONTACTMAP ...
     else:
         pass
 
-    plumed_content += f"""\tSTATE_WFILE={output_dir}/{filename}.state\n\tSTATE_WSTRIDE={config['state_wstride']}
-...
-uwall: UPPER_WALLS ARG=d AT={config['upper_wall.at']} KAPPA=150.0 EXP={config['upper_wall.exp']} EPS=1 OFFSET=0
+    if 'opes' in config['type']:
+        plumed_content += f"""\tSTATE_WFILE={output_dir}/{filename}.state\n\tSTATE_WSTRIDE={config['state_wstride']}
+..."""
+    
+    plumed_content += f"""uwall: UPPER_WALLS ARG=d AT={config['upper_wall.at']} KAPPA=150.0 EXP={config['upper_wall.exp']} EPS=1 OFFSET=0
 PRINT ARG=cmap,d,opes.*,uwall.bias STRIDE={config['stride']} FILE={output_dir}/{filename}.colvar
 """
     return plumed_content

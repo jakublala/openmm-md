@@ -2,9 +2,9 @@ from src.plumed.main import main
 from src.plumed.utils import get_checkpoint_interval
 import fire
 
-def run():
+def run(biasfactor: int, output_dir: str):
     FILEPATH = '../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb'
-    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/CD28-G-MetaD/241118_4'
+    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/CD28-G-MetaD/{output_dir}'
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
@@ -25,7 +25,7 @@ def run():
         'metad.grid_min': "0,0",
         'metad.grid_max': "80,5",
         'metad.grid_bin': "200,200",
-        'metad.biasfactor': 50,
+        'metad.biasfactor': biasfactor,
         'upper_wall.at': 5,
         'upper_wall.exp': 6,
         'upper_wall.kappa': 1000.0,
