@@ -7,11 +7,11 @@ from src.models import Segment, Residue
 if __name__ == '__main__':
     # Z-B50W
     FILEPATH = '../../data/241109_INFconstruct/input/Z1-B50W.pdb'
-    OUTPUT_DIR = '../../data/241109_INFconstruct/output/Z1-B50W/241119_2_160_36' 
+    OUTPUT_DIR = '../../data/241109_INFconstruct/output/Z1-B50W/241120-MetaD' 
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
-    MDTIME = 2
+    MDTIME = 1000
 
     # 1. CREATE PLUMED INPUT
 
@@ -54,9 +54,10 @@ if __name__ == '__main__':
     padding = upper_wall_at + 1
 
     config = {
-        'type': 'opes-explore',
-        'opes.pace': 500,
-        'opes.barrier': 200,
+        'type': 'metad',
+        'metad.pace': 500,
+        'metad.sigma': "0.13,0.01", # select from kernels file from OPES explore previous run
+        'metad.height': 1.25,
         'temperature': TEMPERATURE,
         'stride': 500,
         'cutoff': 0.8,
