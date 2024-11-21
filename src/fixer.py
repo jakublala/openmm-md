@@ -60,6 +60,9 @@ def check_already_fixed_and_split(structure):
     if len(break_indices) == 0:
         logger.info('No chain break indices found, assuming chains are already split and correct.')
         return True
+    elif len(break_indices) == 1:
+        logger.info('One chain break index found, assuming chains are split and correct.')
+        return True
     else:
         raise ValueError('Fixer.py: More than one chain break indices found!')
 
@@ -78,10 +81,10 @@ def fixer(filepath=None, output_dir=None, split_chains=True):
 
     original_sequence = get_concat_sequence_from_structure(structure)
 
-    # before splitting chains, check whether the chains are actually not already split and correct
-    if check_already_fixed_and_split(structure):
-        logger.info('Chains are already split and correct.')
-        split_chains = False
+    # # before splitting chains, check whether the chains are actually not already split and correct
+    # if check_already_fixed_and_split(structure):
+    #     logger.info('Chains are already split and correct.')
+    #     split_chains = False
 
     if split_chains:
         logger.info('Splitting chains... (usually run from ESMFold outputs where chains are not split)')
