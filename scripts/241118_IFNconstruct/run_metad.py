@@ -58,6 +58,10 @@ if __name__ == '__main__':
         'metad.pace': 500,
         'metad.sigma': "0.13,0.01", # select from kernels file from OPES explore previous run
         'metad.height': 1.25,
+        'metad.grid_min': "0,0",
+        'metad.grid_max': "80,5",
+        'metad.grid_bin': "200,200",
+        'metad.biasfactor': 20,
         'temperature': TEMPERATURE,
         'stride': 500,
         'cutoff': 0.8,
