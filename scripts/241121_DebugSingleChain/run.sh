@@ -1,0 +1,1 @@
+python ../../src/fixer.py ../../data/241010_FoldingUponBinding/input/A-synuclein/A-synuclein_alpha.pdb ./

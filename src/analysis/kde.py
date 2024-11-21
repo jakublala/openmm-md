@@ -6,10 +6,10 @@ import logging
 logger = logging.getLogger(__name__)
 
 class GaussianKDE:
-    def __init__(self, data: np.ndarray, weights: np.ndarray, sigma: List[float]):
+    def __init__(self, data: np.ndarray, weights: np.ndarray, sigmas: List[float]):
         self.data = data
         self.weights = weights
-        self.sigma = np.array(sigma)
+        self.sigmas = np.array(sigmas)
     
     def __call__(self, grid_x: np.ndarray, grid_y: np.ndarray = None) -> np.ndarray:
         if grid_y is None:
@@ -37,11 +37,11 @@ class GaussianKDE:
         """
         # Compute distances and kernel for all points at once
         diff = grid_x[:] - self.data[:]
-        kernel = np.exp(-0.5 * (diff / self.sigma[0])**2)
+        kernel = np.exp(-0.5 * (diff / self.sigmas[0])**2)
         density = np.sum(self.weights[:, None] * kernel, axis=0)
         
         # Normalize
-        density /= self.sigma[0] * np.sum(self.weights) * np.sqrt(2 * np.pi)
+        density /= self.sigmas[0] * np.sum(self.weights) * np.sqrt(2 * np.pi)
 
         # Integrate over the grid points to check normalization
         dx = grid_x[1] - grid_x[0]
@@ -60,8 +60,8 @@ class GaussianKDE:
         
         diff_x = self._X[:, :, None] - data_chunk[:, 0]
         diff_y = self._Y[:, :, None] - data_chunk[:, 1]
-        kernel = np.exp(-0.5 * ((diff_x / self.sigma[0])**2 + 
-                            (diff_y / self.sigma[1])**2))
+        kernel = np.exp(-0.5 * ((diff_x / self.sigmas[0])**2 + 
+                            (diff_y / self.sigmas[1])**2))
         return np.sum(weights_chunk * kernel, axis=2)
     
 
@@ -89,7 +89,7 @@ class GaussianKDE:
         self._X, self._Y = np.meshgrid(grid_x, grid_y, indexing='ij')
         
         # Precompute constant factors
-        normalization = self.sigma[0] * self.sigma[1] * np.sum(self.weights) * 2 * np.pi
+        normalization = self.sigmas[0] * self.sigmas[1] * np.sum(self.weights) * 2 * np.pi
         
         # Prepare chunks for parallel processing
         num_points = self.data.shape[0]

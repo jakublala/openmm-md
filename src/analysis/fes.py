@@ -77,14 +77,18 @@ def load_fes(filepath: str):
 
 def compute_fes(
         colvar_df: pd.DataFrame,
-        sigma: List[float],
+        sigmas: List[float],
         temp: float, 
         cvs: List[str],
         outfile: str,
         bias: Optional[List[str]] = None,
         n_bins: int = 200
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Compute free energy surface from collective variables and bias
+    """
+    Compute free energy surface from collective variables and bias.
+    Reweights the trajectory. First, we compute the weights for the trajectory,
+    based on the Boltzmann distribution. Then, we compute the kernel density estimation
+    of the unbiased probability density. Last, we invert it to get the free energy surface.
     
     Args:
         colvar_df: DataFrame containing CVs and bias
@@ -98,7 +102,7 @@ def compute_fes(
         Tuple of (cv1_bins, cv2_bins, fes)
     """
     assert len(cvs) in [1, 2], "Only 1D and 2D FES are supported"
-    assert len(sigma) == len(cvs), "Number of bandwidths must match number of CVs"
+    assert len(sigmas) == len(cvs), "Number of bandwidths must match number of CVs"
 
     kbT = kB * temp
 
@@ -108,7 +112,7 @@ def compute_fes(
 
     # Step 2: Compute the KDE (unbiased probability density)
     logger.info("Computing the unbiased probability density")
-    kde = GaussianKDE(colvar_df[cvs].values, weights=weights, sigma=sigma)
+    kde = GaussianKDE(colvar_df[cvs].values, weights=weights, sigmas=sigmas)
     
     # Step 3: Compute the FES
     if len(cvs) == 1:

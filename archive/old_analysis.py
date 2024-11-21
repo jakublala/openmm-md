@@ -14,7 +14,28 @@ logger = logging.getLogger(__name__)
 TIMESTEP = 0.002 * 10**-3  # in ns
 OPES_PACE = 500
 TEMP = 300
-STRIDE = 500
+
+
+def plot_colvar_trajectories(df, axs):
+    ax1, ax2 = axs
+
+    # skip every 100th point, to smooth out the trajectories
+    df = df.iloc[::100]
+
+    # TODO: make this more general, cmap and d are hard-locked
+    ax1.plot(df["time"] * TIMESTEP * OPES_PACE, df["cmap"], label='CMAP')
+    ax2.plot(df["time"] * TIMESTEP * OPES_PACE, df["d"], label='Distance')
+
+    ax1.set_title("CMAP")
+    ax1.set_xlabel("Time [ns]")
+    ax1.set_ylabel("CMAP [#]")
+    ax1.legend()
+
+    ax2.set_title("Distance")
+    ax2.set_xlabel("Time [ns]")
+    ax2.set_ylabel("Distance [nm]")
+    ax2.legend()
+    return ax1, ax2
 
 
 def consider_walls(df):
@@ -42,8 +63,15 @@ def plot_all_fes(directory, target, binder, num_runs, labels):
     outfile = f"{directory}/{binder}_all_fes.png"
     plot_all_fes_from_data(fes_data, outfile, target, binder, ['cmap', 'd'], labels)
 
-
-from src.analysis.traj import plot_biases
+def plot_bias(colvar_df, ax):
+    ax.plot(colvar_df["time"] * TIMESTEP * OPES_PACE, colvar_df["opes.bias"] + colvar_df["uwall.bias"], label='total')
+    ax.plot(colvar_df["time"] * TIMESTEP * OPES_PACE, colvar_df["opes.bias"], label='opes')
+    ax.plot(colvar_df["time"] * TIMESTEP * OPES_PACE, colvar_df["uwall.bias"], label='uwall')
+    ax.legend()
+    ax.set_title("Bias")
+    ax.set_xlabel("Time [ns]")
+    ax.set_ylabel("Bias [kJ/mol]")
+    return ax
 
 def plot_opes_values(colvar_df, axs):
     ax1, ax2, ax3 = axs
@@ -55,9 +83,7 @@ def plot_opes_values(colvar_df, axs):
     ax3.set_title("opes.nker")
     return ax1, ax2, ax3
 
-from src.analysis.colvar import plot_colvar_trajectories
-
-def plot_everything(directory, system, simulation_type):
+def plot_everything(directory, target, binder, run):
     # Create figure with constrained layout for better spacing
     fig = plt.figure(figsize=(12, 10), constrained_layout=True)
     
@@ -66,23 +92,19 @@ def plot_everything(directory, system, simulation_type):
     axs = np.array([[fig.add_subplot(gs[i, j]) for j in range(3)] for i in range(3)])
     
     # Add title with padding
-    fig.suptitle(f"Analysis for {system}", fontsize=16, y=1.02)
+    fig.suptitle(f"Analysis for {target}_{binder} run {run}", fontsize=16, y=1.02)
 
-    cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5py")
-    colvar_file = get_file_by_extension(directory, '.colvar')  
-    colvar_df = read_colvar_file(colvar_file)
+    cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{target}_{binder}_fes.h5py")
+    colvar_df = read_colvar_file(f"{directory}/{target}_{binder}.colvar")
 
-    if simulation_type == 'opes':
-        axs[0, :] = plot_opes_values(colvar_df, axs[0, :])
-    else:
-        logger.info(f"Plotting METAD analysis for {system}, hence some empty plots will remain")
+    axs[0, :] = plot_opes_values(colvar_df, axs[0, :])
     
     # Plot colvar trajectories in second row
-    axs[1, 0], axs[1, 1] = plot_colvar_trajectories(colvar_df, axs[1, :2], timestep=TIMESTEP, stride=STRIDE)
-    axs[1, 2] = plot_biases(colvar_df, axs[1, 2], timestep=TIMESTEP, stride=STRIDE)
+    axs[1, 0], axs[1, 1] = plot_colvar_trajectories(colvar_df, axs[1, :2])
+    axs[1, 2] = plot_bias(colvar_df, axs[1, 2])
 
     # Plot 2D FES in bottom row
-    axs[2, 0] = plot_2d_fes(fes, cv1_bins, cv2_bins, cvs, axs[2, 0], levels=100)
+    axs[2, 0] = plot_2d_fes(fes, cv1_bins, cv2_bins, cvs, axs[2, 0])
     
     # Plot 1D FES in bottom row
     axs[2, 1], axs[2, 2] = plot_1d_fes(fes, cv1_bins, cv2_bins, cvs, axs[2, 1:])
@@ -201,140 +223,43 @@ def plot_colvar_traj_in_fes(directory, target, binder, num_runs):
     logger.info("Saved combined trajectory animation")
     plt.close()
 
-def determine_simulation_type(directory):
-    plumed_file = get_file_by_extension(directory, 'plumed.dat')
-    with open(plumed_file, 'r') as file:
-        for line in file:
-            if 'OPES' in line:
-                logger.info(f"Found OPES in {plumed_file}, assuming OPES simulation")
-                return 'opes'
-            elif 'METAD' in line:
-                logger.info(f"Found METAD in {plumed_file}, assuming METAD simulation")
-                return 'metad'
-    raise ValueError(f"No simulation type found in {plumed_file}")
 
-from src.analysis.colvar import read_colvar_file
-from src.analysis.kernels import get_sigma
-from src.analysis.utils import get_file_by_extension
-import pandas as pd
-
-def read_hills_file(hills_file):
-    # get first line of kernels file
-    with open(hills_file, 'r') as file:
-        labels = file.readline().split()[2:]
-
-    df = pd.read_table(
-        hills_file,
-        dtype=float,
-        sep=r"\s+",
-        comment="#",
-        header=None,
-        names=labels
-    )
-    return df
-
-# def sum_hills(colvar_df, directory, outfile, cvs):
-#     hills_file = get_file_by_extension(directory, '.hills')
-#     hills_df = read_hills_file(hills_file)
-
-#     # create a grid based on the min and max of the hills file
-#     cv1_bins = np.linspace(hills_df['cmap'].min(), hills_df['cmap'].max(), 100)
-#     cv2_bins = np.linspace(hills_df['d'].min(), hills_df['d'].max(), 100)
-
-#     # sum the hills accordingly, maybe via kernel density estimation?
-
-
-def run(project, system, date, recompute, collect_plots):
-    if '-' in str(date):
-        # check if this folder or the one with _ exists and adjust accordingly
-        if os.path.exists(f"../../data/{project}/output/{system}/{date}"):
-            pass
-        elif os.path.exists(f"../../data/{project}/output/{system}/{date.replace('-', '_')}"):    
-            date = date.replace('-', '_')
-            logger.warning(f"Replacing '-' with '_' in date: {date}")
-            logger.warning("Future simulations should avoid '-' in date")
-        else:
-            raise ValueError(f"No directory found for {date} or {date.replace('-', '_')}")
-
-    logger.info(f"Processing {project=} {system=} for {date=}")
-    directory = f"../../data/{project}/output/{system}/{date}"
-
-    if not os.path.exists(directory):
-        logger.error(f"System {system} does not exist for experiment {date}")
-        logger.error(f"There is no directory: {directory}")
-        return
-
-    colvar_file = get_file_by_extension(directory, '.colvar')  
-    colvar_df = read_colvar_file(colvar_file)
-
-    from src.analysis.traj import plot_trajectory
-    plot_trajectory(colvar_df, directory, system)
-
-    simulation_type = determine_simulation_type(directory)
-
-    if recompute or not get_file_by_extension(directory, '.h5py', assert_exists=False):
-        if simulation_type == 'opes':
-            # OPES FES
-            cv1_bins, cv2_bins, fes = compute_fes(
+def run(date, system, num_runs, recompute, collect_plots):
+    target, binder = system.split("_")
+    for run in range(1, num_runs + 1):
+        logger.info(f"Processing {system} run {run}")
+        directory = f"../../data/241010_FoldingUponBinding/output/{date}/{target}/{binder}_{run}"
+        # check system exists, if not write it
+        if not os.path.exists(directory):
+            logger.warning(f"System {system} does not exist for experiment {date}")
+            continue
+        
+        colvar_df = read_colvar_file(f"{directory}/{target}_{binder}.colvar")
+        if recompute or not os.path.exists(f"{directory}/{target}_{binder}_fes.h5py"):
+            _, _, _ = compute_fes(
                 colvar_df,
-                sigmas=[get_sigma(directory, cv) for cv in ['cmap', 'd']], 
-                temp=300,
+                sigma=get_sigmas(directory, target, binder, run, ['cmap', 'd']), 
+                temp=300, 
                 cvs=['cmap', 'd'], 
-                outfile=f"{directory}/{system}_fes.h5py", 
+                outfile=f"{directory}/{target}_{binder}_fes.h5py", 
                 bias=['opes.bias', 'uwall.bias']
-                )
-        elif simulation_type == 'metad':
-            # METAD FES
-            # cv1_bins, cv2_bins, fes = sum_hills(
-            #     colvar_df,
-            #     directory=directory,
-            #     outfile=f"{directory}/{system}_fes.h5py",
-            #     cvs=['cmap', 'd'],
-            # )
-            cv1_bins, cv2_bins, fes = compute_fes(
-                colvar_df,
-                sigmas=[get_sigma(directory, cv) for cv in ['cmap', 'd']], 
-                temp=300,
-                cvs=['cmap', 'd'], 
-                outfile=f"{directory}/{system}_fes.h5py", 
-                bias=['metad.bias', 'uwall.bias']
-                )
-        else:
-            raise ValueError(f"Unknown simulation type: {simulation_type}")
+            )
 
-    else:
-        cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5py")
+        plot_everything(directory, target, binder, run)
 
-    # from src.analysis.plot import plot_2d_fes
-    # fig, ax = plt.subplots()
-    # plot_2d_fes(fes, cv1_bins, cv2_bins, cvs, ax, levels=100)
-    # plt.savefig(f"{directory}/{system}_fes.png", dpi=300, bbox_inches='tight', facecolor='white', edgecolor='none')
-    # plt.close()
-
+        if collect_plots:
+            save_dir = f"../../data/241010_FoldingUponBinding/output/{date}/plots"
+            os.makedirs(save_dir, exist_ok=True)
+            shutil.copy(f"{directory}/analysis_summary.png", f"{save_dir}/{target}_{binder}_{run}.png")
 
     
-
-
-
-    plot_everything(
-        directory, 
-        system,
-        simulation_type
-    )
-
-    # if collect_plots:
-    #     save_dir = f"../../data/241010_FoldingUponBinding/output/{date}/plots"
-    #     os.makedirs(save_dir, exist_ok=True)
-    #     shutil.copy(f"{directory}/analysis_summary.png", f"{save_dir}/{target}_{binder}_{run}.png")
-
-    
-    # if collect_plots:        
-    #     system_directory = "/".join(directory.split("/")[:-1])
+    if collect_plots:        
+        system_directory = "/".join(directory.split("/")[:-1])
             
-    #     plot_colvar_traj_in_fes(system_directory, target, binder, num_runs)
-    #     shutil.copy(f"{system_directory}/{target}_{binder}_all_trajectories.gif", f"{save_dir}/{target}_{binder}_all_trajectories.gif")
-    #     plot_all_fes(system_directory, target, binder, num_runs, labels=[f"{run=}" for run in range(1, num_runs + 1)])
-    #     shutil.copy(f"{system_directory}/{binder}_all_fes.png", f"{save_dir}/{target}_{binder}_all_fes.png")
+        plot_colvar_traj_in_fes(system_directory, target, binder, num_runs)
+        shutil.copy(f"{system_directory}/{target}_{binder}_all_trajectories.gif", f"{save_dir}/{target}_{binder}_all_trajectories.gif")
+        plot_all_fes(system_directory, target, binder, num_runs, labels=[f"{run=}" for run in range(1, num_runs + 1)])
+        shutil.copy(f"{system_directory}/{binder}_all_fes.png", f"{save_dir}/{target}_{binder}_all_fes.png")
 
         
 
@@ -343,10 +268,12 @@ def run(project, system, date, recompute, collect_plots):
 
 
 
-def main(project, system, date):
+def main(system, date):
+    global num_runs
+    num_runs = 5
     recompute = False
     collect_plots = True
-    run(project, system, date, recompute, collect_plots)
+    run(date, system, num_runs, recompute, collect_plots)
     
 import fire
 if __name__ == "__main__":
