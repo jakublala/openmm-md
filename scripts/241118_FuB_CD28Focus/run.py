@@ -36,7 +36,7 @@ def run(system, padding, upper_wall):
         timestep=TIMESTEP,
         device_index='0',
         device='cuda',
-        split_chains=True,
+        split_chains=False if ('A-synuclein' in FILEPATH) or ('CD28' in FILEPATH) else True, # HACK
         logging_frequency=LOGGING_FREQUENCY,
         config=config,
         padding=padding,

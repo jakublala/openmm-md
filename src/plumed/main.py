@@ -28,6 +28,10 @@ def main(
         chain_mode: Optional[Literal['single-chain', 'two-chain']] = None,
         ):
     
+    # TODO: the config should be saved somewhere as a JSON!!!
+    # then very useful down the line for analysis
+    # as parsing, for instance, plumed.dat is a mess
+
     if chain_mode is None:
         raise ValueError('Chain mode is required')
 
