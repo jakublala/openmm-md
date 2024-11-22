@@ -1,17 +1,17 @@
-import MDAnalysis as mda
 from src.plumed.main import main
-from src.plumed.io import create_plumed_input
 from src.plumed.utils import get_checkpoint_interval
-from src.models import Segment, Residue
+import mda
+from src.models import Residue, Segment
+import fire
 
-if __name__ == '__main__':
-    # Z-B50W
-    FILEPATH = '../../data/241109_INFconstruct/input/Z1-B50W.pdb'
-    OUTPUT_DIR = '../../data/241109_INFconstruct/output/Z1-B50W/241122' 
+def run(filepath, system):
+    DATE = '241122'
+    FILEPATH = filepath
+    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/{system}/{DATE}'
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
-    MDTIME = 500
+    MDTIME = 50
 
     # 1. CREATE PLUMED INPUT
 
@@ -50,11 +50,11 @@ if __name__ == '__main__':
             )
     ])
 
-    upper_wall_at = (3.8 * (LINKER1_LENGTH + PROTEASE_LENGTH + LINKER2_LENGTH)) / 10 / 2
-    padding = upper_wall_at + 1
+    # upper_wall_at = (3.8 * (LINKER1_LENGTH + PROTEASE_LENGTH + LINKER2_LENGTH)) / 10 / 2
+    # padding = upper_wall_at + 1
 
     config = {
-        'type': 'opes',
+        'type': 'opes-explore',
         'opes.pace': 500,
         'opes.barrier': 200,
         'temperature': TEMPERATURE,
@@ -91,3 +91,8 @@ if __name__ == '__main__':
         padding=padding,
         chain_mode='single-chain'
     )
+
+
+
+if __name__ == '__main__':
+    fire.Fire(run)

@@ -21,15 +21,15 @@ submit_simulation() {
         $TEMPLATE
 }
 
-# # CD28-G-UW5P2 (5nm upper wall, 2nm padding)
-# submit_simulation "CD28-G-UW5P2" \
-#                 2 \
-#                 5
+# CD28-G-UW5P2 (5nm upper wall, 2nm padding)
+submit_simulation "CD28-G-UW5P2" \
+                2 \
+                5
 
-# # CD28-G-UW5P4 (5nm upper wall, 4nm padding)
-# submit_simulation "CD28-G-UW5P4" \
-#                 4 \
-#                 5
+# CD28-G-UW5P4 (5nm upper wall, 4nm padding)
+submit_simulation "CD28-G-UW5P4" \
+                4 \
+                5
 
 # CD28-G-UW8P4 (8nm upper wall, 4nm padding)
 submit_simulation "CD28-G-UW8P4" \
