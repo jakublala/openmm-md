@@ -243,18 +243,9 @@ def read_hills_file(hills_file):
 
 #     # sum the hills accordingly, maybe via kernel density estimation?
 
-
+from src.analysis.utils import fix_fucked_up_naming
 def run(project, system, date, recompute, collect_plots):
-    if '-' in str(date):
-        # check if this folder or the one with _ exists and adjust accordingly
-        if os.path.exists(f"../../data/{project}/output/{system}/{date}"):
-            pass
-        elif os.path.exists(f"../../data/{project}/output/{system}/{date.replace('-', '_')}"):    
-            date = date.replace('-', '_')
-            logger.warning(f"Replacing '-' with '_' in date: {date}")
-            logger.warning("Future simulations should avoid '-' in date")
-        else:
-            raise ValueError(f"No directory found for {date} or {date.replace('-', '_')}")
+    date = fix_fucked_up_naming(project, system, date)
 
     logger.info(f"Processing {project=} {system=} for {date=}")
     directory = f"../../data/{project}/output/{system}/{date}"

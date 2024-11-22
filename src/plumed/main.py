@@ -77,12 +77,14 @@ def main(
     else:
         raise NotImplementedError(f"Type {config['type']} not implemented")
     
+    if restart:
+        raise NotImplementedError("Restarting from checkpoint not implemented yet")
+    restart_checkpoint = None
 
-    
-    if not restart:
-        restart_checkpoint = None
+    if not os.path.exists(f"{output_dir}/{filename}_equilibrated.pdb"):
+        logger.info('No equilibrated pdb file found, checking whether we need to run relaxation...')
         if not os.path.exists(f'{output_dir}/{filename}_solvated.pdb'):
-            logger.info('No minimized pdb file found, running relaxation...')
+            logger.info('No solvated pdb file found, running solvation...')
             # 1. load the PDB and fix errors
             fixer(
                 filepath=filepath, 
@@ -101,9 +103,6 @@ def main(
                 output_dir=output_dir,
                 padding=padding
                 )
-            
-    else:
-        raise NotImplementedError("Restarting from checkpoint not implemented yet")
     
     create_plumed_input(
         filepath=filepath, 
