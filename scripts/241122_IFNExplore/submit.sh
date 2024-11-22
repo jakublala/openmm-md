@@ -21,36 +21,56 @@ submit_simulation() {
 }
 
 
-submit_simulation "../../data/241010_FoldingUponBinding/input/A-synuclein/A-synuclein_alpha.pdb" \
-                "ASYN-A"
+submit_simulation "../../data/241109_INFconstruct/input/Q7-B30L4.pdb" \
+                "Q7-B30L4"
 
-submit_simulation "../../data/241010_FoldingUponBinding/input/A-synuclein/A-synuclein_general.pdb" \
-                "ASYN-G"
+submit_simulation "../../data/241109_INFconstruct/input/Q7-B30L7.pdb" \
+                "Q7-B30L7"
 
-submit_simulation "../../data/241010_FoldingUponBinding/input/CD28/CD28_alpha.pdb" \
-                "CD28-A"
+submit_simulation "../../data/241109_INFconstruct/input/Q7-B30L10.pdb" \
+                "Q7-B30L10"
 
-submit_simulation "../../data/241010_FoldingUponBinding/input/CD28/CD28_beta.pdb" \
-                "CD28-B"
+submit_simulation "../../data/241109_INFconstruct/input/Q7-B40L10.pdb" \
+                "Q7-B40L10"
 
-submit_simulation "../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb" \
-                "CD28-G"
+submit_simulation "../../data/241109_INFconstruct/input/Q7-B40L10W.pdb" \
+                "Q7-B40L10W"
 
-submit_simulation "../../data/241010_FoldingUponBinding/input/CD28/CD28_partial.pdb" \
-                "CD28-P"
+submit_simulation "../../data/241109_INFconstruct/input/Q7-B50L10W.pdb" \
+                "Q7-B50L10W"
 
-submit_simulation "../../data/241010_FoldingUponBinding/input/p53/p53_1.pdb" \
-                "P53-1"
+submit_simulation "../../data/241109_INFconstruct/input/PQ19-B30L4.pdb" \
+                "PQ19-B30L4"
 
-submit_simulation "../../data/241010_FoldingUponBinding/input/p53/p53_2.pdb" \
-                "P53-2"
+submit_simulation "../../data/241109_INFconstruct/input/PQ19-B30L7.pdb" \
+                "PQ19-B30L7"
 
-submit_simulation "../../data/241010_FoldingUponBinding/input/p53/p53_end.pdb" \
-                "P53-E"
+submit_simulation "../../data/241109_INFconstruct/input/PQ19-B30L10.pdb" \
+                "PQ19-B30L10"
 
+submit_simulation "../../data/241109_INFconstruct/input/PQ19-B40L10.pdb" \
+                "PQ19-B40L10"
 
-submit_simulation "../../data/241010_FoldingUponBinding/input/SUMO/sumo1.pdb" \
-                "SUMO-1A"
+submit_simulation "../../data/241109_INFconstruct/input/PQ19-B40L10W.pdb" \
+                "PQ19-B40L10W"
 
-submit_simulation "../../data/241010_FoldingUponBinding/input/SUMO/sumo1c.pdb" \
-                "SUMO-1C"
+submit_simulation "../../data/241109_INFconstruct/input/PQ19-B50L10W.pdb" \
+                "PQ19-B50L10W"
+
+submit_simulation "../../data/241109_INFconstruct/input/Z1-B30L4.pdb" \
+                "Z1-B30L4"
+
+submit_simulation "../../data/241109_INFconstruct/input/Z1-B30L7.pdb" \
+                "Z1-B30L7"
+
+submit_simulation "../../data/241109_INFconstruct/input/Z1-B30L10.pdb" \
+                "Z1-B30L10"
+
+submit_simulation "../../data/241109_INFconstruct/input/Z1-B40L10.pdb" \
+                "Z1-B40L10"
+
+submit_simulation "../../data/241109_INFconstruct/input/Z1-B40L10W.pdb" \
+                "Z1-B40L10W"
+
+submit_simulation "../../data/241109_INFconstruct/input/Z1-B50L10W.pdb" \
+                "Z1-B50L10W"

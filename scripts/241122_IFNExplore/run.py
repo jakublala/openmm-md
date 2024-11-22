@@ -103,23 +103,22 @@ def run(filepath, system):
         gpu_indices = None
 
     print(f"{LINKER1_LENGTH=}, {LINKER2_LENGTH=}, {BINDER_LENGTH=}, {system}, {spot2_start=}, {spot2_end=}")
-    # assert 0 == 1
 
-    # # 2. RUN MINIMIZATION AND SIMULATION
-    # main(
-    #     filepath=FILEPATH,
-    #     output_dir=OUTPUT_DIR,
-    #     temperature=TEMPERATURE,
-    #     mdtime=MDTIME,
-    #     timestep=TIMESTEP,
-    #     device_index=gpu_indices,
-    #     device='cuda',
-    #     split_chains=False,
-    #     logging_frequency=LOGGING_FREQUENCY,
-    #     config=config,
-    #     padding=padding,
-    #     chain_mode='single-chain'
-    # )
+    # 2. RUN MINIMIZATION AND SIMULATION
+    main(
+        filepath=FILEPATH,
+        output_dir=OUTPUT_DIR,
+        temperature=TEMPERATURE,
+        mdtime=MDTIME,
+        timestep=TIMESTEP,
+        device_index=gpu_indices,
+        device='cuda',
+        split_chains=False,
+        logging_frequency=LOGGING_FREQUENCY,
+        config=config,
+        padding=padding,
+        chain_mode='single-chain'
+    )
 
 
 
