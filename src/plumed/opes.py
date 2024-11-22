@@ -103,7 +103,6 @@ def run_plumed(
     steps = int(mdtime * nanoseconds / dt)
     equilibrationSteps = int(1 * nanosecond / dt)
 
-
     traj_interval = int(logging_frequency * picoseconds / dt)
 
     trajReporter = MDAReporter(
@@ -167,6 +166,15 @@ def run_plumed(
         raise ValueError('Invalid device')
 
     simulation = Simulation(topology, system, integrator, platform, properties)
+
+    # get the periodic box vectors and log them
+    box_vectors = simulation.topology.getPeriodicBoxVectors()
+
+    # Print the box vectors
+    logger.info("Box Vectors (in nanometers):")
+    logger.info(f"x: {box_vectors[0] / nanometers}")
+    logger.info(f"y: {box_vectors[1] / nanometers}")
+    logger.info(f"z: {box_vectors[2] / nanometers}")
     
     if restart_checkpoint: 
         simulation.loadCheckpoint(restart_checkpoint)

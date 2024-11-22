@@ -4,6 +4,7 @@ import numpy as np
 import logging
 from typing import Optional, Literal
 
+import os
 from src.models import ContactMap, Contact, Residue
 from src.models import Segment
 
@@ -52,8 +53,15 @@ def get_contact_map(
 
     if output_dir is None:
         raise ValueError('Output directory is required')
+    
+    if os.path.exists(f'{output_dir}/{filename}_equilibrated.pdb'):
+        universe = mda.Universe(f'{output_dir}/{filename}_equilibrated.pdb')
+    elif os.path.exists(f'{output_dir}/{filename}_solvated.pdb'):
+        universe = mda.Universe(f'{output_dir}/{filename}_solvated.pdb')
+    else:
+        raise ValueError(f'No equilibrated or solvated pdb file found for {filename}, cannot compute contact map')
 
-    universe = mda.Universe(f'{output_dir}/{filename}_solvated.pdb')
+
     universe = get_CA_universe(universe)
     global_to_local_map = universe.residues.resids
     chain_ids = np.concatenate(universe.segments.chainIDs)
