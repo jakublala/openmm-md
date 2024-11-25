@@ -49,3 +49,67 @@ def plot_trajectory(colvar_df, directory, system):
         edgecolor='none'
     )
     plt.close()
+
+
+# OBSOLETE
+# def plot_colvar_traj_in_fes(directory, target, binder, num_runs):
+#     # Create a wide figure to accommodate all runs
+#     fig_width = 6 * num_runs  # 6 inches per subplot
+#     fig, axes = plt.subplots(1, num_runs, figsize=(fig_width, 6))
+#     if num_runs == 1:
+#         axes = [axes]
+    
+#     # Process all runs in parallel
+#     with ThreadPoolExecutor() as executor:
+#         process_run = partial(process_single_run, 
+#                             directory=directory, 
+#                             target=target, 
+#                             binder=binder, 
+#                             shared_fig=fig, 
+#                             shared_axes=axes)
+        
+#         run_data = list(executor.map(process_run, range(1, num_runs + 1)))
+    
+#     # Find the maximum trajectory length
+#     max_frames = max(len(data['cv1_traj']) for data in run_data)
+    
+#     def init():
+#         elements = []
+#         for data in run_data:
+#             data['line'].set_data([], [])
+#             data['point'].set_data([], [])
+#             elements.extend([data['line'], data['point']])
+#         return elements
+
+#     def animate(frame):
+#         elements = []
+#         for data in run_data:
+#             # Handle different trajectory lengths
+#             curr_frame = min(frame, len(data['cv1_traj'])-1)
+            
+#             # Update trajectory line
+#             data['line'].set_data(data['cv1_traj'][:curr_frame], 
+#                                 data['cv2_traj'][:curr_frame])
+#             # Update current point
+#             data['point'].set_data([data['cv1_traj'][curr_frame]], 
+#                                  [data['cv2_traj'][curr_frame]])
+#             elements.extend([data['line'], data['point']])
+#         return elements
+
+#     # Create animation with progress bar
+#     frames = tqdm(range(max_frames), desc="Generating animation")
+#     anim = FuncAnimation(
+#         fig, 
+#         animate, 
+#         init_func=init,
+#         frames=frames, 
+#         interval=20,
+#         blit=True
+#     )
+    
+#     # Adjust layout and save
+#     plt.tight_layout()
+#     writer = PillowWriter(fps=30)
+#     anim.save(f"{directory}/{target}_{binder}_all_trajectories.gif", writer=writer)
+#     logger.info("Saved combined trajectory animation")
+#     plt.close()

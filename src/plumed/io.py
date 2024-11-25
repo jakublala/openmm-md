@@ -139,9 +139,16 @@ cmap: CONTACTMAP ...
     else:
         pass
 
+    if config['spring']:
+        plumed_content += f"restraint: RESTRAINT ARG=d AT=0 KAPPA={config['spring.k']}\n"
+
     type_content = 'opes' if 'opes' in config['type'] else 'metad'
-    plumed_content += f"""uwall: UPPER_WALLS ARG=d AT={config['upper_wall.at']} KAPPA=150.0 EXP={config['upper_wall.exp']} EPS=1 OFFSET=0
-PRINT ARG=cmap,d,{type_content}.*,uwall.bias STRIDE={config['stride']} FILE={output_dir}/{filename}.colvar
+    print_arg = f"cmap,d,{type_content}.*,uwall.bias"
+    if config['spring']:
+        print_arg += ",restraint.bias"
+
+    plumed_content += f"""uwall: UPPER_WALLS ARG=d AT={config['upper_wall.at']} KAPPA={config['upper_wall.kappa']} EXP={config['upper_wall.exp']} EPS=1 OFFSET=0
+PRINT ARG={print_arg} STRIDE={config['stride']} FILE={output_dir}/{filename}.colvar
 """
     return plumed_content
 

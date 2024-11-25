@@ -57,7 +57,7 @@ def plot_opes_values(colvar_df, axs):
 
 from src.analysis.colvar import plot_colvar_trajectories
 
-def plot_everything(directory, system, simulation_type):
+def plot_summary(directory, system, simulation_type):
     # Create figure with constrained layout for better spacing
     fig = plt.figure(figsize=(12, 10), constrained_layout=True)
     
@@ -106,21 +106,23 @@ def plot_everything(directory, system, simulation_type):
 from matplotlib.animation import FuncAnimation, PillowWriter
 from tqdm import tqdm
 
-from concurrent.futures import ThreadPoolExecutor
-from functools import partial
 
-def process_single_run(run, directory, target, binder, shared_fig, shared_axes):
-    cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{binder}_{run}/{target}_{binder}_fes.h5py")
-    colvar_df = read_colvar_file(f"{directory}/{binder}_{run}/{target}_{binder}.colvar")
+def plot_colvar_traj_in_fes(directory, system):
+    """Create an animated plot of the CV trajectory overlaid on the FES."""
+    # Setup figure
+    fig, ax = plt.subplots()
+    
+    # Load data
+    cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5py")
+    colvar_file = get_file_by_extension(directory, '.colvar')  
+    colvar_df = read_colvar_file(colvar_file)
     
     # Get trajectory data (subsample)
     cv1_traj = colvar_df[cvs[0]].values[::1000]
     cv2_traj = colvar_df[cvs[1]].values[::1000]
     
-    ax = shared_axes[run-1]
-    
     # Plot FES
-    cntr = ax.contourf(cv1_bins, cv2_bins, fes, levels=range(0, 120, 5), cmap=plt.cm.jet)
+    cntr = ax.contourf(cv1_bins, cv2_bins, fes, levels=100, cmap=plt.cm.jet)
     plt.colorbar(cntr, ax=ax, label="FES [kJ/mol]")
     
     # Initialize trajectory line and point
@@ -129,62 +131,22 @@ def process_single_run(run, directory, target, binder, shared_fig, shared_axes):
     
     ax.set_xlabel(cvs[0])
     ax.set_ylabel(cvs[1])
-    ax.set_title(f"Run {run}")
-    
-    return {
-        'ax': ax,
-        'line': line,
-        'point': point,
-        'cv1_traj': cv1_traj,
-        'cv2_traj': cv2_traj
-    }
-
-def plot_colvar_traj_in_fes(directory, target, binder, num_runs):
-    # Create a wide figure to accommodate all runs
-    fig_width = 6 * num_runs  # 6 inches per subplot
-    fig, axes = plt.subplots(1, num_runs, figsize=(fig_width, 6))
-    if num_runs == 1:
-        axes = [axes]
-    
-    # Process all runs in parallel
-    with ThreadPoolExecutor() as executor:
-        process_run = partial(process_single_run, 
-                            directory=directory, 
-                            target=target, 
-                            binder=binder, 
-                            shared_fig=fig, 
-                            shared_axes=axes)
-        
-        run_data = list(executor.map(process_run, range(1, num_runs + 1)))
-    
-    # Find the maximum trajectory length
-    max_frames = max(len(data['cv1_traj']) for data in run_data)
+    ax.set_title(f"System: {system}")
     
     def init():
-        elements = []
-        for data in run_data:
-            data['line'].set_data([], [])
-            data['point'].set_data([], [])
-            elements.extend([data['line'], data['point']])
-        return elements
+        line.set_data([], [])
+        point.set_data([], [])
+        return line, point
 
     def animate(frame):
-        elements = []
-        for data in run_data:
-            # Handle different trajectory lengths
-            curr_frame = min(frame, len(data['cv1_traj'])-1)
-            
-            # Update trajectory line
-            data['line'].set_data(data['cv1_traj'][:curr_frame], 
-                                data['cv2_traj'][:curr_frame])
-            # Update current point
-            data['point'].set_data([data['cv1_traj'][curr_frame]], 
-                                 [data['cv2_traj'][curr_frame]])
-            elements.extend([data['line'], data['point']])
-        return elements
+        # Update trajectory line
+        line.set_data(cv1_traj[:frame], cv2_traj[:frame])
+        # Update current point
+        point.set_data([cv1_traj[frame]], [cv2_traj[frame]])
+        return line, point
 
     # Create animation with progress bar
-    frames = tqdm(range(max_frames), desc="Generating animation")
+    frames = tqdm(range(len(cv1_traj)), desc="Generating animation")
     anim = FuncAnimation(
         fig, 
         animate, 
@@ -197,8 +159,8 @@ def plot_colvar_traj_in_fes(directory, target, binder, num_runs):
     # Adjust layout and save
     plt.tight_layout()
     writer = PillowWriter(fps=30)
-    anim.save(f"{directory}/{target}_{binder}_all_trajectories.gif", writer=writer)
-    logger.info("Saved combined trajectory animation")
+    anim.save(f"{directory}/{system}_trajectory.gif", writer=writer)
+    logger.info("Saved trajectory animation")
     plt.close()
 
 def determine_simulation_type(directory):
@@ -302,12 +264,9 @@ def run(project, system, date, recompute, collect_plots):
     # plt.savefig(f"{directory}/{system}_fes.png", dpi=300, bbox_inches='tight', facecolor='white', edgecolor='none')
     # plt.close()
 
+    plot_colvar_traj_in_fes(directory, system)
 
-    
-
-
-
-    plot_everything(
+    plot_summary(
         directory, 
         system,
         simulation_type
@@ -334,8 +293,7 @@ def run(project, system, date, recompute, collect_plots):
 
 
 
-def main(project, system, date):
-    recompute = False
+def main(project, system, date, recompute=False):
     collect_plots = True
     run(project, system, date, recompute, collect_plots)
     
