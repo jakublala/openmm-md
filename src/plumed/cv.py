@@ -39,7 +39,7 @@ def filter_interchain_contacts(
 
 def get_contact_map(
         filename: str, 
-        cutoff: float = 0.8, # in nm
+        cutoff: float, # in nm
         output_dir: str = None,
         spot1_residues: Optional[Segment] = None,
         spot2_residues: Optional[Segment] = None,
@@ -62,15 +62,16 @@ def get_contact_map(
         raise ValueError(f'No equilibrated or solvated pdb file found for {filename}, cannot compute contact map')
 
 
-    universe = get_CA_universe(universe)
-    global_to_local_map = universe.residues.resids
-    chain_ids = np.concatenate(universe.segments.chainIDs)
-
+    full_universe = universe
+    CA_universe = get_CA_universe(universe)
+    global_to_local_map = CA_universe.residues.resids
+    chain_ids = np.concatenate(CA_universe.segments.chainIDs)
+    
     include_cutoff = 1.0*cutoff*10 # TODO: maybe include more contacts
     cmatrix = contact_matrix(
-        universe.atoms,
+        CA_universe.atoms,
         cutoff=include_cutoff,
-        box=universe.dimensions, 
+        box=CA_universe.dimensions, 
         )
     np.fill_diagonal(cmatrix, False)
     cmatrix = np.triu(cmatrix)
@@ -92,17 +93,21 @@ def get_contact_map(
         spot2_residue_chain_id = chain_ids[spot2_residue_index - 1]
         assert spot1_residue_chain_id is not None, f"Chain ID is None for spot1 residue {spot1_residue_index}"
         assert spot2_residue_chain_id is not None, f"Chain ID is None for spot2 residue {spot2_residue_index}"
+        local_index1 = global_to_local_map[spot1_residue_index - 1]
+        local_index2 = global_to_local_map[spot2_residue_index - 1]
         residue1 = Residue(
-            index=global_to_local_map[spot1_residue_index - 1],
+            index=local_index1,
             global_index=spot1_residue_index,
             chain_id=spot1_residue_chain_id,
-            indexing=1
+            indexing=1,
+            atom_indices=full_universe.select_atoms(f'chainid {spot1_residue_chain_id} and resid {local_index1}').indices
         )
         residue2 = Residue(
-            index=global_to_local_map[spot2_residue_index - 1],
+            index=local_index2,
             global_index=spot2_residue_index,
             chain_id=spot2_residue_chain_id,
-            indexing=1
+            indexing=1,
+            atom_indices=full_universe.select_atoms(f'chainid {spot2_residue_chain_id} and resid {local_index2}').indices
         )
         contact_map.contacts.append(
             Contact(
