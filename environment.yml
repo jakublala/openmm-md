@@ -28,6 +28,7 @@ dependencies:
   - openmmtools
   - ruff
   - pip
+  - rdkit
   - pip:
     - openmm-mdanalysis-reporter
     - mdtraj
