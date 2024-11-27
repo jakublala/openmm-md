@@ -28,7 +28,7 @@ RUN python -c "import openmm as mm; print('Available platforms:', [mm.Platform.g
 # Install PLUMED with OPES module
 RUN git clone https://github.com/plumed/plumed2 \
     && cd plumed2 \
-    && ./configure --prefix=$CONDA_DIR --enable-modules=opes \
+    && ./configure --prefix=$CONDA_DIR --enable-modules=opes,sasa \
     && make -j4 \
     && make install \
     && cd .. \
