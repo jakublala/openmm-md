@@ -13,8 +13,6 @@ COPY --chown=$MAMBA_USER:$MAMBA_USER environment.yml /tmp/environment.yml
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
 
 # Install conda packages
-# Note: this is a bit problematic, as changes in environment.yml are not reflected alone
-# in the image change, so need to manually update the image
 RUN micromamba install -y -n base -f /tmp/environment.yml && \
     micromamba clean --all --yes
 
