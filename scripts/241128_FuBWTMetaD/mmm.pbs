@@ -29,13 +29,18 @@ module load apptainer
 apptainer pull $HOME/Scratch/openmm-md.sif docker://jakublala/openmm-md
 
 # Update input parameters to match metadynamics parameters
-SYSTEM=${SYSTEM}
-FILEPATH=${FILEPATH}
-BIASFACTOR=${BIASFACTOR}
-SIGMA=${SIGMA}
-GRID_MIN=${GRID_MIN}
-GRID_MAX=${GRID_MAX}
-OUTPUT_DIR=${OUTPUT_DIR}
+SYSTEM="${SYSTEM:?Missing SYSTEM}"
+FILEPATH="${FILEPATH:?Missing FILEPATH}"
+BIASFACTOR="${BIASFACTOR:?Missing BIASFACTOR}"
+SIGMA_CV1="${SIGMA_CV1:?Missing SIGMA_CV1}"
+SIGMA_CV2="${SIGMA_CV2:?Missing SIGMA_CV2}"
+GRID_MIN_CV1="${GRID_MIN_CV1:?Missing GRID_MIN_CV1}"
+GRID_MIN_CV2="${GRID_MIN_CV2:?Missing GRID_MIN_CV2}"
+GRID_MAX_CV1="${GRID_MAX_CV1:?Missing GRID_MAX_CV1}"
+GRID_MAX_CV2="${GRID_MAX_CV2:?Missing GRID_MAX_CV2}"
+OUTPUT_DIR="${OUTPUT_DIR:?Missing OUTPUT_DIR}"
+
+echo "Running $SYSTEM with biasfactor $BIASFACTOR, sigma $SIGMA_CV1,$SIGMA_CV2, grid_min $GRID_MIN_CV1,$GRID_MIN_CV2, grid_max $GRID_MAX_CV1,$GRID_MAX_CV2, output_dir $OUTPUT_DIR"
 
 # Define the Python command
 PYTHON_CMD="python $HOME/projects/openmm-md/scripts/241128_FuBWTMetaD/run.py \
@@ -43,9 +48,12 @@ PYTHON_CMD="python $HOME/projects/openmm-md/scripts/241128_FuBWTMetaD/run.py \
     --system $SYSTEM \
     --filepath $FILEPATH \
     --biasfactor $BIASFACTOR \
-    --sigma $SIGMA \
-    --grid_min $GRID_MIN \
-    --grid_max $GRID_MAX"
+    --sigma_cv1 $SIGMA_CV1 \
+    --sigma_cv2 $SIGMA_CV2 \
+    --grid_min_cv1 $GRID_MIN_CV1 \
+    --grid_min_cv2 $GRID_MIN_CV2 \
+    --grid_max_cv1 $GRID_MAX_CV1 \
+    --grid_max_cv2 $GRID_MAX_CV2"
 
 # Execute the command using apptainer
 apptainer exec \
