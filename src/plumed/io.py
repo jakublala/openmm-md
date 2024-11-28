@@ -20,14 +20,13 @@ def assert_config(config):
         raise ValueError('Temperature is required')
 
 def create_plumed_input(
-        filepath, 
+        filename, 
         output_dir=None,
         config=None,
         mode: Literal['single-chain', 'two-chain'] = 'single-chain',
         ):
     # only works for two specific CVs!!!
-    filename = os.path.basename(filepath).split('.')[0]
-
+    
     assert_config(config)
 
     if output_dir is None:

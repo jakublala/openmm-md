@@ -1,7 +1,7 @@
 import os
 import logging
 from typing import Optional, Literal
-
+import shutil
 from src.plumed.opes import run_plumed
 from src.relax import minimize
 from src.fixer import fixer
@@ -53,6 +53,20 @@ def main(
 
     filename = os.path.basename(filepath).split('.')[0]
 
+    if 'equilibrated' in filename:
+        logger.info('Input PDB file is equilibrated, assuming it comes from a previous run...')
+        logger.info('Copying fixed, equilibrated and solvated pdb files to output directory')
+        from src.analysis.utils import get_file_by_extension
+        input_dir = os.path.dirname(filepath)
+        fixed_pdb = get_file_by_extension(input_dir, '_fixed.pdb')
+        equilibrated_pdb = get_file_by_extension(input_dir, '_equilibrated.pdb')
+        solvated_pdb = get_file_by_extension(input_dir, '_solvated.pdb')
+        # copy all to the output_dir
+        for file in [fixed_pdb, equilibrated_pdb, solvated_pdb]:
+            shutil.copy(file, output_dir)
+        filename = filename.replace('_equilibrated', '')
+        
+
     assert f'output/{filename}' not in os.listdir(), f"Folder output/{filename} already exists. It might overwrite existing data!"
 
     if config['restart_rfile'] is not None:
@@ -103,9 +117,11 @@ def main(
                 output_dir=output_dir,
                 padding=padding
                 )
+        else:
+            logger.info('Solvated and equilibrated pdb files found, skipping solvation and relaxation')
     
     create_plumed_input(
-        filepath=filepath, 
+        filename=filename, 
         output_dir=output_dir,
         config=config,
         mode=chain_mode
