@@ -55,8 +55,10 @@ def get_contact_map(
         raise ValueError('Output directory is required')
     
     if os.path.exists(f'{output_dir}/{filename}_equilibrated.pdb'):
+        logger.info('Using equilibrated pdb file to compute contact map')
         universe = mda.Universe(f'{output_dir}/{filename}_equilibrated.pdb')
     elif os.path.exists(f'{output_dir}/{filename}_solvated.pdb'):
+        logger.info('Using solvated pdb file to compute contact map')
         universe = mda.Universe(f'{output_dir}/{filename}_solvated.pdb')
     else:
         raise ValueError(f'No equilibrated or solvated pdb file found for {filename}, cannot compute contact map')

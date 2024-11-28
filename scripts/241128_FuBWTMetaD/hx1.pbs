@@ -15,8 +15,10 @@ BIASFACTOR=${BIASFACTOR}
 SIGMA=${SIGMA}
 GRID_MIN=${GRID_MIN}
 GRID_MAX=${GRID_MAX}
+OUTPUT_DIR=${OUTPUT_DIR}
 
 PYTHON_CMD="python run.py \
+    --output_dir $OUTPUT_DIR \
     --filepath $FILEPATH \
     --system $SYSTEM \
     --biasfactor $BIASFACTOR \
