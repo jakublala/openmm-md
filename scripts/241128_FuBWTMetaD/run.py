@@ -8,11 +8,13 @@ def run(
         biasfactor: int, 
         sigma: str, 
         grid_min: str, 
-        grid_max: str
+        grid_max: str,
+        output_dir: str
         ):
     DATE = '241128'
     FILEPATH = filepath
-    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/{system}/{DATE}-MetaD'
+    # OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/{system}/{DATE}-MetaD'
+    OUTPUT_DIR = output_dir
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2

@@ -1,0 +1,60 @@
+#!/bin/bash -l
+
+# Request a number of GPU cards, in this case 2 (the maximum)
+#$ -l gpu=1
+
+# Request ten minutes of wallclock time (format hours:minutes:seconds).
+#$ -l h_rt=48:00:0
+
+# Request 1 gigabyte of RAM (must be an integer followed by M, G, or T)
+#$ -l mem=80G
+
+# Request 15 gigabyte of TMPDIR space (default is 10 GB)
+#$ -l tmpfs=32G
+
+# Set the name of the job.
+#$ -N GPUJob
+
+# Set the working directory to somewhere in your scratch space.
+#$ -wd /home/mmm1486/Scratch/openmm-md
+
+#$ -A Imperial_Mat
+#$ -P Free
+
+# # Change into temporary directory to run work
+# cd $TMPDIR
+
+module load apptainer
+
+apptainer pull $HOME/Scratch/openmm-md.sif docker://jakublala/openmm-md
+
+# Update input parameters to match metadynamics parameters
+SYSTEM=${SYSTEM}
+FILEPATH=${FILEPATH}
+BIASFACTOR=${BIASFACTOR}
+SIGMA=${SIGMA}
+GRID_MIN=${GRID_MIN}
+GRID_MAX=${GRID_MAX}
+OUTPUT_DIR=${OUTPUT_DIR}
+
+# Define the Python command
+PYTHON_CMD="python $HOME/projects/openmm-md/scripts/241128_FuBWTMetaD/run.py \
+    --output_dir $OUTPUT_DIR \
+    --system $SYSTEM \
+    --filepath $FILEPATH \
+    --biasfactor $BIASFACTOR \
+    --sigma $SIGMA \
+    --grid_min $GRID_MIN \
+    --grid_max $GRID_MAX"
+
+# Execute the command using apptainer
+apptainer exec \
+    --nv \
+    --no-home \
+    --bind $HOME/Scratch \
+    --bind $HOME/projects \
+    $HOME/Scratch/openmm-md.sif bash -c \
+    "export PYTHONPATH=$HOME/projects/openmm-md:$PYTHONPATH && $PYTHON_CMD"
+
+# Preferably, tar-up (archive) all output files onto the shared scratch area
+tar zcvf $HOME/Scratch/files_from_job_$JOB_ID.tar.gz $TMPDIR
