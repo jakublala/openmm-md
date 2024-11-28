@@ -119,14 +119,6 @@ def main(
                 )
         else:
             logger.info('Solvated and equilibrated pdb files found, skipping solvation and relaxation')
-    
-    create_plumed_input(
-        filename=filename, 
-        output_dir=output_dir,
-        config=config,
-        mode=chain_mode
-        )
-
 
         
     run_plumed(
@@ -138,7 +130,9 @@ def main(
         restart_checkpoint=restart_checkpoint,
         device=device,
         output_dir=output_dir,
-        logging_frequency=logging_frequency
+        logging_frequency=logging_frequency,
+        plumed_config=config,
+        plumed_mode=chain_mode,
         )
 
 
