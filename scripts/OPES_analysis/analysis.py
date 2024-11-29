@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import logging
 
-from src.analysis.fes import compute_fes
+from src.analysis.fes import compute_fes, compute_fes_from_hills
 from src.analysis.plot import plot_2d_fes, plot_1d_fes
 
 from src.analysis.fes import load_fes
@@ -34,7 +34,7 @@ def plot_all_fes(directory, target, binder, num_runs, labels):
     # TODO: check, this might be broken now!!!!
     fes_data = []
     for run in range(1, num_runs + 1):
-        fes_filepath = f"{directory}/{binder}_{run}/{target}_{binder}_fes.h5py"
+        fes_filepath = f"{directory}/{binder}_{run}/{target}_{binder}_fes.h5"
         _, fes, cv1_bins, cv2_bins = load_fes(fes_filepath)
         fes_data.append((cv1_bins, cv2_bins, fes))
 
@@ -68,7 +68,7 @@ def plot_summary(directory, system, simulation_type):
     # Add title with padding
     fig.suptitle(f"Analysis for {system}", fontsize=16, y=1.02)
 
-    cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5py")
+    cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5")
     colvar_file = get_file_by_extension(directory, '.colvar')  
     colvar_df = read_colvar_file(colvar_file)
 
@@ -113,7 +113,7 @@ def plot_colvar_traj_in_fes(directory, system):
     fig, ax = plt.subplots()
     
     # Load data
-    cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5py")
+    cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5")
     colvar_file = get_file_by_extension(directory, '.colvar')  
     colvar_df = read_colvar_file(colvar_file)
     
@@ -178,22 +178,7 @@ def determine_simulation_type(directory):
 from src.analysis.io import read_colvar_file
 from src.analysis.kernels import get_sigma
 from src.analysis.utils import get_file_by_extension
-import pandas as pd
-
-def read_hills_file(hills_file):
-    # get first line of kernels file
-    with open(hills_file, 'r') as file:
-        labels = file.readline().split()[2:]
-
-    df = pd.read_table(
-        hills_file,
-        dtype=float,
-        sep=r"\s+",
-        comment="#",
-        header=None,
-        names=labels
-    )
-    return df
+from src.analysis.io import read_hills_file
 
 from src.analysis.utils import fix_fucked_up_naming
 def run(project, system, date, recompute, collect_plots):
@@ -215,7 +200,7 @@ def run(project, system, date, recompute, collect_plots):
 
     simulation_type = determine_simulation_type(directory)
 
-    if recompute or not get_file_by_extension(directory, '.h5py', assert_exists=False):
+    if recompute or not get_file_by_extension(directory, '.h5', assert_exists=False):
         if simulation_type == 'opes':
             # OPES FES
             cv1_bins, cv2_bins, fes = compute_fes(
@@ -228,27 +213,31 @@ def run(project, system, date, recompute, collect_plots):
                 simulation_type='opes'
                 )
         elif simulation_type == 'metad':
-            # METAD FES
-            # cv1_bins, cv2_bins, fes = sum_hills(
-            #     colvar_df,
-            #     directory=directory,
-            #     outfile=f"{directory}/{system}_fes.h5py",
-            #     cvs=['cmap', 'd'],
-            # )
-            cv1_bins, cv2_bins, fes = compute_fes(
-                colvar_df,
-                sigmas=[get_sigma(directory, cv) for cv in ['cmap', 'd']], 
+            # METAD FES, use SUM_HILLS!!!!
+            hills_df = read_hills_file(get_file_by_extension(directory, '.hills'))
+            cv1_bins, cv2_bins, fes_hills = compute_fes_from_hills(
+                hills_df=hills_df,
                 temp=300,
-                cvs=['cmap', 'd'], 
-                outfile=f"{directory}/{system}_fes.h5", 
-                bias=['metad.bias', 'uwall.bias'],
-                simulation_type='metad'
-                )
+                cvs=['cmap', 'd'],
+                biasfactor=hills_df['biasf'].iloc[0],
+                outfile=f"{directory}/{system}_fes_hills.h5",
+                n_bins=100
+            )
+            
+            # cv1_bins, cv2_bins, fes = compute_fes(
+            #     colvar_df,
+            #     sigmas=[get_sigma(directory, cv) for cv in ['cmap', 'd']], 
+            #     temp=300,
+            #     cvs=['cmap', 'd'], 
+            #     outfile=f"{directory}/{system}_fes.h5", 
+            #     bias=['metad.bias', 'uwall.bias'],
+            #     simulation_type='metad'
+            #     )
         else:
             raise ValueError(f"Unknown simulation type: {simulation_type}")
 
     else:
-        cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5py")
+        cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5")
 
     # from src.analysis.plot import plot_2d_fes
     # fig, ax = plt.subplots()

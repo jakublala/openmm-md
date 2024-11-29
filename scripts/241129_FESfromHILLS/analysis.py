@@ -8,8 +8,9 @@ from src.analysis.utils import get_file_by_extension
 from src.analysis.io import read_hills_file
 from src.analysis.fes import load_fes
 
-def main(system: str = "ASYN-A", project: str = "241010_FoldingUponBinding"):
-    directory = f"../../data/{project}/output/{system}/241128-MetaD"
+def main(system: str, project: str, date: str):
+
+    directory = f"../../data/{project}/output/{system}/{date}"
     hills_file = get_file_by_extension(
         directory=directory,
         extension=".hills"
@@ -31,7 +32,7 @@ def main(system: str = "ASYN-A", project: str = "241010_FoldingUponBinding"):
             n_bins=100
         )
     else:
-        _, fes_hills, cv1_bins_hills, cv2_bins_hills = load_fes(f"{system}_fes_hills.h5")
+        _, fes_hills, cv1_bins_hills, cv2_bins_hills = load_fes(f"{directory}/{system}_fes_hills.h5")
 
     try:
         fes_reweighted_file = get_file_by_extension(
@@ -50,6 +51,8 @@ def main(system: str = "ASYN-A", project: str = "241010_FoldingUponBinding"):
             temp=300,
             cvs=cvs,
             outfile=f"{directory}/{system}_fes_reweighted.h5",
+            n_bins=100,
+            simulation_type="metad"
         )
     fes_reweighted = fes_reweighted.T
 
@@ -63,7 +66,11 @@ def main(system: str = "ASYN-A", project: str = "241010_FoldingUponBinding"):
     # Add main title with padding
     fig.suptitle(f"FES Analysis for {system}", fontsize=16, y=1.02)
 
-    levels = np.linspace(fes_hills.min(), fes_hills.max(), 100).astype(np.int32)
+    levels = np.unique(np.linspace(fes_hills.min(), fes_hills.max(), 100).astype(np.int32))
+
+    # assert increasing levels
+    assert np.all(np.diff(levels) > 0), f"Levels are not increasing, they are {levels}"
+
 
     # Plot FES comparisons
     axs[0, 0] = plot_2d_fes(fes_hills, cv1_bins_hills, cv2_bins_hills, cvs, axs[0, 0], levels=levels)
@@ -74,7 +81,9 @@ def main(system: str = "ASYN-A", project: str = "241010_FoldingUponBinding"):
     # Sync y-axis limits between corresponding 1D plots
     axs[1, 1].set_ylim(axs[0, 1].get_ylim())
     axs[1, 2].set_ylim(axs[0, 2].get_ylim())
+
     axs[2, 2].set_ylim(axs[0, 2].get_ylim())
+    axs[2, 1].set_ylim(axs[0, 1].get_ylim())
 
     # in the third row, plot the 1d fes from both on the same plot
     # get the values from the first and second row
