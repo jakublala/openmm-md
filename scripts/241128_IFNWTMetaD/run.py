@@ -6,11 +6,16 @@ def run(
         filepath: str, 
         system: str, 
         biasfactor: int, 
-        sigma: str, 
-        grid_min: str, 
-        grid_max: str,
+        sigma_cv1: str, 
+        sigma_cv2: str, 
+        grid_min_cv1: str, 
+        grid_min_cv2: str, 
+        grid_max_cv1: str, 
+        grid_max_cv2: str,
         output_dir: str
         ):
+        
+
     DATE = '241128'
     FILEPATH = filepath
     # OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/{system}/{DATE}-MetaD'
@@ -31,10 +36,10 @@ def run(
         'state_wstride': get_checkpoint_interval(TIMESTEP),
         'metad.pace': 500,
         'cvs': ['cmap', 'd'],
-        'metad.sigma': ','.join(str(x) for x in sigma), # "0.04,0.01"
+        'metad.sigma': f'{sigma_cv1},{sigma_cv2}', # "0.04,0.01"
         'metad.height': 1.25, # 1/2 * kBT
-        'metad.grid_min': ','.join(str(x) for x in grid_min),
-        'metad.grid_max': ','.join(str(x) for x in grid_max),
+        'metad.grid_min': f'{grid_min_cv1},{grid_min_cv2}',
+        'metad.grid_max': f'{grid_max_cv1},{grid_max_cv2}',
         'metad.grid_bin': "200,200",
         'metad.biasfactor': biasfactor,
         'upper_wall.at': 5, # keep this at UW=5, we are primarily looking at BIASFACTOR now
@@ -60,7 +65,7 @@ def run(
         timestep=TIMESTEP,
         device_index=gpu_indices,
         device='cuda',
-        split_chains=True,
+        split_chains=False if ('A-synuclein' in FILEPATH) or ('CD28' in FILEPATH) else True, # HACK
         logging_frequency=LOGGING_FREQUENCY,
         config=config,
         padding=2,

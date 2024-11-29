@@ -1,7 +1,11 @@
 python run.py \
-    --filepath "../../data/241010_FoldingUponBinding/output/ASYN-A/241122-Explore/A-synuclein_alpha_equilibrated.pdb" \
+    --filepath "../../data/241010_FoldingUponBinding/input/A-synuclein/A-synuclein_alpha.pdb" \
     --system "ASYN-A" \
     --biasfactor 56 \
-    --sigma "0.24,0.05" \
-    --grid_min "0,0" \
-    --grid_max "90,7"
+    --sigma_cv1 "0.24" \
+    --sigma_cv2 "0.05" \
+    --grid_min_cv1 "0" \
+    --grid_max_cv1 "90" \
+    --grid_min_cv2 "0" \
+    --grid_max_cv2 "7" \
+    --output_dir "../../data/241010_FoldingUponBinding/output/ASYN-A/241128-Test"

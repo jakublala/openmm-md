@@ -5,6 +5,8 @@ import logging
 from typing import List, Optional, Tuple
 from src.constants import kB
 from src.analysis.kde import GaussianKDE
+from tqdm import tqdm
+
 # move this elsewhere then
 logging.basicConfig(
     level=logging.INFO,
@@ -74,6 +76,57 @@ def load_fes(filepath: str):
     assert fes.shape[0] == len(cv1_bins) and fes.shape[1] == len(cv2_bins), "FES must have the same shape as the CV bins"
     return cvs, fes, cv1_bins, cv2_bins
 
+
+def compute_fes_from_hills(
+        hills_df: pd.DataFrame,
+        temp: float,
+        cvs: List[str],
+        outfile: str,
+        biasfactor: float,
+        n_bins: int = 200
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Compute FES from hills file.
+    
+    Uses the relationship: lim_(t->inf) F(s)= - (T + deltaT) / deltaT  *  V(s, t)
+    
+    Based on PLUMEd, BIASFACTOR = (T + deltaT) / T
+
+    Doing this naively with a loop, taking about 1 minute to do a 100 ns run.
+    """
+    # Create grid for evaluation
+    cv1_bins = np.linspace(hills_df[cvs[0]].min(), hills_df[cvs[0]].max(), n_bins)
+    cv2_bins = np.linspace(hills_df[cvs[1]].min(), hills_df[cvs[1]].max(), n_bins)
+    X, Y = np.meshgrid(cv1_bins, cv2_bins)
+    
+    # Initialize potential grid
+    V = np.zeros((n_bins, n_bins))
+
+    # Get parameters for each CV
+    sigma1 = hills_df[f'sigma_{cvs[0]}'].iloc[0]  # assuming constant sigma
+    sigma2 = hills_df[f'sigma_{cvs[1]}'].iloc[0]
+    
+    # Sum up all Gaussian contributions
+    for _, hill in tqdm(hills_df.iterrows(), total=len(hills_df), desc='Summing up hills...'):
+        # Calculate distances from hill center to all grid points
+        d1 = (X - hill[cvs[0]]) ** 2 / (2 * sigma1 ** 2)
+        d2 = (Y - hill[cvs[1]]) ** 2 / (2 * sigma2 ** 2)
+        
+        # Add Gaussian contribution
+        V += hill['height'] * np.exp(-(d1 + d2))
+    
+    # Convert bias potential to free energy
+    deltaT = temp * (biasfactor - 1)
+    fes = -((temp + deltaT) / deltaT) * V
+    
+    # Shift minimum to zero
+    fes -= np.min(fes)
+    
+    # Save results
+    if outfile is not None:
+        save_fes(outfile, cv1_bins, cv2_bins, fes, cvs)
+    
+    return cv1_bins, cv2_bins, fes
 
 def compute_fes(
         colvar_df: pd.DataFrame,

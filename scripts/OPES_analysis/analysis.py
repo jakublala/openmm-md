@@ -175,7 +175,7 @@ def determine_simulation_type(directory):
                 return 'metad'
     raise ValueError(f"No simulation type found in {plumed_file}")
 
-from src.analysis.colvar import read_colvar_file
+from src.analysis.io import read_colvar_file
 from src.analysis.kernels import get_sigma
 from src.analysis.utils import get_file_by_extension
 import pandas as pd
@@ -194,16 +194,6 @@ def read_hills_file(hills_file):
         names=labels
     )
     return df
-
-# def sum_hills(colvar_df, directory, outfile, cvs):
-#     hills_file = get_file_by_extension(directory, '.hills')
-#     hills_df = read_hills_file(hills_file)
-
-#     # create a grid based on the min and max of the hills file
-#     cv1_bins = np.linspace(hills_df['cmap'].min(), hills_df['cmap'].max(), 100)
-#     cv2_bins = np.linspace(hills_df['d'].min(), hills_df['d'].max(), 100)
-
-#     # sum the hills accordingly, maybe via kernel density estimation?
 
 from src.analysis.utils import fix_fucked_up_naming
 def run(project, system, date, recompute, collect_plots):
@@ -233,7 +223,7 @@ def run(project, system, date, recompute, collect_plots):
                 sigmas=[get_sigma(directory, cv) for cv in ['cmap', 'd']], 
                 temp=300,
                 cvs=['cmap', 'd'], 
-                outfile=f"{directory}/{system}_fes.h5py", 
+                outfile=f"{directory}/{system}_fes.h5", 
                 bias=['opes.bias', 'uwall.bias']
                 )
         elif simulation_type == 'metad':
@@ -249,7 +239,7 @@ def run(project, system, date, recompute, collect_plots):
                 sigmas=[get_sigma(directory, cv) for cv in ['cmap', 'd']], 
                 temp=300,
                 cvs=['cmap', 'd'], 
-                outfile=f"{directory}/{system}_fes.h5py", 
+                outfile=f"{directory}/{system}_fes.h5", 
                 bias=['metad.bias', 'uwall.bias']
                 )
         else:
