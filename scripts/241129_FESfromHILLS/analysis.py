@@ -7,8 +7,9 @@ from src.analysis.plot import plot_2d_fes, plot_1d_fes
 from src.analysis.utils import get_file_by_extension
 from src.analysis.io import read_hills_file
 from src.analysis.fes import load_fes
-def main(system: str = "ASYN-A"):
-    directory = f"../../data/241010_FoldingUponBinding/output/{system}/241128-MetaD"
+
+def main(system: str = "ASYN-A", project: str = "241010_FoldingUponBinding"):
+    directory = f"../../data/{project}/output/{system}/241128-MetaD"
     hills_file = get_file_by_extension(
         directory=directory,
         extension=".hills"
@@ -32,40 +33,87 @@ def main(system: str = "ASYN-A"):
     else:
         _, fes_hills, cv1_bins_hills, cv2_bins_hills = load_fes(f"{system}_fes_hills.h5")
 
-    fes_reweighted_file = get_file_by_extension(
-        directory=directory,
-        extension=".h5"
-    )
-    if not os.path.exists(fes_reweighted_file):
+    try:
+        fes_reweighted_file = get_file_by_extension(
+            directory=directory,
+            extension="reweighted.h5"
+        )
+        _, fes_reweighted, cv1_bins_reweighted, cv2_bins_reweighted = load_fes(fes_reweighted_file)
+    except FileNotFoundError:
         from src.analysis.io import read_colvar_file
-        from src.analysis.kernels import get_sigmas
+        from src.analysis.kernels import get_sigma
+        from src.analysis.fes import compute_fes
         colvar_df = read_colvar_file(get_file_by_extension(directory, ".colvar"))
         cv1_bins_reweighted, cv2_bins_reweighted, fes_reweighted = compute_fes(
             colvar_df=colvar_df,
             sigmas=[get_sigma(directory, cv) for cv in cvs],
             temp=300,
             cvs=cvs,
-            outfile=fes_reweighted_file,
+            outfile=f"{directory}/{system}_fes_reweighted.h5",
         )
-    _, fes_reweighted, cv1_bins_reweighted, cv2_bins_reweighted = load_fes(fes_reweighted_file)
+    fes_reweighted = fes_reweighted.T
 
-    fig, axs = plt.subplots(2, 3, figsize=(12, 8))
+    # Create figure with constrained layout for better spacing
+    fig = plt.figure(figsize=(16, 12), constrained_layout=True)
+    
+    # Create GridSpec to ensure equal-sized subplots with extra left margin
+    gs = fig.add_gridspec(3, 3, width_ratios=[1, 1, 1], height_ratios=[1, 1, 1], left=0.1)
+    axs = np.array([[fig.add_subplot(gs[i, j]) for j in range(3)] for i in range(3)])
 
+    # Add main title with padding
+    fig.suptitle(f"FES Analysis for {system}", fontsize=16, y=1.02)
 
     levels = np.linspace(fes_hills.min(), fes_hills.max(), 100).astype(np.int32)
 
+    # Plot FES comparisons
     axs[0, 0] = plot_2d_fes(fes_hills, cv1_bins_hills, cv2_bins_hills, cvs, axs[0, 0], levels=levels)
     axs[1, 0] = plot_2d_fes(fes_reweighted, cv1_bins_reweighted, cv2_bins_reweighted, cvs, axs[1, 0], levels=levels)
     axs[0, 1], axs[0, 2] = plot_1d_fes(fes_hills, cv1_bins_hills, cv2_bins_hills, cvs, axs[0, 1:])
     axs[1, 1], axs[1, 2] = plot_1d_fes(fes_reweighted, cv1_bins_reweighted, cv2_bins_reweighted, cvs, axs[1, 1:])
 
-    # Add rotated titles for each row
-    fig.text(0.4, 0.95, 'Summed Hills', ha='center', fontsize=12)
-    fig.text(0.4, 0.45, 'Reweighting', ha='center', fontsize=12)
+    # Sync y-axis limits between corresponding 1D plots
+    axs[1, 1].set_ylim(axs[0, 1].get_ylim())
+    axs[1, 2].set_ylim(axs[0, 2].get_ylim())
+    axs[2, 2].set_ylim(axs[0, 2].get_ylim())
 
+    # in the third row, plot the 1d fes from both on the same plot
+    # get the values from the first and second row
+    hills_line = axs[0, 1].get_lines()[0]  # get first line from the plot
+    reweighted_line = axs[1, 1].get_lines()[0]
+    
+    x_hills, y_hills = hills_line.get_data()
+    x_reweighted, y_reweighted = reweighted_line.get_data()
+    axs[2, 1].plot(x_hills, y_hills, label='Summed Hills')
+    axs[2, 1].plot(x_reweighted, y_reweighted, label='Reweighting')
+    axs[2, 1].legend()
 
-    # fix the same xticks, yticks for both same plots
-    plt.savefig(f"{system}_fes_comparison.png", dpi=300)
+    # do the same for the third column
+    hills_line = axs[0, 2].get_lines()[0]  # get first line from the plot
+    reweighted_line = axs[1, 2].get_lines()[0]
+    
+    x_hills, y_hills = hills_line.get_data()
+    x_reweighted, y_reweighted = reweighted_line.get_data()
+    axs[2, 2].plot(x_hills, y_hills, label='Summed Hills')
+    axs[2, 2].plot(x_reweighted, y_reweighted, label='Reweighting')
+    axs[2, 2].legend()
+
+    # Add row labels with more space on left
+    fig.text(0.05, 0.75, 'Summed Hills', ha='left', va='center', fontsize=12, rotation=90)
+    fig.text(0.05, 0.25, 'Reweighting', ha='left', va='center', fontsize=12, rotation=90)
+
+    # Make all axes square and equal
+    for ax in axs.flat:
+        ax.set_aspect('auto')
+
+    # Save with high quality settings
+    plt.savefig(
+        f"{directory}/{system}_fes_comparison.png",
+        dpi=300,
+        bbox_inches='tight',
+        facecolor='white',
+        edgecolor='none'
+    )
+    plt.close()
 
 if __name__ == "__main__":
     fire.Fire(main)

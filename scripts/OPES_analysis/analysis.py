@@ -75,7 +75,7 @@ def plot_summary(directory, system, simulation_type):
     if simulation_type == 'opes':
         axs[0, :] = plot_opes_values(colvar_df, axs[0, :])
     else:
-        logger.info(f"Plotting METAD analysis for {system}, hence some empty plots will remain")
+        logger.info(f"Plotting METAD analysis for {system}, hence some empty plots will remain empty")
     
     # Plot colvar trajectories in second row
     axs[1, 0], axs[1, 1] = plot_colvar_trajectories(colvar_df, axs[1, :2], timestep=TIMESTEP, stride=STRIDE)
@@ -224,7 +224,8 @@ def run(project, system, date, recompute, collect_plots):
                 temp=300,
                 cvs=['cmap', 'd'], 
                 outfile=f"{directory}/{system}_fes.h5", 
-                bias=['opes.bias', 'uwall.bias']
+                bias=['opes.bias', 'uwall.bias'],
+                simulation_type='opes'
                 )
         elif simulation_type == 'metad':
             # METAD FES
@@ -240,7 +241,8 @@ def run(project, system, date, recompute, collect_plots):
                 temp=300,
                 cvs=['cmap', 'd'], 
                 outfile=f"{directory}/{system}_fes.h5", 
-                bias=['metad.bias', 'uwall.bias']
+                bias=['metad.bias', 'uwall.bias'],
+                simulation_type='metad'
                 )
         else:
             raise ValueError(f"Unknown simulation type: {simulation_type}")

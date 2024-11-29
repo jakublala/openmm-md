@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import h5py
 import logging
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Literal
 from src.constants import kB
 from src.analysis.kde import GaussianKDE
 from tqdm import tqdm
@@ -14,14 +14,27 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def compute_kde_weights(colvar_df: pd.DataFrame, bias: Optional[List[str]], kbT: float) -> np.ndarray:
+def compute_kde_weights(
+        colvar_df: pd.DataFrame, 
+        bias: Optional[List[str]], 
+        kbT: float, 
+        simulation_type: Literal['opes', 'metad'] = None
+    ) -> np.ndarray:
     """Compute weights for KDE from bias columns"""
+
+    if simulation_type is None:
+        raise ValueError("Simulation type must be provided")
+
     total_bias = np.zeros(len(colvar_df))
-    if bias is None:
-        total_bias = colvar_df[[col for col in colvar_df.columns if 'bias' in col.lower()]].sum(axis=1)
-    else:
-        total_bias = colvar_df[bias].sum(axis=1)
     
+    if bias is None:
+        bias_cols = [col for col in colvar_df.columns if 'bias' in col.lower()]
+    else:
+        bias_cols = bias
+        
+    for col in bias_cols:
+        total_bias -= colvar_df[col]
+        
     # Subtract maximum value to prevent overflow
     max_bias = np.max(total_bias.values)
     return np.exp((total_bias.values - max_bias) / kbT)
@@ -44,7 +57,6 @@ def compute_2d_fes(colvar_df: pd.DataFrame, cvs: List[str], kde: GaussianKDE, n_
     fes = -kbT * np.log(kde(cv1_bins, cv2_bins) + epsilon)
     fes = fes.reshape(n_bins, n_bins)
     fes -= np.min(fes)
-    
     return cv1_bins, cv2_bins, fes
 
 def save_fes(outfile: str, cv1_bins: np.ndarray, cv2_bins: Optional[np.ndarray], fes: np.ndarray, cvs: List[str]) -> None:
@@ -135,7 +147,8 @@ def compute_fes(
         cvs: List[str],
         outfile: str,
         bias: Optional[List[str]] = None,
-        n_bins: int = 200
+        n_bins: int = 200,
+        simulation_type: Literal['opes', 'metad'] = None
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Compute free energy surface from collective variables and bias.
@@ -161,7 +174,7 @@ def compute_fes(
 
     # Step 1: Compute the weights for the trajectory
     logger.info("Computing KDE weights")
-    weights = compute_kde_weights(colvar_df, bias, kbT)
+    weights = compute_kde_weights(colvar_df, bias, kbT, simulation_type)
 
     # Step 2: Compute the KDE (unbiased probability density)
     logger.info("Computing the unbiased probability density")
@@ -175,6 +188,11 @@ def compute_fes(
     else:
         logger.info("Computing 2D FES")
         cv1_bins, cv2_bins, fes = compute_2d_fes(colvar_df, cvs, kde, n_bins, kbT)
+
+
+    # HACK: there's some weird bug that for MetaD the FES is transposed
+    if simulation_type == 'metad':
+        fes = fes.T
 
     # Save results
     if outfile is not None:
