@@ -21,13 +21,13 @@ def main(system: str = "ASYN-A", project: str = "241010_FoldingUponBinding"):
     assert hills_df['biasf'].std() < 1e-6, "biasf is not constant"
 
     cvs = ["cmap", "d"]
-    if not os.path.exists(f"{system}_fes_hills.h5"):
+    if not os.path.exists(f"{directory}/{system}_fes_hills.h5"):
         cv1_bins_hills, cv2_bins_hills, fes_hills = compute_fes_from_hills(
             hills_df=hills_df,
             temp=300,
             cvs=cvs,
             biasfactor=hills_df['biasf'].iloc[0],
-            outfile=f"{system}_fes_hills.h5",
+            outfile=f"{directory}/{system}_fes_hills.h5",
             n_bins=100
         )
     else:
