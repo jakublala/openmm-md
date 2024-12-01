@@ -1,5 +1,5 @@
 from src.analysis.utils import get_file_by_extension
-from src.analysis.colvar import read_colvar_file
+from src.analysis.io import read_colvar_file
 from src.analysis.deltaG import compute_deltaG, marginalize_fes
 from src.analysis.fes import load_fes
 from src.constants import kB, mol

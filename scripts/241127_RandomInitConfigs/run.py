@@ -7,7 +7,7 @@ import MDAnalysis as mda
 from MDAnalysis.transformations import unwrap, center_in_box
 
 from src.analysis.utils import get_file_by_extension
-from src.analysis.colvar import read_colvar_file
+from src.analysis.io import read_colvar_file
 
 TIMESTEP = 0.002 # in ps
 STRIDE = 500

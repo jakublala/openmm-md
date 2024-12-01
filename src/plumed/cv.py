@@ -43,7 +43,7 @@ def get_contact_map(
         output_dir: str = None,
         spot1_residues: Optional[Segment] = None,
         spot2_residues: Optional[Segment] = None,
-        mode: Literal['single-chain', 'two-chain'] = 'single-chain'
+        mode: Literal['single-chain', 'two-chain'] = None,
         ):
     """
     Creates a contact residue map for a given system.
@@ -54,15 +54,14 @@ def get_contact_map(
     if output_dir is None:
         raise ValueError('Output directory is required')
     
+    if mode is None:
+        raise ValueError('Mode is required')
+    
     if os.path.exists(f'{output_dir}/{filename}_equilibrated.pdb'):
         logger.info('Using equilibrated pdb file to compute contact map')
         universe = mda.Universe(f'{output_dir}/{filename}_equilibrated.pdb')
-    elif os.path.exists(f'{output_dir}/{filename}_solvated.pdb'):
-        logger.info('Using solvated pdb file to compute contact map')
-        universe = mda.Universe(f'{output_dir}/{filename}_solvated.pdb')
     else:
-        raise ValueError(f'No equilibrated or solvated pdb file found for {filename}, cannot compute contact map')
-
+        raise ValueError(f'Cannot compute contact map with no equilibrated pdb file found for {filename}')
 
     full_universe = universe
     CA_universe = get_CA_universe(universe)

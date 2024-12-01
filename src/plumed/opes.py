@@ -9,6 +9,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from src.plumed.utils import get_checkpoint_interval
+from src.plumed.io import create_plumed_input
 
 def run_plumed(
         filename, 
@@ -20,6 +21,8 @@ def run_plumed(
         device='cuda', 
         output_dir=None, 
         logging_frequency=None,
+        plumed_config=None,
+        plumed_mode=None,
         ):
     """Run an OpenMM molecular dynamics simulation with Metadynamics or OPES (On-the-fly Probability Enhanced Sampling).
     
@@ -44,6 +47,10 @@ def run_plumed(
         Directory path for all input and output files.
     logging_frequency : float, required
         Frequency (in picoseconds) for trajectory and state data reporting.
+    plumed_config : dict, required
+        PLUMED config.
+    plumed_mode : str, required
+        Chain mode
 
     Returns
     -------
@@ -195,6 +202,16 @@ def run_plumed(
             output_dir=output_dir,
             filename=filename
             )
+        
+    if plumed_config is None:
+        raise ValueError('PLUMED config is required')
+    
+    create_plumed_input(
+        filename=filename, 
+        output_dir=output_dir,
+        config=plumed_config,
+        mode=plumed_mode
+        )
 
     # Add PLUMED bias
     with open(f'{output_dir}/{filename}_plumed.dat', 'r') as file:
