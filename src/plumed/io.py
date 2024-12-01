@@ -6,6 +6,7 @@ import numpy as np
 from src.models import ContactMap, Segment
 from typing import Optional
 
+from src.analysis.utils import get_file_by_extension
 from src.plumed.utils import get_atom_ids_from_chain
 
 import logging
@@ -29,6 +30,8 @@ def create_plumed_input(
     
     assert_config(config)
 
+    get_file_by_extension(output_dir, 'equilibrated.pdb', assert_exists=True)
+    
     if output_dir is None:
         raise ValueError('Output directory is required')
     
@@ -158,11 +161,13 @@ c2: COM ATOMS={spot2_com_CAs}"""
 ...
 """
     elif config['type'] == 'metad':
+        restart_str = 'YES' if config['restart'] else 'NO'
         plumed_content += f"""metad: METAD ...
 \tARG={cv_arg_content} PACE={config['metad.pace']} SIGMA={config['metad.sigma']} HEIGHT={config['metad.height']}
 \tGRID_MIN={config['metad.grid_min']} GRID_MAX={config['metad.grid_max']} GRID_BIN={config['metad.grid_bin']}
 \tTEMP={config['temperature']} BIASFACTOR={config['metad.biasfactor']}
 \tFILE={output_dir}/{filename}.hills
+\tRESTART={restart_str}
 ...
 """
     else:

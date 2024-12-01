@@ -184,6 +184,7 @@ def run_plumed(
     logger.info(f"z: {box_vectors[2] / nanometers}")
     
     if restart_checkpoint: 
+        logger.info(f'Restarting the OpenMM simulation from a checkpoint at {restart_checkpoint}')
         simulation.loadCheckpoint(restart_checkpoint)
         # no equilibration for system from checkpoint
     elif equilibrated:
