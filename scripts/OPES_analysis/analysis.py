@@ -220,7 +220,7 @@ def run(project, system, date, recompute, collect_plots):
                 temp=300,
                 cvs=['cmap', 'd'],
                 biasfactor=hills_df['biasf'].iloc[0],
-                outfile=f"{directory}/{system}_fes_hills.h5",
+                outfile=f"{directory}/{system}_fes.h5",
                 n_bins=100
             )
             
