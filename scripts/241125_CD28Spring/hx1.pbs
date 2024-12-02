@@ -2,21 +2,14 @@
 #PBS -l walltime=72:00:00
 #PBS -l select=1:ncpus=8:mem=80gb:ngpus=1:gpu_type=A100
 #PBS -q hx
+#PBS -N cd28spring
 
 cd $PBS_O_WORKDIR
 cat $PBS_NODEFILE
 
 apptainer pull $HOME/openmm-md.sif docker://jakublala/openmm-md
 
-# Read input parameters
-SYSTEM=${SYSTEM}
-PADDING=${PADDING:-5}        # Default to 5 if not specified
-UPPER_WALL=${UPPER_WALL:-5}  # Default to 5 if not specified
-
-PYTHON_CMD="python run.py \
-    --system $SYSTEM \
-    --padding $PADDING \
-    --upper_wall $UPPER_WALL"
+PYTHON_CMD="python run.py"
 
 # Add this before the main apptainer exec command to test CUDA
 apptainer exec --nv $HOME/openmm-md.sif nvidia-smi

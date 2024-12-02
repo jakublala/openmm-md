@@ -21,9 +21,9 @@ def extract_from_system(system):
     return BINDER_LENGTH, LINKER1_LENGTH, LINKER2_LENGTH
 
 def run(filepath, system):
-    DATE = '241122'
+    DATE = '241122-Explore'
     FILEPATH = filepath
-    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/{system}/{DATE}'
+    OUTPUT_DIR = f'../../data/241109_INFconstruct/output/{system}/{DATE}'
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
@@ -37,7 +37,6 @@ def run(filepath, system):
     BINDER_LENGTH, LINKER1_LENGTH, LINKER2_LENGTH = extract_from_system(system)
     INF_LENGTH = 161
 
-    print(f"{LINKER1_LENGTH=}, {LINKER2_LENGTH=}, {BINDER_LENGTH=}, {system}")
 
     NON_INF_LENGTH = BINDER_LENGTH + LINKER1_LENGTH + PROTEASE_LENGTH + LINKER2_LENGTH
 
@@ -102,7 +101,6 @@ def run(filepath, system):
     else:
         gpu_indices = None
 
-    print(f"{LINKER1_LENGTH=}, {LINKER2_LENGTH=}, {BINDER_LENGTH=}, {system}, {spot2_start=}, {spot2_end=}")
 
     # 2. RUN MINIMIZATION AND SIMULATION
     main(

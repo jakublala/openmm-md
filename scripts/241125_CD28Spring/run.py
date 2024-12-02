@@ -35,6 +35,13 @@ def run():
     config['spring.k'] = spring_k * 0.25
     config['spring'] = True
 
+    import os
+    from src.utils import get_gpu_indices
+    if 'CUDA_VISIBLE_DEVICES' in os.environ:
+        gpu_indices = get_gpu_indices()
+    else:
+        gpu_indices = None
+
     # 2. RUN MINIMIZATION AND SIMULATION
     main(
         filepath=FILEPATH,
@@ -42,7 +49,7 @@ def run():
         temperature=TEMPERATURE,
         mdtime=MDTIME,
         timestep=TIMESTEP,
-        device_index='0,1',
+        device_index=gpu_indices,
         device='cuda',
         split_chains=False if ('A-synuclein' in FILEPATH) or ('CD28' in FILEPATH) else True, # HACK
         logging_frequency=LOGGING_FREQUENCY,

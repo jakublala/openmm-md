@@ -5,9 +5,9 @@ from src.plumed.utils import get_checkpoint_interval
 from src.models import Segment, Residue
 
 if __name__ == '__main__':
-    # Z-B50W
-    FILEPATH = '../../data/241109_INFconstruct/input/Z1-B50W.pdb'
-    OUTPUT_DIR = '../../data/241109_INFconstruct/output/Z1-B50W/241122' 
+    # Z-B50L10W
+    FILEPATH = '../../data/241109_INFconstruct/input/Z1-B50L10W.pdb'
+    OUTPUT_DIR = '../../data/241109_INFconstruct/output/Z1-B50L10W/241125-MetaD' 
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
