@@ -6,7 +6,7 @@ export RECOMPUTE=False
 
 DATE=241128-MetaD
 
-python analysis.py --system ASYN-A --date $DATE --project 241010_FoldingUponBinding 
+python analysis.py --system ASYN-A --date $DATE --project 241010_FoldingUponBinding
 python analysis.py --system ASYN-G --date $DATE --project 241010_FoldingUponBinding 
 python analysis.py --system CD28-A --date $DATE --project 241010_FoldingUponBinding 
 python analysis.py --system CD28-B --date $DATE --project 241010_FoldingUponBinding 

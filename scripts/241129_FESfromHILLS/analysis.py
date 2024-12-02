@@ -15,6 +15,7 @@ def main(system: str, project: str, date: str):
         directory=directory,
         extension=".hills"
     )
+    # this is METAD as there's a HILLS file
 
     hills_df = read_hills_file(hills_file)
 
@@ -22,17 +23,17 @@ def main(system: str, project: str, date: str):
     assert hills_df['biasf'].std() < 1e-6, "biasf is not constant"
 
     cvs = ["cmap", "d"]
-    if not os.path.exists(f"{directory}/{system}_fes_hills.h5"):
+    if not os.path.exists(f"{directory}/{system}_fes.h5"): # for METAD, the default FES is the one
         cv1_bins_hills, cv2_bins_hills, fes_hills = compute_fes_from_hills(
             hills_df=hills_df,
             temp=300,
             cvs=cvs,
             biasfactor=hills_df['biasf'].iloc[0],
-            outfile=f"{directory}/{system}_fes_hills.h5",
+            outfile=f"{directory}/{system}_fes.h5",
             n_bins=100
         )
     else:
-        _, fes_hills, cv1_bins_hills, cv2_bins_hills = load_fes(f"{directory}/{system}_fes_hills.h5")
+        _, fes_hills, cv1_bins_hills, cv2_bins_hills = load_fes(f"{directory}/{system}_fes.h5")
 
     try:
         fes_reweighted_file = get_file_by_extension(

@@ -1,0 +1,24 @@
+#!/bin/bash
+#PBS -l select=1:ncpus=16:mem=192gb:ngpus=4
+#PBS -l walltime=72:0:0
+#PBS -N metad-4
+
+cd $PBS_O_WORKDIR
+cat $PBS_NODEFILE
+
+# Set thread limits
+export OMP_NUM_THREADS=16
+export MKL_NUM_THREADS=16
+export OPENBLAS_NUM_THREADS=16
+export VECLIB_MAXIMUM_THREADS=16
+export NUMEXPR_NUM_THREADS=16
+
+apptainer pull $HOME/projects/openmm-md/openmm-md.sif docker://jakublala/openmm-md
+
+PYTHON_CMD="python run.py --biasfactor 5 --output_dir '241119_4'"
+apptainer exec \
+    --nv \
+    --no-home \
+    --bind $HOME/projects \
+    $HOME/projects/openmm-md/openmm-md.sif bash -c \
+    "export PYTHONPATH=$HOME/projects/openmm-md && $PYTHON_CMD"
