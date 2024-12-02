@@ -1,8 +1,8 @@
 #!/bin/bash
 #PBS -l walltime=72:00:00
-#PBS -l select=1:ncpus=18:mem=80gb:ngpus=1:gpu_type=A100
+#PBS -l select=1:ncpus=16:mem=80gb:ngpus=1:gpu_type=A100
 #PBS -q hx
-#PBS -N IFN-200
+#PBS -N cd28-sasa
 
 cd $PBS_O_WORKDIR
 cat $PBS_NODEFILE
@@ -10,6 +10,9 @@ cat $PBS_NODEFILE
 apptainer pull $HOME/openmm-md.sif docker://jakublala/openmm-md
 
 PYTHON_CMD="python run.py"
+
+# Add this before the main apptainer exec command to test CUDA
+apptainer exec --nv $HOME/openmm-md.sif nvidia-smi
 
 apptainer exec \
     --nv \

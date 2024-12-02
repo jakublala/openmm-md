@@ -7,15 +7,15 @@ def run():
     FILEPATH = '../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb'
     OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/CD28-G/{DATE}'
     TEMPERATURE = 300
-    LOGGING_FREQUENCY = 1
+    LOGGING_FREQUENCY = 100
     TIMESTEP = 2
-    MDTIME = 500
-    UPPER_WALL = 5
+    MDTIME = 50
     PADDING = 4
+    UPPER_WALL = 5
 
     # 1. PLUMED CONFIG
     config = {
-        'type': 'opes',
+        'type': 'opes-explore',
         'opes.pace': 500,
         'opes.barrier': 200,
         'temperature': TEMPERATURE,
@@ -25,7 +25,7 @@ def run():
         'state_wstride': get_checkpoint_interval(TIMESTEP),
         'upper_wall.at': UPPER_WALL,
         'upper_wall.exp': 6,
-        'upper_wall.kappa': 250.0,
+        'upper_wall.kappa': 1000.0,
         'spot1_residues': None,
         'spot2_residues': None,
         'cvs': ['d', 'sasa'],
@@ -33,7 +33,14 @@ def run():
         'sasa.spot_id': 2, # binder: 1, target: 2
         'sasa.stride': 10,
     }
-    
+
+    import os
+    from src.utils import get_gpu_indices
+    if 'CUDA_VISIBLE_DEVICES' in os.environ:
+        gpu_indices = get_gpu_indices()
+    else:
+        gpu_indices = None
+
     # 2. RUN MINIMIZATION AND SIMULATION
     main(
         filepath=FILEPATH,
@@ -41,7 +48,7 @@ def run():
         temperature=TEMPERATURE,
         mdtime=MDTIME,
         timestep=TIMESTEP,
-        device_index='0,1',
+        device_index=gpu_indices,
         device='cuda',
         split_chains=False if ('A-synuclein' in FILEPATH) or ('CD28' in FILEPATH) else True, # HACK
         logging_frequency=LOGGING_FREQUENCY,
