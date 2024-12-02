@@ -4,6 +4,7 @@ import numpy as np
 import logging
 from typing import Optional, Literal
 
+import os
 from src.models import ContactMap, Contact, Residue
 from src.models import Segment
 
@@ -38,11 +39,11 @@ def filter_interchain_contacts(
 
 def get_contact_map(
         filename: str, 
-        cutoff: float = 0.8, # in nm
+        cutoff: float, # in nm
         output_dir: str = None,
         spot1_residues: Optional[Segment] = None,
         spot2_residues: Optional[Segment] = None,
-        mode: Literal['single-chain', 'two-chain'] = 'single-chain'
+        mode: Literal['single-chain', 'two-chain'] = None,
         ):
     """
     Creates a contact residue map for a given system.
@@ -52,17 +53,26 @@ def get_contact_map(
 
     if output_dir is None:
         raise ValueError('Output directory is required')
+    
+    if mode is None:
+        raise ValueError('Mode is required')
+    
+    if os.path.exists(f'{output_dir}/{filename}_equilibrated.pdb'):
+        logger.info('Using equilibrated pdb file to compute contact map')
+        universe = mda.Universe(f'{output_dir}/{filename}_equilibrated.pdb')
+    else:
+        raise ValueError(f'Cannot compute contact map with no equilibrated pdb file found for {filename}')
 
-    universe = mda.Universe(f'{output_dir}/{filename}_solvated.pdb')
-    universe = get_CA_universe(universe)
-    global_to_local_map = universe.residues.resids
-    chain_ids = np.concatenate(universe.segments.chainIDs)
-
+    full_universe = universe
+    CA_universe = get_CA_universe(universe)
+    global_to_local_map = CA_universe.residues.resids
+    chain_ids = np.concatenate(CA_universe.segments.chainIDs)
+    
     include_cutoff = 1.0*cutoff*10 # TODO: maybe include more contacts
     cmatrix = contact_matrix(
-        universe.atoms,
+        CA_universe.atoms,
         cutoff=include_cutoff,
-        box=universe.dimensions, 
+        box=CA_universe.dimensions, 
         )
     np.fill_diagonal(cmatrix, False)
     cmatrix = np.triu(cmatrix)
@@ -84,17 +94,21 @@ def get_contact_map(
         spot2_residue_chain_id = chain_ids[spot2_residue_index - 1]
         assert spot1_residue_chain_id is not None, f"Chain ID is None for spot1 residue {spot1_residue_index}"
         assert spot2_residue_chain_id is not None, f"Chain ID is None for spot2 residue {spot2_residue_index}"
+        local_index1 = global_to_local_map[spot1_residue_index - 1]
+        local_index2 = global_to_local_map[spot2_residue_index - 1]
         residue1 = Residue(
-            index=global_to_local_map[spot1_residue_index - 1],
+            index=local_index1,
             global_index=spot1_residue_index,
             chain_id=spot1_residue_chain_id,
-            indexing=1
+            indexing=1,
+            atom_indices=full_universe.select_atoms(f'chainid {spot1_residue_chain_id} and resid {local_index1}').indices
         )
         residue2 = Residue(
-            index=global_to_local_map[spot2_residue_index - 1],
+            index=local_index2,
             global_index=spot2_residue_index,
             chain_id=spot2_residue_chain_id,
-            indexing=1
+            indexing=1,
+            atom_indices=full_universe.select_atoms(f'chainid {spot2_residue_chain_id} and resid {local_index2}').indices
         )
         contact_map.contacts.append(
             Contact(

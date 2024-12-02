@@ -5,7 +5,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-from src.analysis.colvar import read_colvar_file
+from src.analysis.io import read_colvar_file
 from src.analysis.kernels import get_sigmas
             
 # Process each discard range in parallel

@@ -5,9 +5,9 @@ from src.plumed.utils import get_checkpoint_interval
 from src.models import Segment, Residue
 
 if __name__ == '__main__':
-    # Z-B50W
-    FILEPATH = '../../data/241109_INFconstruct/input/Z1-B50W.pdb'
-    OUTPUT_DIR = '../../data/241109_INFconstruct/output/Z1-B50W/241119_2' 
+    # Z-B50L10W
+    FILEPATH = '../../data/241109_INFconstruct/input/Z1-B50L10W.pdb'
+    OUTPUT_DIR = '../../data/241109_INFconstruct/output/Z1-B50L10W/241125-MetaD' 
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
@@ -54,7 +54,7 @@ if __name__ == '__main__':
     padding = upper_wall_at + 1
 
     config = {
-        'type': 'opes-explore',
+        'type': 'opes',
         'opes.pace': 500,
         'opes.barrier': 200,
         'temperature': TEMPERATURE,
@@ -62,7 +62,7 @@ if __name__ == '__main__':
         'cutoff': 0.8,
         'restart_rfile': None,
         'state_wstride': get_checkpoint_interval(TIMESTEP),
-        'upper_wall.at': 13,
+        'upper_wall.at': upper_wall_at,
         'upper_wall.exp': 6,
         'upper_wall.kappa': 1000.0,
         'spot1_residues': spot1_residues,

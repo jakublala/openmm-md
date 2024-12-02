@@ -71,7 +71,7 @@ def test_compute_fes_1d():
 
     # CASE 1: no bias consideration
     colvar_df = pd.DataFrame({'x': traj_x.squeeze()})
-    x_bins, y_bins, fes = compute_fes(colvar_df, sigma=[SIGMA], temp=kbT/kB, cvs=['x'], outfile='fes.h5py', bias=None)
+    x_bins, y_bins, fes = compute_fes(colvar_df, sigma=[SIGMA], temp=kbT/kB, cvs=['x'], outfile='fes.h5', bias=None)
 
     energy_plus_bias = energy_fn(x_bins) + bias_fn(x_bins)
     energy_plus_bias -= np.min(energy_plus_bias)
@@ -87,7 +87,7 @@ def test_compute_fes_1d():
 
     # CASE 2: unbiased FES
     colvard_df = pd.DataFrame({'x': traj_x.squeeze(), 'custom_bias': bias_fn(traj_x.squeeze())})
-    x_bins, y_bins, fes = compute_fes(colvard_df, sigma=[SIGMA], temp=kbT/kB, cvs=['x'], outfile='fes.h5py', bias=['custom_bias'])
+    x_bins, y_bins, fes = compute_fes(colvard_df, sigma=[SIGMA], temp=kbT/kB, cvs=['x'], outfile='fes.h5', bias=['custom_bias'])
 
     # Only check difference in range [-2,2]
     diff = np.abs(fes[mask] - energy_fn(x_bins[mask]))
@@ -98,7 +98,7 @@ def test_compute_fes_1d():
     assert len(fes) == 100, "FES should have 100 bins"
 
     # open the file and check the data
-    with h5py.File('fes.h5py', 'r') as f:
+    with h5py.File('fes.h5', 'r') as f:
         assert 'x_bins' in f.keys()
         assert 'fes' in f.keys()
         fes_h5py = f['fes'][:]
@@ -106,7 +106,7 @@ def test_compute_fes_1d():
     assert np.allclose(fes, fes_h5py), "FES should match"
 
     # clean up
-    os.remove('fes.h5py')
+    os.remove('fes.h5')
 
 def plot_analytically(energy_fn, bias_fn, x_range, y_range):
         # Create comprehensive visualization of energy landscapes
@@ -347,7 +347,7 @@ def test_compute_fes_2d():
     # CASE 1: no bias consideration
     colvar_df = pd.DataFrame({'x': traj_x[:, 0], 'y': traj_x[:, 1]})
     x_bins, y_bins, fes = compute_fes(colvar_df, sigma=SIGMA, temp=kbT/kB, 
-                                     cvs=['x', 'y'], outfile='fes.h5py', bias=None)
+                                     cvs=['x', 'y'], outfile='fes.h5', bias=None)
     
     # Create meshgrid for evaluation
     X, Y = np.meshgrid(x_bins, y_bins, indexing='ij')
@@ -372,7 +372,7 @@ def test_compute_fes_2d():
         'custom_bias': bias_values
     })
     x_bins, y_bins, fes = compute_fes(colvar_df, sigma=SIGMA, temp=kbT/kB, 
-                                     cvs=['x', 'y'], outfile='fes.h5py', 
+                                     cvs=['x', 'y'], outfile='fes.h5', 
                                      bias=['custom_bias'])
 
     energy = energy_fn(coords).reshape(len(x_bins), len(y_bins))
@@ -388,7 +388,7 @@ def test_compute_fes_2d():
     assert fes.shape == (100, 100), "FES should be 100x100"
 
     # Check the saved file
-    with h5py.File('fes.h5py', 'r') as f:
+    with h5py.File('fes.h5', 'r') as f:
         assert 'x_bins' in f.keys()
         assert 'y_bins' in f.keys()
         assert 'fes' in f.keys()
@@ -397,7 +397,7 @@ def test_compute_fes_2d():
     assert np.allclose(fes, fes_h5py), "FES should match"
 
     # clean up
-    os.remove('fes.h5py')
+    os.remove('fes.h5')
 
 
 if __name__ == "__main__":

@@ -3,8 +3,9 @@ from src.plumed.utils import get_checkpoint_interval
 import fire
 
 def run(system, padding, upper_wall):
+    DATE = '241121'
     FILEPATH = '../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb'
-    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/{system}/241118'
+    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/{system}/{DATE}'
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
@@ -36,7 +37,7 @@ def run(system, padding, upper_wall):
         timestep=TIMESTEP,
         device_index='0',
         device='cuda',
-        split_chains=True,
+        split_chains=False if ('A-synuclein' in FILEPATH) or ('CD28' in FILEPATH) else True, # HACK
         logging_frequency=LOGGING_FREQUENCY,
         config=config,
         padding=padding,

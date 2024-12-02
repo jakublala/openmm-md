@@ -8,7 +8,7 @@ def run(biasfactor: int, output_dir: str):
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
-    MDTIME = 500
+    MDTIME = 1000
 
     # 1. PLUMED CONFIG
     # CVs are cmap, d in that order
@@ -21,7 +21,7 @@ def run(biasfactor: int, output_dir: str):
         'state_wstride': get_checkpoint_interval(TIMESTEP),
         'metad.pace': 100,
         'metad.sigma': "0.04,0.01",
-        'metad.height': 0.1,
+        'metad.height': 1.25,
         'metad.grid_min': "0,0",
         'metad.grid_max': "80,5",
         'metad.grid_bin': "200,200",

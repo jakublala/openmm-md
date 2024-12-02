@@ -13,8 +13,6 @@ COPY --chown=$MAMBA_USER:$MAMBA_USER environment.yml /tmp/environment.yml
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
 
 # Install conda packages
-# Note: this is a bit problematic, as changes in environment.yml are not reflected alone
-# in the image change, so need to manually update the image
 RUN micromamba install -y -n base -f /tmp/environment.yml && \
     micromamba clean --all --yes
 
@@ -28,7 +26,7 @@ RUN python -c "import openmm as mm; print('Available platforms:', [mm.Platform.g
 # Install PLUMED with OPES module
 RUN git clone https://github.com/plumed/plumed2 \
     && cd plumed2 \
-    && ./configure --prefix=$CONDA_DIR --enable-modules=opes \
+    && ./configure --prefix=$CONDA_DIR --enable-modules=opes:sasa \
     && make -j4 \
     && make install \
     && cd .. \

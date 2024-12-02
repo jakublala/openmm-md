@@ -1,0 +1,72 @@
+FATAL:   Image file already exists: "/gpfs/home/jl24018/openmm-md.sif" - will not overwrite
+2024-11-29 16:38:59,223 - src.plumed.main - INFO - Output directory: ../../data/241010_FoldingUponBinding/output/CD28-G/241127-SASA
+2024-11-29 16:38:59,223 - src.plumed.main - INFO - ==================== Running CD28_general ====================
+2024-11-29 16:38:59,223 - src.plumed.main - INFO - Running with timestep 2 fs and mdtime 50 ns
+2024-11-29 16:38:59,223 - src.plumed.main - INFO - Energy barrier 200 kJ/mol for OPES
+2024-11-29 16:38:59,223 - src.plumed.main - INFO - Pace 500 steps of depositing bias in OPES.
+2024-11-29 16:38:59,223 - src.plumed.main - INFO - No equilibrated pdb file found, checking whether we need to run relaxation...
+2024-11-29 16:38:59,223 - src.plumed.main - INFO - No solvated pdb file found, running solvation...
+2024-11-29 16:38:59,223 - src.fixer - INFO - Fixing PDB protein file CD28_general...
+/opt/conda/lib/python3.12/site-packages/Bio/PDB/PDBParser.py:384: PDBConstructionWarning: Ignoring unrecognized record 'END' at line 1373
+  warnings.warn(
+2024-11-29 16:38:59,255 - src.fixer - INFO - Not splitting chains, assuming that this is a single construct of a single chain; or everything is already split correctly.
+2024-11-29 16:38:59,307 - src.fixer - INFO - Fixing C-terminus...
+2024-11-29 16:38:59,307 - src.fixer - INFO - Finding missing residues...
+2024-11-29 16:38:59,307 - src.fixer - INFO - Getting chains and keys...
+2024-11-29 16:38:59,307 - src.fixer - INFO - Processing missing residues...
+2024-11-29 16:38:59,308 - src.fixer - INFO - Finding missing atoms...
+2024-11-29 16:38:59,309 - src.fixer - INFO - Adding missing atoms...
+2024-11-29 16:39:02,062 - src.fixer - INFO - Adding missing hydrogens...
+2024-11-29 16:39:04,869 - src.fixer - INFO - Writing fixed PDB file...
+2024-11-29 16:39:04,898 - src.fixer - INFO - Fixed PDB successfully written.
+2024-11-29 16:39:04,898 - src.plumed.main - INFO - Fixing successful.
+2024-11-29 16:39:04,898 - src.relax - INFO - Loading PDB file...
+2024-11-29 16:39:04,983 - src.relax - INFO - Adding hydrogens...
+2024-11-29 16:39:07,462 - src.relax - INFO - Adding solvent...
+2024-11-29 16:39:07,463 - src.relax - INFO - Padding solvent by 4 nm
+2024-11-29 16:39:17,050 - src.relax - INFO - Platform used: CUDA
+2024-11-29 16:39:17,291 - matplotlib - WARNING - Matplotlib created a temporary cache directory at /var/tmp/pbs.155773.pbs-6/matplotlib-bywkqxlw because the default path (/gpfs/home/jl24018/.config/matplotlib) is not a writable directory; it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+Fontconfig error: No writable cache directories
+2024-11-29 16:39:17,754 - matplotlib.font_manager - INFO - generated new fontManager
+2024-11-29 16:39:19,187 - src.relax - INFO - Minimizing energy (LBFGS) with fixed non-hydrogen atoms...
+2024-11-29 16:40:12,170 - src.relax - INFO - Minimizing energy (LBFGS) with fixed protein atoms...
+2024-11-29 16:41:29,310 - src.relax - INFO - Minimizing energy (LBFGS) on the whole system (protein + water)...
+2024-11-29 16:44:11,155 - src.relax - INFO - Saving...
+2024-11-29 16:44:12,665 - src.relax - INFO - Done
+/opt/conda/lib/python3.12/site-packages/MDAnalysis/topology/PDBParser.py:290: UserWarning: PDB file is missing resid information.  Defaulted to '1'
+  warnings.warn("PDB file is missing resid information.  "
+2024-11-29 16:44:13,761 - src.plumed.cv - INFO - No spot definition provided, using all contacts
+2024-11-29 16:44:13,919 - src.plumed.io - INFO - SASA in total made up from 227 atoms
+2024-11-29 16:44:16,560 - src.plumed.opes - INFO - Building system...
+2024-11-29 16:44:17,901 - src.plumed.opes - INFO - Using CUDA device 0
+2024-11-29 16:44:19,130 - src.plumed.opes - INFO - Box Vectors (in nanometers):
+2024-11-29 16:44:19,130 - src.plumed.opes - INFO - x: Vec3(x=10.458400000000001, y=0.0, z=0.0)
+2024-11-29 16:44:19,130 - src.plumed.opes - INFO - y: Vec3(x=0.0, y=10.458400000000001, z=0.0)
+2024-11-29 16:44:19,130 - src.plumed.opes - INFO - z: Vec3(x=0.0, y=0.0, z=10.458400000000001)
+2024-11-29 16:44:19,263 - src.plumed.opes - INFO - Equilibrating...
+2024-11-29 16:51:19,825 - src.plumed.opes - INFO - Equilibrated state saved to ../../data/241010_FoldingUponBinding/output/CD28-G/241127-SASA/CD28_general_equilibrated.pdb
+Traceback (most recent call last):
+  File "/gpfs/home/jl24018/projects/openmm-md/scripts/241127_SASA/run.py", line 62, in <module>
+    fire.Fire(run)
+  File "/opt/conda/lib/python3.12/site-packages/fire/core.py", line 135, in Fire
+    component_trace = _Fire(component, args, parsed_flag_args, context, name)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.12/site-packages/fire/core.py", line 468, in _Fire
+    component, remaining_args = _CallAndUpdateTrace(
+                                ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.12/site-packages/fire/core.py", line 684, in _CallAndUpdateTrace
+    component = fn(*varargs, **kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^
+  File "/gpfs/home/jl24018/projects/openmm-md/scripts/241127_SASA/run.py", line 45, in run
+    main(
+  File "/gpfs/home/jl24018/projects/openmm-md/src/plumed/main.py", line 116, in main
+    run_plumed(
+  File "/gpfs/home/jl24018/projects/openmm-md/src/plumed/opes.py", line 208, in run_plumed
+    simulation.context.reinitialize(preserveState=True)
+  File "/opt/conda/lib/python3.12/site-packages/openmm/openmm.py", line 15415, in reinitialize
+    return _openmm.Context_reinitialize(self, preserveState)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+openmm.OpenMMException: 
+Action "SASA_HASEL" is not known.
+An Action named "SASA_HASEL" is available in module "sasa".
+Please consider installing PLUMED with that module enabled.

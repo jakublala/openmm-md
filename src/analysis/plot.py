@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from typing import Optional, List, Union
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 # HACK:
@@ -27,7 +28,14 @@ def plot_1d_fes(fes, cv1_bins, cv2_bins, cvs, axs):
     ax2.set_ylabel("FES [kJ/mol]")
     return ax1, ax2
 
-def plot_2d_fes(fes, cv1_bins, cv2_bins, cvs, ax, levels=None):
+def plot_2d_fes(
+        fes: np.ndarray,
+        cv1_bins: np.ndarray,
+        cv2_bins: np.ndarray,
+        cvs: List[str],
+        ax: plt.Axes,
+        levels: Union[int, np.ndarray] = None
+    ):
     cv1, cv2 = cvs
 
     ax.set_xlabel(cv1)
@@ -35,6 +43,9 @@ def plot_2d_fes(fes, cv1_bins, cv2_bins, cvs, ax, levels=None):
 
     # Add filled contours
     cntr = ax.contourf(cv1_bins, cv2_bins, fes, levels=levels, cmap=plt.cm.jet)
+
+    # Add contour lines
+    # ax.contour(cv1_bins, cv2_bins, fes, levels=levels, colors='black', linewidths=0.5, alpha=0.5)
 
     # Add colorbar
     divider = make_axes_locatable(ax)

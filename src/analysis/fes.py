@@ -2,9 +2,11 @@ import pandas as pd
 import numpy as np
 import h5py
 import logging
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Literal
 from src.constants import kB
 from src.analysis.kde import GaussianKDE
+from tqdm import tqdm
+
 # move this elsewhere then
 logging.basicConfig(
     level=logging.INFO,
@@ -12,14 +14,27 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def compute_kde_weights(colvar_df: pd.DataFrame, bias: Optional[List[str]], kbT: float) -> np.ndarray:
+def compute_kde_weights(
+        colvar_df: pd.DataFrame, 
+        bias: Optional[List[str]], 
+        kbT: float, 
+        simulation_type: Literal['opes', 'metad'] = None
+    ) -> np.ndarray:
     """Compute weights for KDE from bias columns"""
+
+    if simulation_type is None:
+        raise ValueError("Simulation type must be provided")
+
     total_bias = np.zeros(len(colvar_df))
-    if bias is None:
-        total_bias = colvar_df[[col for col in colvar_df.columns if 'bias' in col.lower()]].sum(axis=1)
-    else:
-        total_bias = colvar_df[bias].sum(axis=1)
     
+    if bias is None:
+        bias_cols = [col for col in colvar_df.columns if 'bias' in col.lower()]
+    else:
+        bias_cols = bias
+        
+    for col in bias_cols:
+        total_bias -= colvar_df[col]
+        
     # Subtract maximum value to prevent overflow
     max_bias = np.max(total_bias.values)
     return np.exp((total_bias.values - max_bias) / kbT)
@@ -42,7 +57,6 @@ def compute_2d_fes(colvar_df: pd.DataFrame, cvs: List[str], kde: GaussianKDE, n_
     fes = -kbT * np.log(kde(cv1_bins, cv2_bins) + epsilon)
     fes = fes.reshape(n_bins, n_bins)
     fes -= np.min(fes)
-    
     return cv1_bins, cv2_bins, fes
 
 def save_fes(outfile: str, cv1_bins: np.ndarray, cv2_bins: Optional[np.ndarray], fes: np.ndarray, cvs: List[str]) -> None:
@@ -75,16 +89,72 @@ def load_fes(filepath: str):
     return cvs, fes, cv1_bins, cv2_bins
 
 
+def compute_fes_from_hills(
+        hills_df: pd.DataFrame,
+        temp: float,
+        cvs: List[str],
+        outfile: str,
+        biasfactor: float,
+        n_bins: int = 200
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Compute FES from hills file.
+    
+    Uses the relationship: lim_(t->inf) F(s)= - (T + deltaT) / deltaT  *  V(s, t)
+    
+    Based on PLUMEd, BIASFACTOR = (T + deltaT) / T
+
+    Doing this naively with a loop, taking about 1 minute to do a 100 ns run.
+    """
+    # Create grid for evaluation
+    cv1_bins = np.linspace(hills_df[cvs[0]].min(), hills_df[cvs[0]].max(), n_bins)
+    cv2_bins = np.linspace(hills_df[cvs[1]].min(), hills_df[cvs[1]].max(), n_bins)
+    X, Y = np.meshgrid(cv1_bins, cv2_bins)
+    
+    # Initialize potential grid
+    V = np.zeros((n_bins, n_bins))
+
+    # Get parameters for each CV
+    sigma1 = hills_df[f'sigma_{cvs[0]}'].iloc[0]  # assuming constant sigma
+    sigma2 = hills_df[f'sigma_{cvs[1]}'].iloc[0]
+    
+    # Sum up all Gaussian contributions
+    for _, hill in tqdm(hills_df.iterrows(), total=len(hills_df), desc='Summing up hills...'):
+        # Calculate distances from hill center to all grid points
+        d1 = (X - hill[cvs[0]]) ** 2 / (2 * sigma1 ** 2)
+        d2 = (Y - hill[cvs[1]]) ** 2 / (2 * sigma2 ** 2)
+        
+        # Add Gaussian contribution
+        V += hill['height'] * np.exp(-(d1 + d2))
+    
+    # Convert bias potential to free energy
+    deltaT = temp * (biasfactor - 1)
+    fes = -((temp + deltaT) / deltaT) * V
+    
+    # Shift minimum to zero
+    fes -= np.min(fes)
+    
+    # Save results
+    if outfile is not None:
+        save_fes(outfile, cv1_bins, cv2_bins, fes, cvs)
+    
+    return cv1_bins, cv2_bins, fes
+
 def compute_fes(
         colvar_df: pd.DataFrame,
-        sigma: List[float],
+        sigmas: List[float],
         temp: float, 
         cvs: List[str],
         outfile: str,
         bias: Optional[List[str]] = None,
-        n_bins: int = 200
+        n_bins: int = 200,
+        simulation_type: Literal['opes', 'metad'] = None
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-    """Compute free energy surface from collective variables and bias
+    """
+    Compute free energy surface from collective variables and bias.
+    Reweights the trajectory. First, we compute the weights for the trajectory,
+    based on the Boltzmann distribution. Then, we compute the kernel density estimation
+    of the unbiased probability density. Last, we invert it to get the free energy surface.
     
     Args:
         colvar_df: DataFrame containing CVs and bias
@@ -98,17 +168,17 @@ def compute_fes(
         Tuple of (cv1_bins, cv2_bins, fes)
     """
     assert len(cvs) in [1, 2], "Only 1D and 2D FES are supported"
-    assert len(sigma) == len(cvs), "Number of bandwidths must match number of CVs"
+    assert len(sigmas) == len(cvs), "Number of bandwidths must match number of CVs"
 
     kbT = kB * temp
 
     # Step 1: Compute the weights for the trajectory
     logger.info("Computing KDE weights")
-    weights = compute_kde_weights(colvar_df, bias, kbT)
+    weights = compute_kde_weights(colvar_df, bias, kbT, simulation_type)
 
     # Step 2: Compute the KDE (unbiased probability density)
     logger.info("Computing the unbiased probability density")
-    kde = GaussianKDE(colvar_df[cvs].values, weights=weights, sigma=sigma)
+    kde = GaussianKDE(colvar_df[cvs].values, weights=weights, sigmas=sigmas)
     
     # Step 3: Compute the FES
     if len(cvs) == 1:
@@ -118,6 +188,11 @@ def compute_fes(
     else:
         logger.info("Computing 2D FES")
         cv1_bins, cv2_bins, fes = compute_2d_fes(colvar_df, cvs, kde, n_bins, kbT)
+
+
+    # HACK: there's some weird bug that for MetaD the FES is transposed
+    if simulation_type == 'metad':
+        fes = fes.T
 
     # Save results
     if outfile is not None:
