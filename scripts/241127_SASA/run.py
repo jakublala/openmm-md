@@ -32,6 +32,7 @@ def run():
         'sasa.algo': 'HASEL',
         'sasa.spot_id': 2, # binder: 1, target: 2
         'sasa.stride': 10,
+        'restart': False,
     }
 
     import os
