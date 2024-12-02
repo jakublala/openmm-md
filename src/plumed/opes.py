@@ -6,6 +6,7 @@ from openmm import Platform
 from mdareporter import MDAReporter
 
 import logging
+import os
 logger = logging.getLogger(__name__)
 
 from src.plumed.utils import get_checkpoint_interval
@@ -90,6 +91,10 @@ def run_plumed(
         pdf = PDBFile(f'{output_dir}/{filename}_solvated.pdb')
         equilibrated = False
 
+    
+    if not plumed_config['trajectory_logging']:
+        plumed_config['trajectory_logging'] = True
+
 
     forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
 
@@ -169,6 +174,7 @@ def run_plumed(
     elif device == "opencl":
         logger.info('Using OpenCL')
         platform = Platform.getPlatformByName('OpenCL')
+        properties = {'Precision': 'mixed'}
     else:
         raise ValueError('Invalid device')
 
@@ -228,7 +234,8 @@ def run_plumed(
     # Simulate
     logger.info('Simulating...')
 
-    simulation.reporters.append(trajReporter)
+    if plumed_config['trajectory_logging']:
+        simulation.reporters.append(trajReporter)
     simulation.reporters.append(dataReporter)
     simulation.reporters.append(checkpointReporter)
     simulation.currentStep = 0

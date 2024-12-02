@@ -16,7 +16,7 @@ def run(
         ):
         
 
-    DATE = '241128'
+    DATE = '241202'
     FILEPATH = filepath
     # OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/{system}/{DATE}-MetaD'
     OUTPUT_DIR = output_dir
