@@ -3,7 +3,7 @@ from src.plumed.utils import get_checkpoint_interval
 import fire
 
 def run():
-    DATE = '241127-SASA'
+    DATE = '241202-SASA'
     FILEPATH = '../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb'
     OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/CD28-G/{DATE}'
     TEMPERATURE = 300
