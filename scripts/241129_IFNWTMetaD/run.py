@@ -19,17 +19,12 @@ def extract_from_system(system):
     else:
         raise ValueError(f"System {system} does not match pattern {pattern}")
     return BINDER_LENGTH, LINKER1_LENGTH, LINKER2_LENGTH
+
 def run(
         filepath: str, 
-        system: str, 
-        biasfactor: int, 
-        sigma_cv1: str, 
-        sigma_cv2: str, 
-        grid_min_cv1: str, 
-        grid_min_cv2: str, 
-        grid_max_cv1: str, 
-        grid_max_cv2: str,
-        output_dir: str
+        system: str,
+        output_dir: str,
+        metad_pace: int
         ):
         
     FILEPATH = filepath
@@ -98,19 +93,21 @@ def run(
         'cutoff': 0.8,
         'restart_rfile': None,
         'state_wstride': get_checkpoint_interval(TIMESTEP),
-        'metad.pace': 500,
+        'metad.pace': metad_pace,
         'cvs': ['cmap', 'd'],
-        'metad.sigma': f'{sigma_cv1},{sigma_cv2}', # "0.04,0.01"
+        'metad.sigma': f'0.08,0.01', # "0.04,0.01"
         'metad.height': 1.25, # 1/2 * kBT
-        'metad.grid_min': f'{grid_min_cv1},{grid_min_cv2}',
-        'metad.grid_max': f'{grid_max_cv1},{grid_max_cv2}',
+        'metad.grid_min': f'0,0',
+        'metad.grid_max': f'30,8',
         'metad.grid_bin': "200,200",
-        'metad.biasfactor': biasfactor,
+        'metad.biasfactor': 50,
         'upper_wall.at': upper_wall_at, # keep this at UW=5, we are primarily looking at BIASFACTOR now
         'upper_wall.exp': 6,
         'upper_wall.kappa': 1000.0,
-        'spot1_residues': None,
-        'spot2_residues': None
+        'spot1_residues': spot1_residues,
+        'spot2_residues': spot2_residues,
+        'restart': False,
+        'trajectory_logging': True
     }
 
     import os

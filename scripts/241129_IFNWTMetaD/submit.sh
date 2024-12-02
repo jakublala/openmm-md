@@ -24,46 +24,56 @@ fi
 submit_simulation() {
     local filepath=$1
     local system=$2
-    local biasfactor=$3
-    local sigma_cv1=$4
-    local sigma_cv2=$5
-    local grid_min_cv1=$6
-    local grid_max_cv1=$7
-    local grid_min_cv2=$8
-    local grid_max_cv2=$9
-    local output_dir=${10}
+    local metad_pace=$3
+    local output_dir=$4
     echo "Submitting $system with template $TEMPLATE"
 
-    qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,BIASFACTOR=$biasfactor,SIGMA_CV1=$sigma_cv1,SIGMA_CV2=$sigma_cv2,GRID_MIN_CV1=$grid_min_cv1,GRID_MAX_CV1=$grid_max_cv1,GRID_MIN_CV2=$grid_min_cv2,GRID_MAX_CV2=$grid_max_cv2,OUTPUT_DIR=$output_dir" $TEMPLATE
+    qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,METAD_PACE=$metad_pace,OUTPUT_DIR=$output_dir" $TEMPLATE
 }
 
-DATE="241129-MetaD"
+DATE="241202-MetaD"
+SYSTEM="Z1-B50L10W"
 PROJECT_DIR="/home/mmm1486/projects/openmm-md/data/241109_INFconstruct/output/"
 
 
 # cmap, d are the cvs in that order
-SYSTEM="ASYN-A"
 submit_simulation "${PROJECT_DIR}/${SYSTEM}/241122-Explore/${SYSTEM}_equilibrated.pdb" \
                 "${SYSTEM}" \
-                56 \
-                0.24 \
-                0.05 \
-                0 \
-                103 \
-                0 \
-                7 \
-                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/ASYN-A/${DATE}-MetaD"
+                50 \
+                "${PROJECT_DIR}/data/241109_INFconstruct/output/${SYSTEM}/${DATE}-MetaDPace50"
 
-submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/ASYN-G/241122-Explore/A-synuclein_general_equilibrated.pdb" \
-                "ASYN-G" \
-                12 \
-                0.31 \
-                0.25 \
-                0 \
-                88 \
-                0 \
-                5 \
-                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/ASYN-G/${DATE}-MetaD"
+submit_simulation "${PROJECT_DIR}/${SYSTEM}/241122-Explore/${SYSTEM}_equilibrated.pdb" \
+                "${SYSTEM}" \
+                100 \
+                "${PROJECT_DIR}/data/241109_INFconstruct/output/${SYSTEM}/${DATE}-MetaDPace100"
+
+submit_simulation "${PROJECT_DIR}/${SYSTEM}/241122-Explore/${SYSTEM}_equilibrated.pdb" \
+                "${SYSTEM}" \
+                500 \
+                "${PROJECT_DIR}/data/241109_INFconstruct/output/${SYSTEM}/${DATE}-MetaDPace500"
+
+
+# submit_simulation "${PROJECT_DIR}/${SYSTEM}/241122-Explore/${SYSTEM}_equilibrated.pdb" \
+#                 "${SYSTEM}" \
+#                 56 \
+#                 0.24 \
+#                 0.05 \
+#                 0 \
+#                 103 \
+#                 0 \
+#                 7 \
+#                 "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/ASYN-A/${DATE}-MetaD"
+
+# submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/ASYN-G/241122-Explore/A-synuclein_general_equilibrated.pdb" \
+#                 "ASYN-G" \
+#                 12 \
+#                 0.31 \
+#                 0.25 \
+#                 0 \
+#                 88 \
+#                 0 \
+#                 5 \
+#                 "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/ASYN-G/${DATE}-MetaD"
 
 # submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-A/241122-Explore/CD28_alpha_equilibrated.pdb" \
 #                 "CD28-A" \

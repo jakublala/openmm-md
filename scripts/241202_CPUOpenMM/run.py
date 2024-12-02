@@ -3,12 +3,12 @@ from src.plumed.utils import get_checkpoint_interval
 import fire
 
 def run():
-    FILEPATH = '../../data/241010_FoldingUponBinding/output/CD28-G/241128-MetaD/CD28_general_equilibrated.pdb'
-    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/CD28-G/241202-CPU'
+    FILEPATH = '/home/mmm1486/projects/openmm-md/data/241010_FoldingUponBinding/output/CD28-G/241128-MetaD/CD28_general_equilibrated.pdb'
+    OUTPUT_DIR = '/home/mmm1486/Scratch/openmm-md/data/241010_FoldingUponBinding/output/CD28-G/241202-CPU'
     TEMPERATURE = 300
-    LOGGING_FREQUENCY = 100
+    LOGGING_FREQUENCY = 1
     TIMESTEP = 2
-    MDTIME = 10
+    MDTIME = 1
     UPPER_WALL = 5
     PADDING = 2
 
@@ -34,7 +34,8 @@ def run():
         'upper_wall.kappa': 1000.0,
         'spot1_residues': None,
         'spot2_residues': None,
-        'restart': False
+        'restart': False,
+        'trajectory_logging': False,
     }
 
     import os

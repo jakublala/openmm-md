@@ -43,7 +43,7 @@ OUTPUT_DIR="${OUTPUT_DIR:?Missing OUTPUT_DIR}"
 echo "Running $SYSTEM with biasfactor $BIASFACTOR, sigma $SIGMA_CV1,$SIGMA_CV2, grid_min $GRID_MIN_CV1,$GRID_MIN_CV2, grid_max $GRID_MAX_CV1,$GRID_MAX_CV2, output_dir $OUTPUT_DIR"
 
 # Define the Python command
-PYTHON_CMD="python $HOME/projects/openmm-md/scripts/241128_FuBWTMetaD/run.py \
+PYTHON_CMD="python $HOME/projects/openmm-md/scripts/241201_RestartMetaD/run.py \
     --output_dir $OUTPUT_DIR \
     --system $SYSTEM \
     --filepath $FILEPATH \
