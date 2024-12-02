@@ -78,6 +78,8 @@ def main(
                 restart = True
             else:
                 restart = False
+        else:
+            restart_checkpoint = None
     else:
         if config['restart']:
 
@@ -109,6 +111,8 @@ def main(
                     f.write(line)
             logger.info("Restarting MetaD as requested...")
             restart_checkpoint = get_file_by_extension(input_dir, '.chk')
+        else:
+            restart_checkpoint = None
 
     logger.info(f'==================== Running {filename} ====================')
     logger.info(f"Running with timestep {timestep} fs and mdtime {mdtime} ns")
