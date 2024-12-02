@@ -1,7 +1,7 @@
 import os
 import logging
 from typing import Optional, Literal
-
+import shutil
 from src.plumed.opes import run_plumed
 from src.relax import minimize
 from src.fixer import fixer
@@ -25,7 +25,7 @@ def main(
         split_chains=None,
         logging_frequency=100,
         config=None, # only contains opes stuff for now
-        chain_mode: Optional[Literal['single-chain', 'two-chain']] = None,
+        chain_mode: Optional[Literal['single-chain', 'two-chain']] = None
         ):
     
     # TODO: the config should be saved somewhere as a JSON!!!
@@ -52,15 +52,63 @@ def main(
         raise ValueError('Filepath is required')
 
     filename = os.path.basename(filepath).split('.')[0]
+    input_dir = os.path.dirname(filepath)
+
+    if 'equilibrated' in filename:
+        logger.info('Input PDB file is equilibrated, assuming it comes from a previous run...')
+        logger.info('Copying fixed, equilibrated and solvated pdb files to output directory')
+        from src.analysis.utils import get_file_by_extension
+        fixed_pdb = get_file_by_extension(input_dir, '_fixed.pdb')
+        equilibrated_pdb = get_file_by_extension(input_dir, '_equilibrated.pdb')
+        solvated_pdb = get_file_by_extension(input_dir, '_solvated.pdb')
+        # copy all to the output_dir
+        for file in [fixed_pdb, equilibrated_pdb, solvated_pdb]:
+            shutil.copy(file, output_dir)
+        filename = filename.replace('_equilibrated', '')
+        
 
     assert f'output/{filename}' not in os.listdir(), f"Folder output/{filename} already exists. It might overwrite existing data!"
 
-    if config['restart_rfile'] is not None:
-        assert os.path.exists(config['restart_rfile']), f"File {config['restart_rfile']} does not exist"
-        logger.info("Found a restart_rfile for PLUMED, going to restart the OPES simulation from .state and .chk from OpenMM")
-        restart = True
+    if 'opes' in config['type']:
+        if config['restart']:
+            raise NotImplementedError("Restarting from checkpoint in OPES not implemented yet")
+            if config['restart_rfile'] is not None:
+                assert os.path.exists(config['restart_rfile']), f"File {config['restart_rfile']} does not exist"
+                logger.info("Found a restart_rfile for PLUMED, going to restart the OPES simulation from .state and .chk from OpenMM")
+                restart = True
+            else:
+                restart = False
     else:
-        restart = False
+        if config['restart']:
+
+            # move hills file to output dir
+            # chop off lines that are after the checkpoint
+            # get the checkpoint file
+            # figure out the timestep
+            # HILLS file numbers every deposited kernel
+            # .out prints every 100 ps (i.e. 50,000 time steps)
+            # we finished at (were WALLtimed) at 221,900 ps, i.e. 221.9 ns
+            # how often do we get a checkpoint?
+            # we save every 1 nanoseconds, according to get_checkpoint_interval
+            from src.plumed.utils import get_checkpoint_interval, get_pace_from_metad, get_last_checkpoint_timestep, process_hills_for_restart
+            from src.analysis.utils import get_file_by_extension
+            plumed_file = get_file_by_extension(input_dir, 'plumed.dat')
+            metad_pace = get_pace_from_metad(plumed_file)
+            assert metad_pace == config['metad.pace'], 'Previous MetaD pace does not match the current one.'
+            
+            hills_file = get_file_by_extension(input_dir, '.hills')
+            out_file = get_file_by_extension(input_dir, '.out')
+            
+            checkpoint_interval = get_checkpoint_interval(timestep)
+            last_checkpoint_timestep = get_last_checkpoint_timestep(out_file, checkpoint_interval)
+            num_hills_before_checkpoint = last_checkpoint_timestep // config['metad.pace']
+            time_of_last_hill = int(num_hills_before_checkpoint * config['metad.pace'] * timestep * 0.001) # in ps 
+            new_hills_file_lines = process_hills_for_restart(hills_file, time_of_last_hill)
+            with open(f'{output_dir}/{filename}.hills', 'w') as f:
+                for line in new_hills_file_lines:
+                    f.write(line)
+            logger.info("Restarting MetaD as requested...")
+            restart_checkpoint = get_file_by_extension(input_dir, '.chk')
 
     logger.info(f'==================== Running {filename} ====================')
     logger.info(f"Running with timestep {timestep} fs and mdtime {mdtime} ns")
@@ -77,9 +125,6 @@ def main(
     else:
         raise NotImplementedError(f"Type {config['type']} not implemented")
     
-    if restart:
-        raise NotImplementedError("Restarting from checkpoint not implemented yet")
-    restart_checkpoint = None
 
     if not os.path.exists(f"{output_dir}/{filename}_equilibrated.pdb"):
         logger.info('No equilibrated pdb file found, checking whether we need to run relaxation...')
@@ -103,14 +148,8 @@ def main(
                 output_dir=output_dir,
                 padding=padding
                 )
-    
-    create_plumed_input(
-        filepath=filepath, 
-        output_dir=output_dir,
-        config=config,
-        mode=chain_mode
-        )
-
+        else:
+            logger.info('Solvated and equilibrated pdb files found, skipping solvation and relaxation')
 
         
     run_plumed(
@@ -119,10 +158,12 @@ def main(
         device_index=str(device_index),
         timestep=timestep,
         temperature=temperature,
-        restart_checkpoint=restart_checkpoint,
         device=device,
         output_dir=output_dir,
-        logging_frequency=logging_frequency
+        logging_frequency=logging_frequency,
+        plumed_config=config,
+        plumed_mode=chain_mode,
+        restart_checkpoint=restart_checkpoint
         )
 
 

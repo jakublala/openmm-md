@@ -44,6 +44,9 @@ def plot_2d_fes(
     # Add filled contours
     cntr = ax.contourf(cv1_bins, cv2_bins, fes, levels=levels, cmap=plt.cm.jet)
 
+    # Add contour lines
+    # ax.contour(cv1_bins, cv2_bins, fes, levels=levels, colors='black', linewidths=0.5, alpha=0.5)
+
     # Add colorbar
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad="20%")

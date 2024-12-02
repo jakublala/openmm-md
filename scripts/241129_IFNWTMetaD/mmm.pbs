@@ -1,0 +1,68 @@
+#!/bin/bash -l
+
+# Request a number of GPU cards, in this case 2 (the maximum)
+#$ -l gpu=1
+
+# Request ten minutes of wallclock time (format hours:minutes:seconds).
+#$ -l h_rt=48:00:0
+
+# Request 1 gigabyte of RAM (must be an integer followed by M, G, or T)
+#$ -l mem=80G
+
+# Request 15 gigabyte of TMPDIR space (default is 10 GB)
+#$ -l tmpfs=32G
+
+# Set the name of the job.
+#$ -N GPUJob
+
+# Set the working directory to somewhere in your scratch space.
+#$ -wd /home/mmm1486/Scratch/openmm-md
+
+#$ -A Imperial_Mat
+#$ -P Free
+
+# # Change into temporary directory to run work
+# cd $TMPDIR
+
+module load apptainer
+
+apptainer pull $HOME/Scratch/openmm-md.sif docker://jakublala/openmm-md
+
+# Update input parameters to match metadynamics parameters
+SYSTEM="${SYSTEM:?Missing SYSTEM}"
+FILEPATH="${FILEPATH:?Missing FILEPATH}"
+BIASFACTOR="${BIASFACTOR:?Missing BIASFACTOR}"
+SIGMA_CV1="${SIGMA_CV1:?Missing SIGMA_CV1}"
+SIGMA_CV2="${SIGMA_CV2:?Missing SIGMA_CV2}"
+GRID_MIN_CV1="${GRID_MIN_CV1:?Missing GRID_MIN_CV1}"
+GRID_MIN_CV2="${GRID_MIN_CV2:?Missing GRID_MIN_CV2}"
+GRID_MAX_CV1="${GRID_MAX_CV1:?Missing GRID_MAX_CV1}"
+GRID_MAX_CV2="${GRID_MAX_CV2:?Missing GRID_MAX_CV2}"
+OUTPUT_DIR="${OUTPUT_DIR:?Missing OUTPUT_DIR}"
+
+echo "Running $SYSTEM with biasfactor $BIASFACTOR, sigma $SIGMA_CV1,$SIGMA_CV2, grid_min $GRID_MIN_CV1,$GRID_MIN_CV2, grid_max $GRID_MAX_CV1,$GRID_MAX_CV2, output_dir $OUTPUT_DIR"
+
+# Define the Python command
+PYTHON_CMD="python $HOME/projects/openmm-md/scripts/241129_IFNWTMetaD/run.py \
+    --output_dir $OUTPUT_DIR \
+    --system $SYSTEM \
+    --filepath $FILEPATH \
+    --biasfactor $BIASFACTOR \
+    --sigma_cv1 $SIGMA_CV1 \
+    --sigma_cv2 $SIGMA_CV2 \
+    --grid_min_cv1 $GRID_MIN_CV1 \
+    --grid_min_cv2 $GRID_MIN_CV2 \
+    --grid_max_cv1 $GRID_MAX_CV1 \
+    --grid_max_cv2 $GRID_MAX_CV2"
+
+# Execute the command using apptainer
+apptainer exec \
+    --nv \
+    --no-home \
+    --bind $HOME/Scratch \
+    --bind $HOME/projects \
+    $HOME/Scratch/openmm-md.sif bash -c \
+    "export PYTHONPATH=$HOME/projects/openmm-md:$PYTHONPATH && $PYTHON_CMD"
+
+# Preferably, tar-up (archive) all output files onto the shared scratch area
+tar zcvf $HOME/Scratch/files_from_job_$JOB_ID.tar.gz $TMPDIR

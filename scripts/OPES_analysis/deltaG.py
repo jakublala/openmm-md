@@ -1,5 +1,5 @@
 from src.analysis.utils import get_file_by_extension
-from src.analysis.colvar import read_colvar_file
+from src.analysis.io import read_colvar_file
 from src.analysis.deltaG import compute_deltaG, marginalize_fes
 from src.analysis.fes import load_fes
 from src.constants import kB, mol
@@ -28,7 +28,7 @@ def compute_deltaG_from_trajectory(directory, colvar_df, threshold):
                 sigmas=[get_sigma(directory, cv) for cv in ['cmap', 'd']], 
                 temp=300,
                 cvs=['cmap', 'd'], 
-                outfile=f"{temp_dir}/{i}_fes.h5py", 
+                outfile=f"{temp_dir}/{i}_fes.h5", 
                 bias=['opes.bias', 'uwall.bias']
             )
             fes_1d = marginalize_fes(fes, kBT=kB*TEMP, axis=1)
@@ -77,7 +77,7 @@ def run(project, system, date):
     date = fix_fucked_up_naming(project, system, date)
     directory = f"../../data/{project}/output/{system}/{date}"
     # 1. Get the binding affinity from the FES
-    cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5py")
+    cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5")
     assert cvs[1] == 'd', "Second CV is not distance between COMs, we do not support other CVs yet"
     fes_1d = marginalize_fes(fes, kBT=kB*TEMP, axis=1)
     deltaG = compute_deltaG(fes_1d, cv2_bins, kB*TEMP, threshold=1.5)

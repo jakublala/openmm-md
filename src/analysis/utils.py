@@ -4,7 +4,7 @@ def get_file_by_extension(directory, extension, assert_exists=True):
     
     Args:
         directory: Directory to search in
-        extension: File extension to look for (e.g. '.colvar', '.h5py')
+        extension: File extension to look for (e.g. '.colvar', '.h5')
         
     Returns:
         str: Path to first matching file
