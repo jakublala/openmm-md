@@ -161,6 +161,9 @@ c2: COM ATOMS={spot2_com_CAs}"""
 ...
 """
     elif config['type'] == 'metad':
+        # assert that if grid, there's no artifacts
+        assert_correct_metad_grid(config)
+
         restart_str = 'YES' if config['restart'] else 'NO'
         plumed_content += f"""metad: METAD ...
 \tARG={cv_arg_content} PACE={config['metad.pace']} SIGMA={config['metad.sigma']} HEIGHT={config['metad.height']}

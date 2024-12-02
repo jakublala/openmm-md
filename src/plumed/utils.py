@@ -57,3 +57,17 @@ def process_hills_for_restart(hills_file, time_of_last_hill):
                 continue
     
     return filtered_lines
+
+
+
+def assert_correct_metad_grid(config):
+    grid_min = [int(x) for x in config['metad.grid_min'].split(',')]
+    grid_max = [int(x) for x in config['metad.grid_max'].split(',')]
+    grid_bin = [int(x) for x in config['metad.grid_bin'].split(',')]
+    sigmas = [float(x) for x in config['metad.sigma'].split(',')]
+
+    for i, _ in enumerate(config['cvs']):
+        grid_spacing = (grid_max[i] - grid_min[i]) / grid_bin[i]
+        assert grid_spacing / 2 < sigmas[i], f'Grid spacing for {config['cvs'][i]} is too large, increase SIGMA'
+
+        

@@ -4,7 +4,7 @@ import fire
 
 def run():
     FILEPATH = '../../data/241010_FoldingUponBinding/output/CD28-G/241128-MetaD/CD28_general_equilibrated.pdb'
-    OUTPUT_DIR = f'../../data/241010_FoldingUponBinding/output/CD28-G/241202-CPU'
+    OUTPUT_DIR = f'241202-CPU'
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
@@ -52,7 +52,7 @@ def run():
         mdtime=MDTIME,
         timestep=TIMESTEP,
         device_index=gpu_indices,
-        device='cpu',
+        device='opencl',
         split_chains=True,
         logging_frequency=LOGGING_FREQUENCY,
         config=config,

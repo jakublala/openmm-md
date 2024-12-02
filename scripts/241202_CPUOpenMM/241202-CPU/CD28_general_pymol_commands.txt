@@ -1,0 +1,16 @@
+load 241202-CPU/CD28_general_fixed.pdb
+
+# First color everything blue
+color blue, all
+
+# Then color binding site residues yellow
+select binding_site, resi 1+2+3+4+5+8+10+14+15+17+18+19+21+25+26+27+29+30 and chain A
+color green, binding_site
+
+# Color contact residues in chain A in red
+select binder_contacts, resi 129+130+131+136+137+138+139+140+116+88+89+91+92+93+126+127 and chain B
+color red, binder_contacts
+
+# Set nice visualization
+hide everything
+show cartoon
