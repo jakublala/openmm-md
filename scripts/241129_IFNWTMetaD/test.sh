@@ -1,7 +1,5 @@
 python run.py \
-    --filepath "../../data/241010_FoldingUponBinding/output/ASYN-A/241122-Explore/A-synuclein_alpha_equilibrated.pdb" \
-    --system "ASYN-A" \
-    --biasfactor 56 \
-    --sigma "0.24,0.05" \
-    --grid_min "0,0" \
-    --grid_max "90,7"
+    --filepath "../../data/241109_INFconstruct/output/Z1-B50L10W/241122-Explore/Z1-B50L10W_equilibrated.pdb" \
+    --system "Z1-B50L10W" \
+    --metad_pace 50 \
+    --output_dir "241129-IFNWTMetaD"

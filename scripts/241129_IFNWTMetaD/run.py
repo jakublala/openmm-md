@@ -46,7 +46,9 @@ def run(
 
     NON_INF_LENGTH = BINDER_LENGTH + LINKER1_LENGTH + PROTEASE_LENGTH + LINKER2_LENGTH
 
-    nresidues = mda.Universe(FILEPATH)._topology.n_residues
+    # nresidues = mda.Universe(FILEPATH)._topology.n_residues
+    universe = mda.Universe(FILEPATH)
+    nresidues = len(universe.select_atoms("protein").residues)
     assert nresidues == (
         NON_INF_LENGTH + INF_LENGTH
         ), f"Expected {NON_INF_LENGTH + INF_LENGTH} residues, got {nresidues}"
