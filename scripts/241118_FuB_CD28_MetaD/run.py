@@ -19,7 +19,7 @@ def run(biasfactor: int, output_dir: str):
         'cutoff': 0.8,
         'restart_rfile': None,
         'state_wstride': get_checkpoint_interval(TIMESTEP),
-        'metad.pace': 500,
+        'metad.pace': 100,
         'metad.sigma': "0.04,0.01",
         'metad.height': 0.1,
         'metad.grid_min': "0,0",
