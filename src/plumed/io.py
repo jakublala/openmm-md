@@ -77,8 +77,15 @@ def get_plumed_content(
         assert spot1_segment.indexing == spot2_segment.indexing == 1, (
             f"Expected indexing 1 for both spot1 and spot2, got {spot1_segment.indexing} and {spot2_segment.indexing}"
         )
+
     spot1_com_CAs = sorted(set([str(c.residue1) for c in contact_map.contacts]))
     spot2_com_CAs = sorted(set([str(c.residue2) for c in contact_map.contacts]))
+    
+    if config['idr_residues'] is not None:
+        idr_residue_indices = [str(i) for i in config['idr_residues'].residues]
+        spot1_com_CAs = [i for i in spot1_com_CAs if i not in idr_residue_indices]
+        spot2_com_CAs = [i for i in spot2_com_CAs if i not in idr_residue_indices]
+        
     spot1_com_CAs = ",".join(spot1_com_CAs)
     spot2_com_CAs = ",".join(spot2_com_CAs)
 
@@ -129,8 +136,11 @@ def get_plumed_content(
     whole_molecules_content = f"""{group1_content}
 {group2_content}
 WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B"""
+    
+
     com_content = f"""c1: COM ATOMS={spot1_com_CAs}
 c2: COM ATOMS={spot2_com_CAs}"""
+
 
     plumed_content = f"""MOLINFO STRUCTURE={output_dir}/{filename}_fixed.pdb
 {whole_molecules_content}
@@ -163,6 +173,7 @@ c2: COM ATOMS={spot2_com_CAs}"""
 """
     elif config['type'] == 'metad':
         # assert that if grid, there's no artifacts
+        from .utils import assert_correct_metad_grid
         assert_correct_metad_grid(config)
 
         restart_str = 'YES' if config['restart'] else 'NO'

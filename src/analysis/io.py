@@ -79,5 +79,13 @@ def read_hills_file(filename):
         header=None,
         names=column_names
     )
+
+    # remove incomplete lines
+    original_len = len(hills_df)
+    hills_df = hills_df[hills_df.notna().all(axis=1)]
+    removed_len = original_len - len(hills_df)
+    if removed_len > 0:
+        logger.info(f"Removed {removed_len} rows with NaN entries")
+
     
     return hills_df

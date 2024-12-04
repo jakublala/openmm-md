@@ -13,6 +13,11 @@ def get_file_by_extension(directory, extension, assert_exists=True):
         FileNotFoundError: If no file with extension is found
     """
     files = glob.glob(f"{directory}/*{extension}")
+    for i, file in enumerate(files):
+        if 'bck.' in file:
+            logger.warning(f"Found a backup file ({file}), ignoring it...")
+            files.pop(i)
+    
     if len(files) == 0:
         if assert_exists:
             raise FileNotFoundError(f"No file with extension {extension} found in {directory}")

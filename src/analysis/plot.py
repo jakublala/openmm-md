@@ -16,13 +16,13 @@ def plot_1d_fes(fes, cv1_bins, cv2_bins, cvs, axs):
     cv1, cv2 = cvs
     # plot along first CV
     # axis = 0, as we keep the first CV
-    fes_1d = marginalize_fes(fes, kBT=kB*TEMP, axis=0)
+    fes_1d = marginalize_fes(fes, kBT=kB*TEMP, axis=0, dx=cv1_bins[1]-cv1_bins[0])
     ax1.plot(cv1_bins, fes_1d)
     ax1.set_xlabel(cv1)
     ax1.set_ylabel("FES [kJ/mol]")
 
     # plot along second CV
-    fes_1d = marginalize_fes(fes, kBT=kB*TEMP, axis=1)
+    fes_1d = marginalize_fes(fes, kBT=kB*TEMP, axis=1, dx=cv2_bins[1]-cv2_bins[0])
     ax2.plot(cv2_bins, fes_1d)
     ax2.set_xlabel(cv2)
     ax2.set_ylabel("FES [kJ/mol]")

@@ -1,0 +1,5 @@
+-np 1 -env CUDA_VISIBLE_DEVICES 1 python REST2_example.py :
+-np 1 -env CUDA_VISIBLE_DEVICES 2 python REST2_example.py :
+-np 1 -env CUDA_VISIBLE_DEVICES 3 python REST2_example.py :
+-np 1 -env CUDA_VISIBLE_DEVICES 5 python REST2_example.py 
+

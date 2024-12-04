@@ -124,9 +124,9 @@ def compute_fes_from_hills(
         d1 = (X - hill[cvs[0]]) ** 2 / (2 * sigma1 ** 2)
         d2 = (Y - hill[cvs[1]]) ** 2 / (2 * sigma2 ** 2)
         
-        # Add Gaussian contribution
-        V += hill['height'] * np.exp(-(d1 + d2))
-    
+        # Add Gaussian contribution with checks
+        V += hill['height'] * np.exp(-(d1 + d2))    
+
     # Convert bias potential to free energy
     deltaT = temp * (biasfactor - 1)
     fes = -((temp + deltaT) / deltaT) * V
