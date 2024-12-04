@@ -125,6 +125,7 @@ def get_plumed_content(
     cv1_content = resolve_cv_content(config['cvs'][0], config)
     cv2_content = resolve_cv_content(config['cvs'][1], config)
     
+    # TODO: I don't think this is correct for a single-chain
     whole_molecules_content = f"""{group1_content}
 {group2_content}
 WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B"""
