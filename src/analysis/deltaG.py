@@ -3,6 +3,7 @@ import numpy as np
 def marginalize_fes(
         fes_2d: np.ndarray,
         kBT: float,
+        dx: float,
         axis: int = 1
     ) -> np.ndarray:
     """
@@ -11,6 +12,7 @@ def marginalize_fes(
     Parameters:
     fes_2d: 2D numpy array containing free energy values
     kBT: thermal energy (kB * T)
+    dx: bin size of the CV
     axis: axis to marginalize over (i.e. the CV to keep)
 
     Returns:
@@ -20,7 +22,9 @@ def marginalize_fes(
     prob_2d = np.exp(-fes_2d / kBT)
     
     # Integrate (sum) over the dimension to remove
-    prob_1d = np.sum(prob_2d, axis=axis)
+    # the * dx accounts for the bin size, but is effectively unnecessary
+    # as it leads to a constant factor shift in the FES, which gets removed lower
+    prob_1d = np.sum(prob_2d * dx, axis=axis)
     
     # Convert back to free energy
     fes_1d = -kBT * np.log(prob_1d)

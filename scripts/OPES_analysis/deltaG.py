@@ -31,7 +31,7 @@ def compute_deltaG_from_trajectory(directory, colvar_df, threshold):
                 outfile=f"{temp_dir}/{i}_fes.h5", 
                 bias=['opes.bias', 'uwall.bias']
             )
-            fes_1d = marginalize_fes(fes, kBT=kB*TEMP, axis=1)
+            fes_1d = marginalize_fes(fes, kBT=kB*TEMP, axis=1, dx=cv2_bins[1]-cv2_bins[0])
             deltaG = compute_deltaG(fes_1d, cv2_bins, kB*TEMP, threshold)
             deltaGs.append(deltaG)
     plot_deltaGs(deltaGs, split_size, directory)
@@ -79,7 +79,7 @@ def run(project, system, date):
     # 1. Get the binding affinity from the FES
     cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5")
     assert cvs[1] == 'd', "Second CV is not distance between COMs, we do not support other CVs yet"
-    fes_1d = marginalize_fes(fes, kBT=kB*TEMP, axis=1)
+    fes_1d = marginalize_fes(fes, kBT=kB*TEMP, axis=1, dx=cv2_bins[1]-cv2_bins[0])
     deltaG = compute_deltaG(fes_1d, cv2_bins, kB*TEMP, threshold=1.5)
     print(f"Delta G [kJ/mol]: {deltaG:.2f} kJ/mol")
     print(f"Delta G [kBT]: {convert_deltaG_to_kBT(deltaG, TEMP):.2f} kBT")
