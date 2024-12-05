@@ -24,16 +24,15 @@ fi
 submit_simulation() {
     local filepath=$1
     local system=$2
-    local metad_pace=$3
-    local output_dir=$4
+    local output_dir=$3
     echo "Submitting $system with template $TEMPLATE"
 
-    qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,METAD_PACE=$metad_pace,OUTPUT_DIR=$output_dir" $TEMPLATE
+    qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,OUTPUT_DIR=$output_dir" $TEMPLATE
 }
 
 PROJECT_DIR="/home/mmm1486/projects/openmm-md"
 
 submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241128-MetaD/CD28_general_equilibrated.pdb" \
                 "CD28-G" \
-                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241204-NewDCOM"
+                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241204-Long"
 
