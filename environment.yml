@@ -8,7 +8,6 @@ dependencies:
   - cudatoolkit=11.8
   - numpy=1.26.4
   - swig
-  - pip
   - numba
   - pdbfixer
   - biopython
@@ -27,6 +26,8 @@ dependencies:
   - hydra-core
   - openmmtools
   - ruff
+  - openmpi
+  - mpi4py
   - pip
   - pip:
     - openmm-mdanalysis-reporter

@@ -88,6 +88,32 @@ def load_fes(filepath: str):
     assert fes.shape[0] == len(cv1_bins) and fes.shape[1] == len(cv2_bins), "FES must have the same shape as the CV bins"
     return cvs, fes, cv1_bins, cv2_bins
 
+from numba import njit
+import numba
+@njit(parallel=True)
+def _compute_hills_potential(
+    X: np.ndarray,
+    Y: np.ndarray,
+    cv1_centers: np.ndarray,
+    cv2_centers: np.ndarray,
+    heights: np.ndarray,
+    inv_sigma1_sq: float,
+    inv_sigma2_sq: float
+) -> np.ndarray:
+    """Numba-optimized function to compute the potential from hills"""
+    n_hills = len(heights)
+    n_bins_x, n_bins_y = X.shape
+    V = np.zeros_like(X)
+    
+    # Parallel loop over hills
+    for i in numba.prange(n_hills):
+        # Compute distances
+        d1 = (X - cv1_centers[i]) ** 2 * inv_sigma1_sq
+        d2 = (Y - cv2_centers[i]) ** 2 * inv_sigma2_sq
+        # Add Gaussian contribution
+        V += heights[i] * np.exp(-(d1 + d2))
+    
+    return V
 
 def compute_fes_from_hills(
         hills_df: pd.DataFrame,
@@ -117,15 +143,19 @@ def compute_fes_from_hills(
     # Get parameters for each CV
     sigma1 = hills_df[f'sigma_{cvs[0]}'].iloc[0]  # assuming constant sigma
     sigma2 = hills_df[f'sigma_{cvs[1]}'].iloc[0]
+    inv_sigma1_sq = 1 / (2 * sigma1 ** 2)
+    inv_sigma2_sq = 1 / (2 * sigma2 ** 2)
     
-    # Sum up all Gaussian contributions
-    for _, hill in tqdm(hills_df.iterrows(), total=len(hills_df), desc='Summing up hills...'):
-        # Calculate distances from hill center to all grid points
-        d1 = (X - hill[cvs[0]]) ** 2 / (2 * sigma1 ** 2)
-        d2 = (Y - hill[cvs[1]]) ** 2 / (2 * sigma2 ** 2)
-        
-        # Add Gaussian contribution with checks
-        V += hill['height'] * np.exp(-(d1 + d2))    
+    # Prepare arrays for Numba function
+    cv1_centers = hills_df[cvs[0]].values
+    cv2_centers = hills_df[cvs[1]].values
+    heights = hills_df['height'].values
+    
+    # Compute potential using Numba-optimized function
+    V = _compute_hills_potential(
+        X, Y, cv1_centers, cv2_centers, heights,
+        inv_sigma1_sq, inv_sigma2_sq
+    )
 
     # Convert bias potential to free energy
     deltaT = temp * (biasfactor - 1)

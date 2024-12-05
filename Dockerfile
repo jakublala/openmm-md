@@ -22,6 +22,8 @@ RUN python -m openmm.testInstallation
 # Test installation of OpenMM and CUDA
 RUN python -c "import openmm as mm; print('Available platforms:', [mm.Platform.getPlatform(i).getName() for i in range(mm.Platform.getNumPlatforms())])"
 
+# Test MPI installation
+RUN python -c "from mpi4py import MPI; print(MPI.get_vendor())"
 
 # Install PLUMED with OPES module
 RUN git clone https://github.com/plumed/plumed2 \

@@ -57,6 +57,14 @@ def plot_opes_values(colvar_df, axs):
 
 from src.analysis.colvar import plot_colvar_trajectories
 
+def plot_hills(directory, ax):
+    hills_file = get_file_by_extension(directory, '.hills')
+    hills_df = read_hills_file(hills_file)
+    ax.plot(hills_df['time'], hills_df['height'])
+    ax.set_xlabel("Time [ns]")
+    ax.set_ylabel("Height [kJ/mol]")
+    return ax
+
 def plot_summary(directory, system, simulation_type):
     # Create figure with constrained layout for better spacing
     fig = plt.figure(figsize=(12, 10), constrained_layout=True)
@@ -66,7 +74,8 @@ def plot_summary(directory, system, simulation_type):
     axs = np.array([[fig.add_subplot(gs[i, j]) for j in range(3)] for i in range(3)])
     
     # Add title with padding
-    fig.suptitle(f"Analysis for {system}", fontsize=16, y=1.02)
+    date = directory.split('/')[-1]
+    fig.suptitle(f"Analysis for {system}/{date}", fontsize=16, y=1.02)
 
     cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5")
     colvar_file = get_file_by_extension(directory, '.colvar')  
@@ -76,13 +85,15 @@ def plot_summary(directory, system, simulation_type):
         axs[0, :] = plot_opes_values(colvar_df, axs[0, :])
     else:
         logger.info(f"Plotting METAD analysis for {system}, hence some empty plots will remain empty")
+        axs[0, 0] = plot_hills(directory, axs[0, 0])
     
     # Plot colvar trajectories in second row
-    axs[1, 0], axs[1, 1] = plot_colvar_trajectories(colvar_df, axs[1, :2], timestep=TIMESTEP, stride=STRIDE)
+    axs[1, 0], axs[1, 1] = plot_colvar_trajectories(colvar_df, cvs, axs[1, :2], timestep=TIMESTEP, stride=STRIDE)
     axs[1, 2] = plot_biases(colvar_df, axs[1, 2], timestep=TIMESTEP, stride=STRIDE)
 
     # Plot 2D FES in bottom row
-    axs[2, 0] = plot_2d_fes(fes, cv1_bins, cv2_bins, cvs, axs[2, 0], levels=100)
+    # HACK: flip axes to make it nicer
+    axs[2, 0] = plot_2d_fes(fes.T, cv2_bins, cv1_bins, np.flip(cvs), axs[2, 0], levels=100)
     
     # Plot 1D FES in bottom row
     axs[2, 1], axs[2, 2] = plot_1d_fes(fes, cv1_bins, cv2_bins, cvs, axs[2, 1:])
@@ -181,6 +192,30 @@ from src.analysis.utils import get_file_by_extension
 from src.analysis.io import read_hills_file
 
 from src.analysis.utils import fix_fucked_up_naming
+import re
+def get_cvs_from_plumed_file(plumed_text):
+    """Extract CV names from PLUMED input file using regex.
+    
+    Args:
+        plumed_text: File object or string containing PLUMED configuration
+        
+    Returns:
+        list: CV names in order they appear in ARG parameter
+    """
+    # Join all lines into a single string for regex processing
+    plumed_content = ''.join(plumed_text)
+    
+    # Regex pattern to find ARG parameter, now handling ... in the middle
+    pattern = r'(?:METAD|OPES).*?ARG=([^:\s]+)'
+    match = re.search(pattern, plumed_content, re.DOTALL)
+    
+    if match:
+        # Extract CVs from the matched group and clean up
+        cvs = match.group(1).strip().split(',')
+        return [cv.strip() for cv in cvs]
+    
+    raise ValueError("No CVs (ARG parameter) found in PLUMED file")
+
 def run(project, system, date, recompute, collect_plots):
     date = fix_fucked_up_naming(project, system, date)
 
@@ -195,19 +230,20 @@ def run(project, system, date, recompute, collect_plots):
     colvar_file = get_file_by_extension(directory, '.colvar')  
     colvar_df = read_colvar_file(colvar_file)
 
-    from src.analysis.traj import plot_trajectory
-    plot_trajectory(colvar_df, directory, system)
-
     simulation_type = determine_simulation_type(directory)
+
+    with open(get_file_by_extension(directory, 'plumed.dat'), 'r') as file:
+        cvs = get_cvs_from_plumed_file(file)
+
 
     if recompute or not get_file_by_extension(directory, '.h5', assert_exists=False):
         if simulation_type == 'opes':
             # OPES FES
             cv1_bins, cv2_bins, fes = compute_fes(
                 colvar_df,
-                sigmas=[get_sigma(directory, cv) for cv in ['cmap', 'd']], 
+                sigmas=[get_sigma(directory, cv) for cv in cvs], 
                 temp=300,
-                cvs=['cmap', 'd'], 
+                cvs=cvs, 
                 outfile=f"{directory}/{system}_fes.h5", 
                 bias=['opes.bias', 'uwall.bias'],
                 simulation_type='opes'
@@ -218,7 +254,7 @@ def run(project, system, date, recompute, collect_plots):
             cv1_bins, cv2_bins, fes_hills = compute_fes_from_hills(
                 hills_df=hills_df,
                 temp=300,
-                cvs=['cmap', 'd'],
+                cvs=cvs,
                 biasfactor=hills_df['biasf'].iloc[0],
                 outfile=f"{directory}/{system}_fes.h5",
                 n_bins=100

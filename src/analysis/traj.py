@@ -27,10 +27,10 @@ def plot_biases(colvar_df, ax, timestep, stride):
     ax.legend()
     return ax
 
-def plot_trajectory(colvar_df, directory, system):
+def plot_trajectory(colvar_df, directory, system, cvs):
     # HACK
     fig, axs = plt.subplots(3, 1, figsize=(12, 8))
-    axs[:2] = plot_colvar_trajectories(colvar_df, axs[:2], timestep=TIMESTEP, stride=STRIDE)
+    axs[:2] = plot_colvar_trajectories(colvar_df, cvs, axs[:2], timestep=TIMESTEP, stride=STRIDE)
     axs[2] = plot_biases(colvar_df, axs[2], timestep=TIMESTEP, stride=STRIDE)
     
     # Remove x-labels from upper plots

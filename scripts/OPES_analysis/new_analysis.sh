@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source activate openmm
-
 # python analysis.py --system CD28-G-UW5P2 --date 241118 --project 241010_FoldingUponBinding  --recompute
 # python analysis.py --system CD28-G-UW5P4 --date 241118 --project 241010_FoldingUponBinding  --recompute
 # python analysis.py --system CD28-G-UW8P4 --date 241118 --project 241010_FoldingUponBinding
@@ -11,13 +9,17 @@ source activate openmm
 # python analysis.py --system Z1-B50W --date 241120-MetaD --project 241109_INFconstruct
 # python deltaG.py --system Z1-B50W --date 241119-2 --project 241109_INFconstruct
 
-export RECOMPUTE=True
+export RECOMPUTE=False
 
 # DATE=241202-MetaDPace
 
-python analysis.py --system CD28-G --date 241202-Pace50 --project 241010_FoldingUponBinding --recompute $RECOMPUTE
+python analysis.py --system CD28-G --date 241202-SASA --project 241010_FoldingUponBinding --recompute $RECOMPUTE
+# python analysis.py --system CD28-G --date 241204-Long --project 241010_FoldingUponBinding --recompute $RECOMPUTE
+# python analysis.py --system CD28-G --date 241202-Pace50 --project 241010_FoldingUponBinding --recompute $RECOMPUTE
 # python analysis.py --system CD28-G --date 241202-Pace100 --project 241010_FoldingUponBinding --recompute $RECOMPUTE
 # python analysis.py --system CD28-G --date 241202-Pace200 --project 241010_FoldingUponBinding --recompute $RECOMPUTE
+# python analysis.py --system CD28-G --date 241128-MetaD --project 241010_FoldingUponBinding --recompute $RECOMPUTE
+
 
 # python analysis.py --system ASYN-A --date $DATE --project 241010_FoldingUponBinding --recompute $RECOMPUTE
 # python analysis.py --system ASYN-G --date $DATE --project 241010_FoldingUponBinding --recompute $RECOMPUTE
