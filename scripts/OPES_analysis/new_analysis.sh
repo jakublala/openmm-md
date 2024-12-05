@@ -13,8 +13,8 @@ export RECOMPUTE=False
 
 # DATE=241202-MetaDPace
 
-python analysis.py --system CD28-G --date 241202-SASA --project 241010_FoldingUponBinding --recompute $RECOMPUTE
-# python analysis.py --system CD28-G --date 241204-Long --project 241010_FoldingUponBinding --recompute $RECOMPUTE
+# python analysis.py --system CD28-G --date 241202-SASA --project 241010_FoldingUponBinding --recompute $RECOMPUTE
+python analysis.py --system CD28-G --date 241204-Long --project 241010_FoldingUponBinding --recompute $RECOMPUTE
 # python analysis.py --system CD28-G --date 241202-Pace50 --project 241010_FoldingUponBinding --recompute $RECOMPUTE
 # python analysis.py --system CD28-G --date 241202-Pace100 --project 241010_FoldingUponBinding --recompute $RECOMPUTE
 # python analysis.py --system CD28-G --date 241202-Pace200 --project 241010_FoldingUponBinding --recompute $RECOMPUTE
