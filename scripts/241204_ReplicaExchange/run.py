@@ -26,15 +26,22 @@ except ImportError:
     rank = 0
     n_procs = 1
 
-# Configure logging only for rank 0
+# Configure logging
 if rank == 0:
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
     logging.basicConfig(
-        level=logging.INFO,
+        level=logging.DEBUG,
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         stream=sys.stdout
     )
+else:
+    class NoOpLogger:
+        def __getattr__(self, name):
+            def method(*args, **kwargs):
+                pass
+            return method
+
+    logger = NoOpLogger()
 
 def main():
 
@@ -51,29 +58,44 @@ def main():
 
     forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
 
-    system = forcefield.createSystem(
-        topology=pdb.topology, 
-        nonbondedMethod=PME,
-        nonbondedCutoff=1*unit.nanometer,
-        constraints=HBonds
-        )
-    
 
     n_replicas = 4  # Number of temperature replicas.
     T_min = 300.0 * unit.kelvin  # Minimum temperature.
     T_max = 600.0 * unit.kelvin  # Maximum temperature.
 
-
-    # thermodynamic state holds information on ensemble parameters like temperture and pressure
-    reference_state = states.ThermodynamicState(system=system, temperature=T_min)
-
     timestep = 2.0*unit.femtoseconds
     md_steps = 500 # as suggested in some paper
 
-    move = mcmc.GHMCMove(
-        timestep=timestep,  # Each integration step is 2 fs (Langevin dynamics)
-        n_steps=md_steps,
-        collision_rate=1/unit.picoseconds, # equivalent to friction coefficient in LangevinMiddleIntegrator
+
+    PLUMED = True
+
+    from openmmplumed import PlumedForce
+
+    # system holds information on the force field parameters
+    systems = []
+    for i in range(n_replicas):
+        _system = forcefield.createSystem(
+            topology=pdb.topology, 
+            nonbondedMethod=PME,
+            nonbondedCutoff=1*unit.nanometer,
+            constraints=HBonds
+            )
+        if PLUMED:
+            with open(f'plumed_{i}.dat', 'r') as file:
+                plumed_script = file.read()
+            _system.addForce(PlumedForce(plumed_script))
+        systems.append(_system)
+    
+    # move = mcmc.GHMCMove(
+    #     timestep=timestep,  # Each integration step is 2 fs (Langevin dynamics)
+    #     n_steps=md_steps,
+    #     collision_rate=1/unit.picoseconds, # equivalent to friction coefficient in LangevinMiddleIntegrator
+    # )
+
+    move = mcmc.LangevinDynamicsMove(
+        timestep=timestep,
+        collision_rate=1/unit.picoseconds,
+        n_steps=md_steps # each move is 1 ps
     )
 
     import pathlib
@@ -99,30 +121,47 @@ def main():
         )
 
     # Create sampler state with both positions and box vectors
-    sampler_state = states.SamplerState(
-        positions=pdb.positions,
-        box_vectors=system.getDefaultPeriodicBoxVectors()
-        # hopefully velocities if None are set then by the temperature later
-        # TODO: check if true
-    )
+    # this contains the State, meaning the positions, velocities, and box vectors, etc.
+    sampler_states = []
+    for system in systems:
+        sampler_states.append(states.SamplerState(
+            positions=pdb.positions,
+            box_vectors=system.getDefaultPeriodicBoxVectors()
+            # hopefully velocities if None are set then by the temperature later
+            # TODO: check if true
+        ))
     
-    N_ITERATIONS = 10
-    simulation = ParallelTemperingSampler(
+    N_ITERATIONS = 100
+    from openmmtools.multistate import ReplicaExchangeSampler
+    simulation = ReplicaExchangeSampler(
+        replica_mixing_scheme='swap-all',
+        # or swap-all, which is more expensive
+        # and does n_replicas**3 swap attempts per iteration
         mcmc_moves=move, 
         number_of_iterations=N_ITERATIONS # this does 50 iterations of the move, hence 50 * 500 steps
         )
     
+    import numpy as np
+    temperatures = [T_min + (T_max - T_min) * (np.exp(float(i) / float(n_replicas-1)) - 1.0) / (np.e - 1.0) for i in range(n_replicas)]
+    logger.info(f"Assigning temperatures: {temperatures}")
+
+    # thermodynamic state holds information on ensemble parameters like temperture and pressure
+    thermodynamic_states = [states.ThermodynamicState(system=system, temperature=T) for system, T in zip(systems, temperatures)]
+
     # with no mpi4py, we are getting a single GPU performance
 
     simulation.create(
-        thermodynamic_state=reference_state,
-        sampler_states=sampler_state, # can be a single state, which gets copied to all replicas
-        storage=reporter, 
-        min_temperature=T_min,
-        max_temperature=T_max, 
-        n_temperatures=n_replicas)
+        thermodynamic_states=thermodynamic_states,
+        sampler_states=sampler_states, # can be a single state, which gets copied to all replicas
+        storage=reporter
+        )
     
     simulation.run()
+
+
+    # logger.info(f'Accepted steps: {move.n_accepted}')
+    # logger.info(f'Proposed steps: {move.n_proposed}')
+    # logger.info(f'Fraction accepted: {move.fraction_accepted}')
 
 
     # print(analyzer.get_effective_energy_timeseries())
