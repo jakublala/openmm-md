@@ -51,6 +51,7 @@ def main(
     if filepath is None:
         raise ValueError('Filepath is required')
 
+
     filename = os.path.basename(filepath).split('.')[0]
     input_dir = os.path.dirname(filepath)
 
@@ -133,6 +134,12 @@ def main(
     if not os.path.exists(f"{output_dir}/{filename}_equilibrated.pdb"):
         logger.info('No equilibrated pdb file found, checking whether we need to run relaxation...')
         if not os.path.exists(f'{output_dir}/{filename}_solvated.pdb'):
+
+            if split_chains:
+                if ('CD28' in filepath) or ('A-synuclein' in filepath):
+                    raise Exception("CD28 and A-synuclein are already split, you might be doing something wrong...")
+
+
             logger.info('No solvated pdb file found, running solvation...')
             # 1. load the PDB and fix errors
             fixer(

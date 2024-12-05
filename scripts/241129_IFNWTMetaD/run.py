@@ -97,10 +97,10 @@ def run(
         'state_wstride': get_checkpoint_interval(TIMESTEP),
         'metad.pace': metad_pace,
         'cvs': ['cmap', 'd'],
-        'metad.sigma': f'0.1,0.05', # "0.04,0.01"
+        'metad.sigma': f'0.15,0.05', # "0.04,0.01"
         'metad.height': 1.25, # 1/2 * kBT
         'metad.grid_min': f'0,0',
-        'metad.grid_max': f'30,{upper_wall_at+1.5}',
+        'metad.grid_max': f'52,{upper_wall_at+1.5}',
         'metad.grid_bin': "200,200",
         'metad.biasfactor': 50,
         'upper_wall.at': upper_wall_at, # keep this at UW=5, we are primarily looking at BIASFACTOR now
