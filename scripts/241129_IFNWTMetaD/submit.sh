@@ -31,26 +31,26 @@ submit_simulation() {
     qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,METAD_PACE=$metad_pace,OUTPUT_DIR=$output_dir" $TEMPLATE
 }
 
-DATE="241202-MetaD"
+DATE="241204-MetaD"
 SYSTEM="Z1-B50L10W"
 PROJECT_DIR="/home/mmm1486/projects/openmm-md/data/241109_INFconstruct/output/"
 
 
 # cmap, d are the cvs in that order
-submit_simulation "${PROJECT_DIR}/${SYSTEM}/241122-Explore/${SYSTEM}_equilibrated.pdb" \
-                "${SYSTEM}" \
-                50 \
-                "${PROJECT_DIR}/data/241109_INFconstruct/output/${SYSTEM}/${DATE}-MetaDPace50"
+# submit_simulation "${PROJECT_DIR}/${SYSTEM}/241122-Explore/${SYSTEM}_equilibrated.pdb" \
+#                 "${SYSTEM}" \
+#                 50 \
+#                 "${PROJECT_DIR}/data/241109_INFconstruct/output/${SYSTEM}/${DATE}-MetaDPace50"
 
-submit_simulation "${PROJECT_DIR}/${SYSTEM}/241122-Explore/${SYSTEM}_equilibrated.pdb" \
-                "${SYSTEM}" \
-                100 \
-                "${PROJECT_DIR}/data/241109_INFconstruct/output/${SYSTEM}/${DATE}-MetaDPace100"
+# submit_simulation "${PROJECT_DIR}/${SYSTEM}/241122-Explore/${SYSTEM}_equilibrated.pdb" \
+#                 "${SYSTEM}" \
+#                 100 \
+#                 "${PROJECT_DIR}/data/241109_INFconstruct/output/${SYSTEM}/${DATE}-MetaDPace100"
 
-submit_simulation "${PROJECT_DIR}/${SYSTEM}/241122-Explore/${SYSTEM}_equilibrated.pdb" \
+submit_simulation "/home/mmm1486/projects/openmm-md/data/241109_INFconstruct/output/${SYSTEM}/241122-Explore/${SYSTEM}_equilibrated.pdb" \
                 "${SYSTEM}" \
                 500 \
-                "${PROJECT_DIR}/data/241109_INFconstruct/output/${SYSTEM}/${DATE}-MetaDPace500"
+                "/home/mmm1486/projects/openmm-md/data/241109_INFconstruct/output/${SYSTEM}/${DATE}"
 
 
 # submit_simulation "${PROJECT_DIR}/${SYSTEM}/241122-Explore/${SYSTEM}_equilibrated.pdb" \

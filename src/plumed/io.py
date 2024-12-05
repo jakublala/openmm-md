@@ -101,6 +101,10 @@ def get_plumed_content(
         group1_content = f"chain_A: GROUP ATOMS={range_atom_ids_chain_A[0]}-{range_atom_ids_chain_A[1]}"
         group2_content = f"chain_B: GROUP ATOMS={range_atom_ids_chain_B[0]}-{range_atom_ids_chain_B[1]}"
 
+        whole_molecules_content = f"""{group1_content}
+{group2_content}
+WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B"""
+
     assert len(config['cvs']) == 2, "Expected two CVs, got {len(config['cvs'])}. Don't support any more or less."
     
     def resolve_cv_content(cv: str, config: dict):
@@ -132,11 +136,6 @@ def get_plumed_content(
     cv1_content = resolve_cv_content(config['cvs'][0], config)
     cv2_content = resolve_cv_content(config['cvs'][1], config)
     
-    whole_molecules_content = f"""{group1_content}
-{group2_content}
-WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B"""
-    
-
     com_content = f"""c1: COM ATOMS={spot1_com_CAs}
 c2: COM ATOMS={spot2_com_CAs}"""
 

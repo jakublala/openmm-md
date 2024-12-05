@@ -50,7 +50,7 @@ def run(
         'cutoff': 0.8,
         'restart_rfile': None,
         'state_wstride': get_checkpoint_interval(TIMESTEP),
-        'metad.pace': 100,
+        'metad.pace': 500,
         'cvs': ['cmap', 'd'],
         'metad.sigma': "0.15,0.27", # "0.04,0.01"
         'metad.height': 1.25, # 1/2 * kBT
