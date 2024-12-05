@@ -24,6 +24,7 @@ dependencies:
   - python-dotenv
   - pydantic
   - hydra-core
+  - mdtraj
   - openmmtools
   - ruff
   - openmpi
