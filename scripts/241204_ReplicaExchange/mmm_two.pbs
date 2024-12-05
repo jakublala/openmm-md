@@ -28,8 +28,12 @@ module load apptainer
 
 apptainer pull $HOME/Scratch/openmm-md.sif docker://jakublala/openmm-md
 
+# Add these before the PYTHON_CMD line
+export OMPI_MCA_btl=^openib
+export OMPI_MCA_btl_vader_single_copy_mechanism=none
+
 # Define the Python command
-PYTHON_CMD="python run.py"
+PYTHON_CMD="mpirun -np 2 --hostfile hostfile python run.py"
 
 # Execute the command using apptainer
 apptainer exec \
@@ -39,6 +43,3 @@ apptainer exec \
     --bind $HOME/projects \
     $HOME/Scratch/openmm-md.sif bash -c \
     "export PYTHONPATH=$HOME/projects/openmm-md:$PYTHONPATH && cd $HOME/projects/openmm-md/scripts/241204_ReplicaExchange && $PYTHON_CMD"
-
-# Preferably, tar-up (archive) all output files onto the shared scratch area
-tar zcvf $HOME/Scratch/files_from_job_$JOB_ID.tar.gz $TMPDIR

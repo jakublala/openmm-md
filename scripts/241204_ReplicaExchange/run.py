@@ -13,6 +13,12 @@ import sys
 # Set up MPI
 try:
     from mpi4py import MPI
+    # Initialize MPI with thread support
+    required = MPI.THREAD_MULTIPLE
+    provided = MPI.Init_thread(required)
+    if provided < required:
+        print(f"Warning: MPI thread support level {provided} is less than required {required}")
+    
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
     n_procs = comm.Get_size()
@@ -125,7 +131,7 @@ def main():
             # TODO: check if true
         ))
     
-    N_ITERATIONS = 100
+    N_ITERATIONS = 10
     from openmmtools.multistate import ReplicaExchangeSampler
     simulation = ReplicaExchangeSampler(
         replica_mixing_scheme='swap-all',
@@ -151,6 +157,8 @@ def main():
         )
     
     simulation.run()
+
+    # TODO: does the swap take into account the PLUMED ENERGY?!?!?!
 
 
     # logger.info(f'Accepted steps: {move.n_accepted}')
