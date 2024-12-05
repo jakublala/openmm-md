@@ -45,6 +45,8 @@ def run():
         'metad.grid_min': '0,0',
         'metad.grid_max': f'60,7',
         'metad.grid_bin': '200,200',
+        'metad.height': 1.25,
+        'metad.biasfactor': 48,
         'temperature': TEMPERATURE,
         'stride': 500,
         'cutoff': 0.8,
