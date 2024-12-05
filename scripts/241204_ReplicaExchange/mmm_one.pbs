@@ -13,7 +13,7 @@
 #$ -l tmpfs=32G
 
 # Set the name of the job.
-#$ -N sasa
+#$ -N REST-1
 
 # Set the working directory to somewhere in your scratch space.
 #$ -wd /home/mmm1486/Scratch/openmm-md
@@ -28,7 +28,6 @@ module load apptainer
 
 apptainer pull $HOME/Scratch/openmm-md.sif docker://jakublala/openmm-md
 
-
 # Define the Python command
 PYTHON_CMD="python run.py"
 
@@ -39,7 +38,7 @@ apptainer exec \
     --bind $HOME/Scratch \
     --bind $HOME/projects \
     $HOME/Scratch/openmm-md.sif bash -c \
-    "export PYTHONPATH=$HOME/projects/openmm-md:$PYTHONPATH && cd $HOME/projects/openmm-md/scripts/241127_SASA && $PYTHON_CMD"
+    "export PYTHONPATH=$HOME/projects/openmm-md:$PYTHONPATH && cd $HOME/projects/openmm-md/scripts/241204_ReplicaExchange && $PYTHON_CMD"
 
 # Preferably, tar-up (archive) all output files onto the shared scratch area
 tar zcvf $HOME/Scratch/files_from_job_$JOB_ID.tar.gz $TMPDIR
