@@ -9,14 +9,26 @@ from openmm.app import PDBFile, ForceField, PME, HBonds
 
 import logging
 import sys
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-# Set up basic logging to console
-logging.basicConfig(
-    level=logging.INFO,  # Change to DEBUG for more detailed output
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    stream=sys.stdout
-)
+
+# Set up MPI
+try:
+    from mpi4py import MPI
+    comm = MPI.COMM_WORLD
+    rank = comm.Get_rank()
+    n_procs = comm.Get_size()
+except ImportError:
+    rank = 0
+    n_procs = 1
+
+# Configure logging only for rank 0
+if rank == 0:
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        stream=sys.stdout
+    )
 
 def main():
 
@@ -24,7 +36,7 @@ def main():
     from openmmtools import cache
     from openmm.openmm import Platform
     platform = Platform.getPlatformByName('CUDA')
-    properties = {'DeviceIndex': '0, 1', 'Precision': 'mixed'}
+    properties = {'DeviceIndex': str(rank), 'Precision': 'mixed'}
     cache.global_context_cache.set_platform(platform, properties)
     
     pdb_path = '../../data/241010_FoldingUponBinding/output/SUMO-1C/241128-MetaD/sumo1c_equilibrated.pdb'
@@ -60,16 +72,24 @@ def main():
 
     import pathlib
     storage_path = pathlib.Path('replica_exchange.nc')
-    # if exists, delete
-    if storage_path.exists():
-        storage_path.unlink()
-    checkpoint_path = pathlib.Path('replica_exchange_checkpoint.nc')
-    if checkpoint_path.exists():
-        checkpoint_path.unlink()
+    if rank == 0:
+        # if exists, delete
+        if storage_path.exists():
+            storage_path.unlink()
+        checkpoint_path = pathlib.Path('replica_exchange_checkpoint.nc')
+        if checkpoint_path.exists():
+            checkpoint_path.unlink()
     
+
+    # get atoms of all protein
+    import MDAnalysis as mda
+    u = mda.Universe(pdb_path)
+    protein_atom_ids = u.select_atoms("protein").ids
+
     reporter = MultiStateReporter(
         storage=storage_path, 
-        checkpoint_interval=10
+        checkpoint_interval=10,
+        analysis_particle_indices=protein_atom_ids
         )
 
     # Create sampler state with both positions and box vectors
@@ -98,31 +118,6 @@ def main():
     
     simulation.run()
 
-    from openmmtools.multistate import ParallelTemperingAnalyzer
-
-    # analyzer = ParallelTemperingAnalyzer(reporter)
-    # print(analyzer.read_energies())
-
-    # open .nc file?!?!
-    import netCDF4
-    nc = netCDF4.Dataset(storage_path, 'r')
-    print(nc.variables.keys())
-
-    # loading traj and write to dcd format
-    import numpy as np
-    import MDAnalysis as mda
-    from MDAnalysis.coordinates.memory import MemoryReader
-    coord_traj = np.zeros((n_replicas, 20, pdb.topology.getNumAtoms(), 3)) * unit.nanometer
-    for time in range(0, N_ITERATIONS, 10):
-        state_samplers = reporter.read_sampler_states(time)
-        for i, state_sampler in enumerate(state_samplers):
-            coord_traj[i, int(time/10)] += state_sampler.positions
-
-    # only taking the first replica trajectory
-    u = mda.Universe(pdb_path, coord_traj[0].value_in_unit(unit.angstrom), format=MemoryReader)
-    with mda.Writer("test.dcd", u.select_atoms("protein").n_atoms) as W:
-        for ts in u.trajectory:
-            W.write(u.select_atoms("protein"))
 
     # print(analyzer.get_effective_energy_timeseries())
 
