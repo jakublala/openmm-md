@@ -1,0 +1,2 @@
+-np 1 -env CUDA_VISIBLE_DEVICES 0 python run.py :
+-np 1 -env CUDA_VISIBLE_DEVICES 1 python run.py
