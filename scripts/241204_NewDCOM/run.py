@@ -5,6 +5,7 @@ import fire
 def run(
         filepath: str = "../../data/241010_FoldingUponBinding/output/CD28-A/241122-Explore/CD28_alpha_equilibrated.pdb", 
         output_dir: str = 'test',
+        restart: bool = False,
         ):
         
     FILEPATH = filepath
@@ -64,7 +65,7 @@ def run(
         'spot1_residues': None,
         'spot2_residues': None,
         'idr_residues': idr_residues,
-        'restart': False,
+        'restart': restart,
         'trajectory_logging': True
     }
 

@@ -38,7 +38,8 @@ echo "Running $SYSTEM with metad_pace $METAD_PACE, output_dir $OUTPUT_DIR"
 # Define the Python command
 PYTHON_CMD="python /home/mmm1486/projects/openmm-md/scripts/241204_NewDCOM/run.py \
     --output_dir $OUTPUT_DIR \
-    --filepath $FILEPATH"
+    --filepath $FILEPATH \
+    --restart $RESTART"
 
 # Execute the command using apptainer
 apptainer exec \

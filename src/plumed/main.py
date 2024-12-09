@@ -37,6 +37,11 @@ def main(
 
     if output_dir is None:
         raise ValueError('Output directory is required')
+
+    
+    if os.path.exists(output_dir):
+        raise FileExistsError(f"Output directory {output_dir} already exists, refusing to overwrite!")
+
     os.makedirs(output_dir, exist_ok=True)
 
     if config is None:
@@ -112,6 +117,8 @@ def main(
                     f.write(line)
             logger.info("Restarting MetaD as requested...")
             restart_checkpoint = get_file_by_extension(input_dir, '.chk')
+
+
         else:
             restart_checkpoint = None
 

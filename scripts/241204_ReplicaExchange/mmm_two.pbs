@@ -41,5 +41,9 @@ apptainer exec \
     --no-home \
     --bind $HOME/Scratch \
     --bind $HOME/projects \
-    $HOME/Scratch/openmm-md.sif bash -c \
-    "export PYTHONPATH=$HOME/projects/openmm-md:$PYTHONPATH && cd $HOME/projects/openmm-md/scripts/241204_ReplicaExchange && $PYTHON_CMD"
+    $HOME/Scratch/openmm-md.sif bash -c "\
+    export TMPDIR=$HOME/Scratch/tmp && \
+    mkdir -p \$TMPDIR && \
+    export PYTHONPATH=$HOME/projects/openmm-md:\$PYTHONPATH && \
+    cd $HOME/projects/openmm-md/scripts/241204_ReplicaExchange && \
+    $PYTHON_CMD"

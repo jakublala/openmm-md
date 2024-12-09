@@ -13,11 +13,13 @@ import sys
 # Set up MPI
 try:
     from mpi4py import MPI
-    # Initialize MPI with thread support
-    required = MPI.THREAD_MULTIPLE
-    provided = MPI.Init_thread(required)
-    if provided < required:
-        print(f"Warning: MPI thread support level {provided} is less than required {required}")
+    # Check if MPI is already initialized
+    if not MPI.Is_initialized():
+        # Initialize MPI with thread support
+        required = MPI.THREAD_MULTIPLE
+        provided = MPI.Init_thread(required)
+        if provided < required:
+            print(f"Warning: MPI thread support level {provided} is less than required {required}")
     
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
@@ -59,7 +61,7 @@ def main():
     forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
 
 
-    n_replicas = 4  # Number of temperature replicas.
+    n_replicas = 8  # Number of temperature replicas.
     T_min = 300.0 * unit.kelvin  # Minimum temperature.
     T_max = 600.0 * unit.kelvin  # Maximum temperature.
 
@@ -131,7 +133,8 @@ def main():
             # TODO: check if true
         ))
     
-    N_ITERATIONS = 100
+    # run for 1 ns = 1000 ps
+    N_ITERATIONS = 1000
     from openmmtools.multistate import ReplicaExchangeSampler
     simulation = ReplicaExchangeSampler(
         replica_mixing_scheme='swap-all',
