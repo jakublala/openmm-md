@@ -26,10 +26,12 @@ def main(
         filepath=None, 
         device_index=0,
         mdtime=100, # in ns
+        temperature=300,
         timestep=4,
         device="cuda",
         output_dir=None,
-        split_chains=None
+        split_chains=None,
+        padding=None,
         ):
     if split_chains is None:
         raise ValueError('Split chains is required')
@@ -62,7 +64,8 @@ def main(
         device_index=str(device_index),
         constraints=None,
         device=device,
-        output_dir=output_dir
+        output_dir=output_dir,
+        padding=padding
         )
     
     # 3. run NPT relaxation / equilibriation
@@ -86,32 +89,23 @@ def main(
     #     )
 
 
-    try:
-        print("-----Running stability.py-----")
-        now = datetime.now()
-        dt_string = now.strftime("%y%m%d_%H%M%S")
+    
+    print("-----Running stability.py-----")
+    now = datetime.now()
+    dt_string = now.strftime("%y%m%d_%H%M%S")
 
-        from stability import stability
-        stability(
-            filename=filename, 
-            mdtime=mdtime, 
-            device_index=str(device_index),
-            timestep=timestep,
-            device=device,
-            output_dir=output_dir
-            )
-        
-    except Exception as e:
-        print(f"Error running stability: {e}")
-        if os.path.exists(f'tmp/{filename}.xyz'):
-            run_command(f'mv tmp/{filename}.xyz output/{filename}_{dt_string}.xyz')
-        if os.path.exists(f'tmp/{filename}.out'):
-            run_command(f'mv tmp/{filename}.out output/{filename}_{dt_string}.out')
-        if os.path.exists(f'tmp/{filename}.chk'):
-            run_command(f'mv tmp/{filename}.chk output/{filename}_{dt_string}.chk')
-        if os.path.exists(f"tmp/{filename}_solvated.pdb"):
-            run_command(f"mv tmp/{filename}_solvated.pdb output/{filename}_{dt_string}_solvated.pdb")
-
+    from stability import stability
+    stability(
+        filename=filename, 
+        mdtime=mdtime, 
+        device_index=str(device_index),
+        timestep=timestep,
+        device=device,
+        output_dir=output_dir,
+        temperature=temperature,
+        padding=padding
+        )
+    
 def restart(filename=None):
     if filename is None:
         raise ValueError('Filename is required')

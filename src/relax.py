@@ -4,9 +4,9 @@ from openmm.unit import nanometer, picosecond, picoseconds, kelvin, kilojoules_p
 import fire
 import logging
 import numpy as np
+import time
 
-
-from src.utils import get_full_reporter
+from src.utils import get_platform_and_properties
 
 logger = logging.getLogger(__name__)
 
@@ -62,23 +62,8 @@ def minimize(
     # integrator = LangevinMiddleIntegrator(300*kelvin, 1/picosecond, 0.004*picoseconds)
 
     # 4: SIMULATION
-    # there's 4 different platforms tu use - Reference, CPU, CUDA, and OpenCL
-    # platform = Platform.getPlatformByName('CUDA')
-    # then assign it to Simulation object
-    properties = None
-    if device == "cuda":
-        platform = Platform.getPlatformByName('CUDA')
-        properties = {'DeviceIndex': device_index}
-    elif device == "cpu":
-        platform = Platform.getPlatformByName('CPU')
-    elif device == "opencl":
-        platform = Platform.getPlatformByName('OpenCL')
-    else:
-        raise ValueError('Invalid device')
-
-    logger.info(f'Platform used: {platform.getName()}')
+    platform, properties = get_platform_and_properties(device, device_index)
     
-    import time
     class Reporter(MinimizationReporter):
         def __init__(self):
             super(Reporter, self).__init__()

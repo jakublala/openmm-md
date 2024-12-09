@@ -4,6 +4,7 @@ from openmm.unit import nanometer, picosecond, picoseconds, kelvin, nanosecond
 import fire
 import time
 from mdareporter import MDAReporter
+from src.utils import get_checkpoint_interval, get_platform_and_properties
 
 # Define a function to check if a residue is a water molecule or an ion
 def is_water_or_ion(residue):
@@ -13,12 +14,12 @@ def is_water_or_ion(residue):
 
 def stability(
         filename=None,
-        nsteps=None,
-        mdtime=None, # give in ns
-        restart=False,
         device_index='0',
-        log_freq=10000,
-        timestep=4, # in femtoseconds
+        mdtime=None, # give in ns
+        timestep=2, # in femtoseconds
+        temperature=300,
+        restart=False,
+        logging_frequency=100,
         device="cuda",
         output_dir=None
         ):
@@ -29,21 +30,9 @@ def stability(
         raise ValueError('Output directory is required')
     if filename is None:
         raise ValueError('Filename is required')
-    if nsteps is None and mdtime is None:
-        raise ValueError('Number of steps or time is required')
-    if nsteps is not None and mdtime is not None:
-        if mdtime != time_step * nsteps:
-            raise ValueError('Number of steps and time do not match')
-    else:
-        if mdtime is not None:
-            nsteps = int(mdtime * nanosecond / time_step)
-        elif nsteps is not None:
-            mdtime = nsteps * time_step
-        else:
-            raise ValueError('Something went wrong...')
-
-    log_freq = int(100 * picoseconds / time_step)
-
+    
+    nsteps = int(mdtime * nanosecond / time_step)
+    
     if restart:
         pdb = PDBFile(f'output/{filename}/{filename}_solvated.pdb')
     else:
@@ -62,21 +51,11 @@ def stability(
     # TODO: run it at body temperature
     # have a bit larger friction coefficient initially in an equilibriation phase
     # then decrease it to a smaller value for production run
-    integrator = LangevinMiddleIntegrator(300*kelvin, 1/picosecond, time_step)
+    integrator = LangevinMiddleIntegrator(temperature*kelvin, 1/picosecond, time_step)
 
-    properties = None
-    if device == "cuda":
-        platform = Platform.getPlatformByName('CUDA')
-        properties = {'DeviceIndex': device_index}
-    elif device == "cpu":
-        platform = Platform.getPlatformByName('CPU')
-    elif device == "opencl":
-        platform = Platform.getPlatformByName('OpenCL')
-    else:
-        raise ValueError('Invalid device')
+    platform, properties = get_platform_and_properties(device, device_index)
 
     simulation = Simulation(pdb.topology, system, integrator, platform, properties)
-    print('platform used:', simulation.context.getPlatform().getName())
     if restart:
         raise ValueError('Restart not implemented yet')
         simulation.loadCheckpoint(f'output/{filename}.chk')
@@ -86,7 +65,7 @@ def stability(
     simulation.reporters.append(
         MDAReporter(
             f'{output_dir}/{filename}.dcd', 
-            log_freq, 
+            logging_frequency, 
             enforcePeriodicBox=False, 
             selection="protein"
             )
@@ -96,7 +75,7 @@ def stability(
     simulation.reporters.append(
         StateDataReporter(
             file=f'{output_dir}/{filename}.out',
-            reportInterval=log_freq,
+            reportInterval=logging_frequency,
             step=True,
             time=True,
             potentialEnergy=True,
@@ -111,10 +90,11 @@ def stability(
             totalSteps=nsteps
         )
     )
+
     simulation.reporters.append(
         CheckpointReporter(
             file=f'{output_dir}/{filename}.chk', 
-            reportInterval=log_freq*1000000000
+            reportInterval=get_checkpoint_interval(timestep)
             )
         )
 

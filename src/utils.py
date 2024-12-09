@@ -1,6 +1,33 @@
 from openmm.app import StateDataReporter
 import os
 import subprocess
+from openmm.unit import nanoseconds, picoseconds
+from openmm import Platform
+
+import logging
+logger = logging.getLogger(__name__)
+
+def get_platform_and_properties(device, device_index):
+    """Get the platform and properties for the specified device."""
+    if device == "cuda":
+        logger.info(f'Using CUDA device {device_index}')
+        platform = Platform.getPlatformByName('CUDA')
+        properties = {'DeviceIndex': device_index}
+    elif device == "cpu":
+        logger.info('Using CPU')
+        platform = Platform.getPlatformByName('CPU')
+        properties = None
+    elif device == "opencl":
+        logger.info('Using OpenCL')
+        platform = Platform.getPlatformByName('OpenCL')
+        properties = {'Precision': 'mixed'}
+    else:
+        raise ValueError('Invalid device')
+    logger.info(f'Platform used: {platform.getName()} with properties {properties}')
+    return platform, properties
+
+def get_checkpoint_interval(timestep):
+    return int((1 * nanoseconds) / (timestep * 0.001 * picoseconds)) 
 
 def get_full_reporter(filename, log_freq, nsteps):
     return StateDataReporter(

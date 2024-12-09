@@ -5,6 +5,7 @@ FROM mambaorg/micromamba:git-c7619c9-cuda11.8.0-ubuntu22.04
 ENV CONDA_DIR=/opt/conda
 ENV PATH=$CONDA_DIR/bin:$PATH
 ENV LD_LIBRARY_PATH=$CONDA_DIR/lib:$LD_LIBRARY_PATH
+ENV PYTHONPATH=/app
 
 # Create environment.yml
 COPY --chown=$MAMBA_USER:$MAMBA_USER environment.yml /tmp/environment.yml
