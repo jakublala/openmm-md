@@ -105,17 +105,28 @@ def get_plumed_content(
 {group2_content}
 WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B"""
 
-    assert len(config['cvs']) == 2, "Expected two CVs, got {len(config['cvs'])}. Don't support any more or less."
+    assert config['cv1.type'] is not None and config['cv2.type'] is not None, "Expected two CVs. Don't support any more or less."
     
     def resolve_cv_content(cv: str, config: dict):
         # TODO: make this into proper dataclasses that are resolved with __str__
-        if cv == 'd':
-            return "d: DISTANCE ATOMS=c1,c2\n"
-        elif cv == 'cmap':
-            return f"""cmap: CONTACTMAP ... 
+        if config[f'{cv}.type'] == 'd':
+            if config[f'{cv}.pbc']:
+                return f"d: DISTANCE ATOMS=c1,c2\n"
+            else:
+                return f"d: DISTANCE ATOMS=c1,c2 NOPBC\n"
+        elif config[f'{cv}.type'] == 'cmap':
+            if config[f'{cv}.pbc']:
+                return f"""cmap: CONTACTMAP ... 
 {contact_map}
 \tSWITCH={{RATIONAL R_0={config['cutoff']}}}
 \tSUM
+...
+"""
+            else:
+                return f"""cmap: CONTACTMAP ... 
+{contact_map}
+\tSWITCH={{RATIONAL R_0={config['cutoff']}}}
+\tSUM NOPBC
 ...
 """
         elif cv == 'sasa':
@@ -133,8 +144,8 @@ WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B"""
         else:
             raise NotImplementedError(f"Unsupported CV: {cv}")
 
-    cv1_content = resolve_cv_content(config['cvs'][0], config)
-    cv2_content = resolve_cv_content(config['cvs'][1], config)
+    cv1_content = resolve_cv_content('cv1', config)
+    cv2_content = resolve_cv_content('cv2', config)
     
     com_content = f"""c1: COM ATOMS={spot1_com_CAs}
 c2: COM ATOMS={spot2_com_CAs}"""
@@ -147,7 +158,7 @@ c2: COM ATOMS={spot2_com_CAs}"""
 {cv2_content}
 """
     
-    cv_arg_content = ','.join(config['cvs'])
+    cv_arg_content = ','.join([config['cv1.type'], config['cv2.type']])
     
     
     if config['type'] == 'opes-explore':
@@ -176,8 +187,8 @@ c2: COM ATOMS={spot2_com_CAs}"""
 
         restart_str = 'YES' if config['restart'] else 'NO'
         plumed_content += f"""metad: METAD ...
-\tARG={cv_arg_content} PACE={config['metad.pace']} SIGMA={config['metad.sigma']} HEIGHT={config['metad.height']}
-\tGRID_MIN={config['metad.grid_min']} GRID_MAX={config['metad.grid_max']} GRID_BIN={config['metad.grid_bin']}
+\tARG={cv_arg_content} PACE={config['metad.pace']} SIGMA={config['cv1.sigma']},{config['cv2.sigma']} HEIGHT={config['metad.height']}
+\tGRID_MIN={config['cv1.grid_min']},{config['cv2.grid_min']} GRID_MAX={config['cv1.grid_max']},{config['cv2.grid_max']} GRID_BIN={config['cv1.grid_bin']},{config['cv2.grid_bin']}
 \tTEMP={config['temperature']} BIASFACTOR={config['metad.biasfactor']}
 \tFILE={output_dir}/{filename}.hills
 \tRESTART={restart_str}

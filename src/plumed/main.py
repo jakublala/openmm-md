@@ -24,6 +24,7 @@ def main(
         padding=None,
         split_chains=None,
         logging_frequency=100,
+        box_size=None,
         config=None, # only contains opes stuff for now
         chain_mode: Optional[Literal['single-chain', 'two-chain']] = None
         ):
@@ -128,15 +129,11 @@ def main(
         logger.info(f"Energy barrier {config['opes.barrier']} kJ/mol for OPES")
         logger.info(f"Pace {config['opes.pace']} steps of depositing bias in OPES.")
     elif config['type'] == 'metad':
-        logger.info(f"Sigma {config['metad.sigma']} for MetaD")
-        logger.info(f"Height {config['metad.height']} for MetaD")
-        logger.info(f"Grid min {config['metad.grid_min']} for MetaD")
-        logger.info(f"Grid max {config['metad.grid_max']} for MetaD")
-        logger.info(f"Grid bin {config['metad.grid_bin']} for MetaD")
         logger.info(f"Bias factor {config['metad.biasfactor']} for MetaD")
     else:
         raise NotImplementedError(f"Type {config['type']} not implemented")
-    
+    logger.info(f"CV1: {config['cv1.type']} with {config['cv1.sigma']=}, {config['cv1.grid_min']=}, {config['cv1.grid_max']=}, {config['cv1.grid_bin']=}")
+    logger.info(f"CV2: {config['cv2.type']} with {config['cv2.sigma']=}, {config['cv2.grid_min']=}, {config['cv2.grid_max']=}, {config['cv2.grid_bin']=}")
 
     if not os.path.exists(f"{output_dir}/{filename}_equilibrated.pdb"):
         logger.info('No equilibrated pdb file found, checking whether we need to run relaxation...')
@@ -164,7 +161,8 @@ def main(
                 constraints=None,
                 device=device,
                 output_dir=output_dir,
-                padding=padding
+                padding=padding,
+                box_size=box_size,
                 )
         else:
             logger.info('Solvated and equilibrated pdb files found, skipping solvation and relaxation')

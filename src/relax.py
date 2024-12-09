@@ -4,9 +4,9 @@ from openmm.unit import nanometer, picosecond, picoseconds, kelvin, kilojoules_p
 import fire
 import logging
 import numpy as np
+import time
 
-
-from src.utils import get_full_reporter
+from src.utils import get_platform_and_properties
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +18,7 @@ def minimize(
         device="cuda",
         output_dir=None,
         padding=None,
+        box_size=None,
         ):
     """
     Uses the OpenMM library (i.e. LBFGS) to minimize the energy of a given PDB file.
@@ -48,11 +49,19 @@ def minimize(
     logger.info('Adding hydrogens...')
     modeller.addHydrogens(forcefield, pH=7.0)
     logger.info('Adding solvent...')
-    if padding is None:
-        padding = 1 # 1 nm
-        logger.warning(f'Padding is not set, using default value of {padding} nm')
+    
     logger.info(f'Padding solvent by {padding} nm')
-    modeller.addSolvent(forcefield, padding=padding * nanometer)
+
+    if box_size is not None:
+        logger.info(f'Box size: {box_size} nm')
+        modeller.addSolvent(forcefield, boxSize=box_size * nanometer)
+        if padding is not None:
+            logger.warning(f'Padding is ignored when box size is provided')
+    elif padding is not None:
+        logger.info(f'Padding solvent by {padding} nm')
+        modeller.addSolvent(forcefield, padding=padding * nanometer)
+    else:
+        raise ValueError('Either box size or padding must be provided')
 
     # modeller could also add a membrane or ions (ionic strength of the solvent)
     system = forcefield.createSystem(modeller.topology, nonbondedMethod=PME,
@@ -62,23 +71,8 @@ def minimize(
     # integrator = LangevinMiddleIntegrator(300*kelvin, 1/picosecond, 0.004*picoseconds)
 
     # 4: SIMULATION
-    # there's 4 different platforms tu use - Reference, CPU, CUDA, and OpenCL
-    # platform = Platform.getPlatformByName('CUDA')
-    # then assign it to Simulation object
-    properties = None
-    if device == "cuda":
-        platform = Platform.getPlatformByName('CUDA')
-        properties = {'DeviceIndex': device_index}
-    elif device == "cpu":
-        platform = Platform.getPlatformByName('CPU')
-    elif device == "opencl":
-        platform = Platform.getPlatformByName('OpenCL')
-    else:
-        raise ValueError('Invalid device')
-
-    logger.info(f'Platform used: {platform.getName()}')
+    platform, properties = get_platform_and_properties(device, device_index)
     
-    import time
     class Reporter(MinimizationReporter):
         def __init__(self):
             super(Reporter, self).__init__()

@@ -161,6 +161,8 @@ def main():
     
     simulation.run()
 
+    # TODO: does the swap take into account the PLUMED ENERGY?!?!?!
+
 
     # logger.info(f'Accepted steps: {move.n_accepted}')
     # logger.info(f'Proposed steps: {move.n_proposed}')

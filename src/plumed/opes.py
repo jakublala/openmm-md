@@ -2,14 +2,14 @@ from openmm import *
 from openmm.app import *
 from openmm.unit import *
 from openmmplumed import PlumedForce
-from openmm import Platform
+from openmm.unit import nanometers, picoseconds, kelvin, nanoseconds
 from mdareporter import MDAReporter
 
 import logging
 import os
 logger = logging.getLogger(__name__)
 
-from src.plumed.utils import get_checkpoint_interval
+from src.utils import get_checkpoint_interval, get_platform_and_properties
 from src.plumed.io import create_plumed_input
 
 def run_plumed(
@@ -100,20 +100,20 @@ def run_plumed(
 
     # System Configuration
     nonbondedMethod = PME
-    nonbondedCutoff = 1.0*nanometers  #This cutoff and the following for tolerance are standard values
+    nonbondedCutoff = 1.0*nanometers  # This cutoff and the following for tolerance are standard values
     ewaldErrorTolerance = 10**(-4)
     constraints = HBonds
     rigidWater = True
-    constraintTolerance = 10**(-4) #Quite a default value for accuracy
+    constraintTolerance = 10**(-4) # quite a default value for accuracy
 
     # Integration Options
     dt = 0.001 * picoseconds * timestep
-    temperature = temperature*kelvin
-    friction = 1.0/picosecond
+    temperature = temperature * kelvin
+    friction = 1.0/picoseconds
 
     # Simulation Options
     steps = int(mdtime * nanoseconds / dt)
-    equilibrationSteps = int(1 * nanosecond / dt)
+    equilibrationSteps = int(1 * nanoseconds / dt)
 
     traj_interval = int(logging_frequency * picoseconds / dt)
 
@@ -163,20 +163,7 @@ def run_plumed(
     integrator = LangevinMiddleIntegrator(temperature, friction, dt)
     integrator.setConstraintTolerance(constraintTolerance)
     
-    properties = None
-    if device == "cuda":
-        logger.info(f'Using CUDA device {device_index}')
-        platform = Platform.getPlatformByName('CUDA')
-        properties = {'DeviceIndex': device_index}
-    elif device == "cpu":
-        logger.info('Using CPU')
-        platform = Platform.getPlatformByName('CPU')
-    elif device == "opencl":
-        logger.info('Using OpenCL')
-        platform = Platform.getPlatformByName('OpenCL')
-        properties = {'Precision': 'mixed'}
-    else:
-        raise ValueError('Invalid device')
+    platform, properties = get_platform_and_properties(device, device_index)
 
     simulation = Simulation(topology, system, integrator, platform, properties)
 
@@ -226,6 +213,11 @@ def run_plumed(
 
     plumed_force = PlumedForce(script)
     system.addForce(plumed_force)
+
+    # Before creating the simulation, assign unique force groups
+    # This might not be necessary, but it's a good idea to ensure visibility of force groups
+    for i, force in enumerate(system.getForces()):
+        force.setForceGroup(i)
     
     # Reinitialize the simulation with the updated system
     simulation.system = system
@@ -239,8 +231,7 @@ def run_plumed(
     simulation.reporters.append(dataReporter)
     simulation.reporters.append(checkpointReporter)
     simulation.currentStep = 0
-    simulation.step(steps)
-    
+    simulation.step(steps)    
 
     # TODO: DO ADAPTIVE CONVERGENCE HERE!!!!!
     # i.e. extend the simulation if convergence is not reached

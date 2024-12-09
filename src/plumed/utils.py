@@ -61,13 +61,22 @@ def process_hills_for_restart(hills_file, time_of_last_hill):
 
 
 def assert_correct_metad_grid(config):
-    grid_min = [float(x) for x in config['metad.grid_min'].split(',')]
-    grid_max = [float(x) for x in config['metad.grid_max'].split(',')]
-    grid_bin = [float(x) for x in config['metad.grid_bin'].split(',')]
-    sigmas = [float(x) for x in config['metad.sigma'].split(',')]
+    # CV1
+    assert config['cv1.type'] is not None, "Expected CV1 type"
+    assert config['cv1.grid_min'] is not None, "Expected CV1 grid min"
+    assert config['cv1.grid_max'] is not None, "Expected CV1 grid max"
+    assert config['cv1.grid_bin'] is not None, "Expected CV1 grid bin"
+    assert config['cv1.sigma'] is not None, "Expected CV1 sigma"
 
-    for i, _ in enumerate(config['cvs']):
-        grid_spacing = (grid_max[i] - grid_min[i]) / grid_bin[i]
-        assert grid_spacing / 2 < sigmas[i], f'Grid spacing for {config['cvs'][i]} is too large, increase SIGMA'
+    grid_spacing = (config['cv1.grid_max'] - config['cv1.grid_min']) / config['cv1.grid_bin']
+    assert grid_spacing / 2 < config['cv1.sigma'], f'Grid spacing for {config['cv1.type']} is too large, increase SIGMA'
+    
+    # CV2
+    assert config['cv2.type'] is not None, "Expected CV2 type"
+    assert config['cv2.grid_min'] is not None, "Expected CV2 grid min"
+    assert config['cv2.grid_max'] is not None, "Expected CV2 grid max"
+    assert config['cv2.grid_bin'] is not None, "Expected CV2 grid bin"
+    assert config['cv2.sigma'] is not None, "Expected CV2 sigma"
 
-        
+    grid_spacing = (config['cv2.grid_max'] - config['cv2.grid_min']) / config['cv2.grid_bin']
+    assert grid_spacing / 2 < config['cv2.sigma'], f'Grid spacing for {config['cv2.type']} is too large, increase SIGMA'
