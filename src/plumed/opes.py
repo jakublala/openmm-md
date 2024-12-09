@@ -2,7 +2,7 @@ from openmm import *
 from openmm.app import *
 from openmm.unit import *
 from openmmplumed import PlumedForce
-from openmm import Platform
+from openmm.unit import nanometers, picoseconds, kelvin, nanoseconds
 from mdareporter import MDAReporter
 
 import logging
@@ -100,20 +100,20 @@ def run_plumed(
 
     # System Configuration
     nonbondedMethod = PME
-    nonbondedCutoff = 1.0*nanometers  #This cutoff and the following for tolerance are standard values
+    nonbondedCutoff = 1.0*nanometers  # This cutoff and the following for tolerance are standard values
     ewaldErrorTolerance = 10**(-4)
     constraints = HBonds
     rigidWater = True
-    constraintTolerance = 10**(-4) #Quite a default value for accuracy
+    constraintTolerance = 10**(-4) # quite a default value for accuracy
 
     # Integration Options
     dt = 0.001 * picoseconds * timestep
-    temperature = temperature*kelvin
-    friction = 1.0/picosecond
+    temperature = temperature * kelvin
+    friction = 1.0/picoseconds
 
     # Simulation Options
     steps = int(mdtime * nanoseconds / dt)
-    equilibrationSteps = int(1 * nanosecond / dt)
+    equilibrationSteps = int(1 * nanoseconds / dt)
 
     traj_interval = int(logging_frequency * picoseconds / dt)
 
