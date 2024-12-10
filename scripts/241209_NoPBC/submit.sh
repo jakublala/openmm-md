@@ -25,14 +25,30 @@ submit_simulation() {
     local filepath=$1
     local system=$2
     local output_dir=$3
+    local device_precision=$4
     echo "Submitting $system with template $TEMPLATE"
 
-    qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,OUTPUT_DIR=$output_dir" $TEMPLATE
+    qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,OUTPUT_DIR=$output_dir,DEVICE_PRECISION=$device_precision" $TEMPLATE
 }
 
-PROJECT_DIR="/home/mmm1486/projects/openmm-md"
+# PROJECT_DIR="/home/mmm1486/projects/openmm-md"
+PROJECT_DIR="/gpfs/home/jl24018/projects/openmm-md"
 
-submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241128-MetaD/CD28_general_equilibrated.pdb" \
+submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb" \
                 "CD28-G" \
-                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241204-Long"
+                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241210-NoPBC-double" \
+                "double"
+
+
+submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb" \
+                "CD28-G" \
+                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241210-NoPBC-mixed" \
+                "mixed"
+
+
+submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb" \
+                "CD28-G" \
+                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241210-NoPBC-single" \
+                "single"
+
 
