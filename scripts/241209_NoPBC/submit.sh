@@ -34,20 +34,19 @@ submit_simulation() {
 }
 
 submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb" \
-                "CD28-G" \
-                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241209-NoPBC"
-                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241210-NoPBC-double" \
+                "CD28-G-double" \
+                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241209-NoPBC-double" \
                 "double"
 
 
 submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb" \
-                "CD28-G" \
+                "CD28-G-mixed" \
                 "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241210-NoPBC-mixed" \
                 "mixed"
 
 
 submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb" \
-                "CD28-G" \
+                "CD28-G-single" \
                 "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241210-NoPBC-single" \
                 "single"
 
