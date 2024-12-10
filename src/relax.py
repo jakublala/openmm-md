@@ -5,7 +5,7 @@ import fire
 import logging
 import numpy as np
 import time
-from openmm.app import PDBxFile
+from openmm.app import PDBxFile, PDBFile
 
 from src.utils import get_platform_and_properties
 
@@ -36,7 +36,7 @@ def minimize(
     # 1: STRUCTURE
     # load the PDB system, can also load newer PDBx
     logger.info('Loading PDB file...')
-    pdb_file = PDBxFile(f'{output_dir}/{filename}_fixed.pdb')
+    pdb_file = PDBFile(f'{output_dir}/{filename}_fixed.pdb')
 
 
     # 2: FORCE FIELD AND SYSTEM
