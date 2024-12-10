@@ -119,6 +119,8 @@ def main(
             logger.info("Restarting MetaD as requested...")
             restart_checkpoint = get_file_by_extension(input_dir, '.chk')
 
+            # TODO: you should probably also copy the .plumed FILE!!!! not re-built it!!
+
 
         else:
             restart_checkpoint = None
