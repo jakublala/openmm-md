@@ -4,7 +4,7 @@ from openmm.unit import *
 from openmmplumed import PlumedForce
 from openmm.unit import nanometers, picoseconds, kelvin, nanoseconds
 from mdareporter import MDAReporter
-
+from openmm.app import PDBxFile
 import logging
 import os
 logger = logging.getLogger(__name__)
@@ -16,10 +16,11 @@ def run_plumed(
         filename, 
         mdtime, 
         timestep, 
-        device_index='0', 
         temperature=300, 
         restart_checkpoint=None, 
         device='cuda', 
+        device_precision='double',
+        device_index='0', 
         output_dir=None, 
         logging_frequency=None,
         plumed_config=None,
@@ -30,7 +31,7 @@ def run_plumed(
     Parameters
     ----------
     filename : str
-        Base name for input/output files. The function expects '{filename}_solvated.pdb' as input
+        Base name for input/output files. The function expects '{filename}_solvated.cif' as input
         and will generate various output files using this base name.
     mdtime : float
         Total simulation time in nanoseconds.
@@ -82,13 +83,13 @@ def run_plumed(
     if output_dir is None:
         raise ValueError('Output directory is required')
     
-    if os.path.exists(f'{output_dir}/{filename}_equilibrated.pdb'):
-        logger.info(f'Equilibrated state found at {output_dir}/{filename}_equilibrated.pdb')
+    if os.path.exists(f'{output_dir}/{filename}_equilibrated.cif'):
+        logger.info(f'Equilibrated state found at {output_dir}/{filename}_equilibrated.cif')
         logger.info('Skipping equilibration...')
-        pdf = PDBFile(f'{output_dir}/{filename}_equilibrated.pdb')
+        pdf = PDBxFile(f'{output_dir}/{filename}_equilibrated.cif')
         equilibrated = True
     else:
-        pdf = PDBFile(f'{output_dir}/{filename}_solvated.pdb')
+        pdf = PDBxFile(f'{output_dir}/{filename}_solvated.cif')
         equilibrated = False
 
     
@@ -163,7 +164,7 @@ def run_plumed(
     integrator = LangevinMiddleIntegrator(temperature, friction, dt)
     integrator.setConstraintTolerance(constraintTolerance)
     
-    platform, properties = get_platform_and_properties(device, device_index)
+    platform, properties = get_platform_and_properties(device, device_index, device_precision)
 
     simulation = Simulation(topology, system, integrator, platform, properties)
 
@@ -244,5 +245,5 @@ def save_equilibrated_state(
         ) -> None:
     topology = simulation.topology
     positions = simulation.context.getState(getPositions=True).getPositions()
-    PDBFile.writeFile(topology, positions, open(f'{output_dir}/{filename}_equilibrated.pdb', 'w'))
-    logger.info(f'Equilibrated state saved to {output_dir}/{filename}_equilibrated.pdb')
+    PDBxFile.writeFile(topology, positions, open(f'{output_dir}/{filename}_equilibrated.cif', 'w'))
+    logger.info(f'Equilibrated state saved to {output_dir}/{filename}_equilibrated.cif')
