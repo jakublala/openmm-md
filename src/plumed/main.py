@@ -145,7 +145,6 @@ def main(
                 if ('CD28' in filepath) or ('A-synuclein' in filepath):
                     raise Exception("CD28 and A-synuclein are already split, you might be doing something wrong...")
 
-
             logger.info('No solvated pdb file found, running solvation...')
             # 1. load the PDB and fix errors
             fixer(

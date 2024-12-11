@@ -1,11 +1,17 @@
 #!/bin/bash
 
-# Get the template PBS file
+# Get the template PBS file and set PROJECT_DIR
 if [[ "$1" == "-f" && -n "$2" ]]; then
     TEMPLATE="$2"
     if [[ ! -f "$TEMPLATE" ]]; then
         echo "Specified template file $TEMPLATE not found"
         exit 1
+    fi
+    # Set PROJECT_DIR based on template name
+    if [[ "$TEMPLATE" == "hx1.pbs" ]]; then
+        PROJECT_DIR="/gpfs/home/jl24018/projects/openmm-md"
+    elif [[ "$TEMPLATE" == "mmm.pbs" ]]; then
+        PROJECT_DIR="/home/mmm1486/projects/openmm-md"
     fi
 else
     if [[ -f "hx1.pbs" ]]; then
@@ -32,6 +38,8 @@ submit_simulation() {
 
     qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,OUTPUT_DIR=$output_dir,DEVICE_PRECISION=$device_precision" $TEMPLATE
 }
+
+echo ${PROJECT_DIR}
 
 submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb" \
                 "CD28-G-double" \
