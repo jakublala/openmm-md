@@ -6,7 +6,9 @@ from src.plumed.opes import run_plumed
 from src.relax import minimize
 from src.fixer import fixer
 from src.plumed.io import create_plumed_input
-
+from src.analysis.utils import get_file_by_extension
+from src.plumed.utils import get_checkpoint_interval, get_pace_from_metad, get_last_checkpoint_timestep, process_hills_for_restart
+            
 logging.basicConfig(
     level=logging.INFO, 
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -40,7 +42,11 @@ def main(
     if output_dir is None:
         raise ValueError('Output directory is required')
 
-    if os.path.exists(output_dir) and get_file_by_extension(output_dir, '.out') is not None:
+    try:
+        get_file_by_extension(output_dir, '.out')
+    except FileNotFoundError:
+        pass
+    else:
         raise FileExistsError(f"Output directory {output_dir} and its .out file already exists, refusing to overwrite! Delete .out file if you believe it is safe to do so.")
 
     os.makedirs(output_dir, exist_ok=True)
@@ -64,7 +70,6 @@ def main(
     if 'equilibrated' in filename:
         logger.info('Input PDB file is equilibrated, assuming it comes from a previous run...')
         logger.info('Copying fixed, equilibrated and solvated pdb files to output directory')
-        from src.analysis.utils import get_file_by_extension
         fixed_pdb = get_file_by_extension(input_dir, '_fixed.pdb')
         equilibrated_pdb = get_file_by_extension(input_dir, '_equilibrated.pdb')
         solvated_pdb = get_file_by_extension(input_dir, '_solvated.pdb')
@@ -99,8 +104,6 @@ def main(
             # we finished at (were WALLtimed) at 221,900 ps, i.e. 221.9 ns
             # how often do we get a checkpoint?
             # we save every 1 nanoseconds, according to get_checkpoint_interval
-            from src.plumed.utils import get_checkpoint_interval, get_pace_from_metad, get_last_checkpoint_timestep, process_hills_for_restart
-            from src.analysis.utils import get_file_by_extension
             plumed_file = get_file_by_extension(input_dir, 'plumed.dat')
             metad_pace = get_pace_from_metad(plumed_file)
             assert metad_pace == config['metad.pace'], 'Previous MetaD pace does not match the current one.'
