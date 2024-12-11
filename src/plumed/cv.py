@@ -3,6 +3,7 @@ from MDAnalysis.analysis.distances import contact_matrix
 import numpy as np
 import logging
 from typing import Optional, Literal
+from openmm.app import PDBxFile
 
 import os
 from src.models import ContactMap, Contact, Residue
@@ -57,15 +58,39 @@ def get_contact_map(
     if mode is None:
         raise ValueError('Mode is required')
     
-    if os.path.exists(f'{output_dir}/{filename}_equilibrated.pdb'):
-        logger.info('Using equilibrated pdb file to compute contact map')
-        universe = mda.Universe(f'{output_dir}/{filename}_equilibrated.pdb')
+    if os.path.exists(f'{output_dir}/{filename}_equilibrated.cif'):
+        cif = PDBxFile(f'{output_dir}/{filename}_equilibrated.cif')
+        universe = mda.Universe(cif)
     else:
-        raise ValueError(f'Cannot compute contact map with no equilibrated pdb file found for {filename}')
+        raise ValueError(f'Cannot compute contact map with no equilibrated cif file found for {filename}')
 
     full_universe = universe
     CA_universe = get_CA_universe(universe)
-    global_to_local_map = CA_universe.residues.resids
+
+    def _get_global_to_local_map(universe):
+        # originally "global_to_local_map = CA_universe.residues.resids" worked
+        # but now with MDAnalysis and PDBxFile interface, it works differently
+
+        # Create a mapping from global residue index to local (per-chain) index
+        global_to_local_map = np.zeros(len(universe.residues), dtype=int)
+        
+        # Get chain IDs and convert from array of arrays to simple list
+        chain_ids = [chain[0] for chain in universe.residues.chainIDs]
+        
+        # Keep track of local index counter for each chain
+        chain_counters = {}
+        
+        # For each residue, assign its local index based on its chain
+        for i, chain_id in enumerate(chain_ids):
+            if chain_id not in chain_counters:
+                chain_counters[chain_id] = 1  # Start counting from 1
+            global_to_local_map[i] = chain_counters[chain_id]
+            chain_counters[chain_id] += 1
+            
+        return global_to_local_map
+
+    global_to_local_map = _get_global_to_local_map(CA_universe)
+
     chain_ids = np.concatenate(CA_universe.segments.chainIDs)
     
     include_cutoff = 1.0*cutoff*10 # TODO: maybe include more contacts

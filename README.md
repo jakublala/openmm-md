@@ -169,3 +169,26 @@ Check some python code in Apptainer
 apptainer exec openmm-md_v1.0.0.sif python -c "import numpy; print(numpy.__version__)"
 ```
 
+
+## Usage
+
+### Replica Exchange (Multi-GPU)
+If you want to do multiple GPUs, you need to first have these two files exist in your working directory.
+
+
+`configfile`:
+```
+-np 1 -env CUDA_VISIBLE_DEVICES 0 python run.py :
+-np 1 -env CUDA_VISIBLE_DEVICES 1 python run.py
+```
+
+`hostfile`:
+```
+localhost
+localhost
+```
+
+Then run:
+```
+mpirun -np 2 --hostfile hostfile python run.py
+```
