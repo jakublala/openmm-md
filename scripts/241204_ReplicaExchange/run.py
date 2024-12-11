@@ -13,11 +13,13 @@ import sys
 # Set up MPI
 try:
     from mpi4py import MPI
-    # Initialize MPI with thread support
-    required = MPI.THREAD_MULTIPLE
-    provided = MPI.Init_thread(required)
-    if provided < required:
-        print(f"Warning: MPI thread support level {provided} is less than required {required}")
+    # Check if MPI is already initialized
+    if not MPI.Is_initialized():
+        # Initialize MPI with thread support
+        required = MPI.THREAD_MULTIPLE
+        provided = MPI.Init_thread(required)
+        if provided < required:
+            print(f"Warning: MPI thread support level {provided} is less than required {required}")
     
     comm = MPI.COMM_WORLD
     rank = comm.Get_rank()
@@ -42,6 +44,17 @@ else:
             return method
 
     logger = NoOpLogger()
+
+
+def replicate_plumed_file(file_path, n_replicas):
+    with open(file_path, 'r') as file:
+        plumed_script = file.read()
+    for i in range(n_replicas):
+        # Replace X with replica number in both hills and colvar filenames
+        modified_script = plumed_script.replace('sumo1c_X', f'results/sumo1c_{i}')
+        
+        with open(f'plumed_{i}.dat', 'w') as file:
+            file.write(modified_script)
 
 def main():
 
@@ -81,6 +94,7 @@ def main():
             constraints=HBonds
             )
         if PLUMED:
+            replicate_plumed_file('plumed.dat', n_replicas)
             with open(f'plumed_{i}.dat', 'r') as file:
                 plumed_script = file.read()
             _system.addForce(PlumedForce(plumed_script))
@@ -99,12 +113,12 @@ def main():
     )
 
     import pathlib
-    storage_path = pathlib.Path('replica_exchange.nc')
+    storage_path = pathlib.Path('results/replica_exchange.nc')
     if rank == 0:
         # if exists, delete
         if storage_path.exists():
             storage_path.unlink()
-        checkpoint_path = pathlib.Path('replica_exchange_checkpoint.nc')
+        checkpoint_path = pathlib.Path('results/replica_exchange_checkpoint.nc')
         if checkpoint_path.exists():
             checkpoint_path.unlink()
     
