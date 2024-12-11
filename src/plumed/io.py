@@ -26,11 +26,10 @@ def create_plumed_input(
         config=None,
         mode: Literal['single-chain', 'two-chain'] = 'single-chain',
         ):
-    # only works for two specific CVs!!!
     
     assert_config(config)
 
-    get_file_by_extension(output_dir, 'equilibrated.pdb', assert_exists=True)
+    get_file_by_extension(output_dir, 'equilibrated.cif', assert_exists=True)
     
     if output_dir is None:
         raise ValueError('Output directory is required')
