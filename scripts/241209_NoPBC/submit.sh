@@ -1,32 +1,20 @@
 #!/bin/bash
 
-# Get the template PBS file and set PROJECT_DIR
-if [[ "$1" == "-f" && -n "$2" ]]; then
-    TEMPLATE="$2"
-    if [[ ! -f "$TEMPLATE" ]]; then
-        echo "Specified template file $TEMPLATE not found"
-        exit 1
-    fi
-    # Set PROJECT_DIR based on template name
-    if [[ "$TEMPLATE" == "hx1.pbs" ]]; then
-        PROJECT_DIR="/gpfs/home/jl24018/projects/openmm-md"
-    elif [[ "$TEMPLATE" == "mmm.pbs" ]]; then
-        PROJECT_DIR="/home/mmm1486/projects/openmm-md"
-    fi
+# Detect environment based on current working directory
+CURRENT_PATH=$(pwd)
+
+if [[ "$CURRENT_PATH" == *"gpfs"* ]]; then
+    PROJECT_DIR="/gpfs/home/jl24018/projects/openmm-md"
+    TEMPLATE="hx1.pbs"
+elif [[ "$CURRENT_PATH" == *"mmm1486"* ]]; then
+    PROJECT_DIR="/home/mmm1486/projects/openmm-md"
+    TEMPLATE="mmm.pbs"
 else
-    if [[ -f "hx1.pbs" ]]; then
-        PROJECT_DIR="/gpfs/home/jl24018/projects/openmm-md"
-        TEMPLATE="hx1.pbs"
-    elif [[ -f "cx3.pbs" ]]; then
-        TEMPLATE="cx3.pbs" 
-    elif [[ -f "mmm.pbs" ]]; then
-        PROJECT_DIR="/home/mmm1486/projects/openmm-md"
-        TEMPLATE="mmm.pbs"
-    else
-        echo "No PBS template file found"
-        exit 1
-    fi
+    echo "Unknown environment: $CURRENT_PATH"
+    exit 1
 fi
+
+echo "Detected environment: Using $TEMPLATE with project dir: ${PROJECT_DIR}"
 
 
 submit_simulation() {

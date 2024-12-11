@@ -25,6 +25,7 @@ def run_plumed(
         logging_frequency=None,
         plumed_config=None,
         plumed_mode=None,
+        equilibrate_only=False,
         ):
     """Run an OpenMM molecular dynamics simulation with Metadynamics or OPES (On-the-fly Probability Enhanced Sampling).
     
@@ -182,6 +183,8 @@ def run_plumed(
         simulation.loadCheckpoint(restart_checkpoint)
         # no equilibration for system from checkpoint
     elif equilibrated:
+        if equilibrate_only:
+            raise ValueError("Equilibrate_only is True, but equilibrated state found. You don't need to equilibrate again.")
         simulation.context.setPositions(positions)
     else:
         simulation.context.setPositions(positions)
@@ -197,6 +200,9 @@ def run_plumed(
             output_dir=output_dir,
             filename=filename
             )
+        
+        if equilibrate_only:
+            return
         
     if plumed_config is None:
         raise ValueError('PLUMED config is required')

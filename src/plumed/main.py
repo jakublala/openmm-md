@@ -29,12 +29,17 @@ def main(
         logging_frequency=100,
         box_size=None,
         config=None, # only contains opes stuff for now
-        chain_mode: Optional[Literal['single-chain', 'two-chain']] = None
+        chain_mode: Optional[Literal['single-chain', 'two-chain']] = None,
+        equilibrate_only=False,
         ):
     
     # TODO: the config should be saved somewhere as a JSON!!!
     # then very useful down the line for analysis
     # as parsing, for instance, plumed.dat is a mess
+
+
+
+    print("SPLIT CHAINS ARE", split_chains)
 
     if chain_mode is None:
         raise ValueError('Chain mode is required')
@@ -185,7 +190,8 @@ def main(
         logging_frequency=logging_frequency,
         plumed_config=config,
         plumed_mode=chain_mode,
-        restart_checkpoint=restart_checkpoint
+        restart_checkpoint=restart_checkpoint,
+        equilibrate_only=equilibrate_only
         )
 
 

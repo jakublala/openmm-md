@@ -3,9 +3,8 @@ from src.plumed.utils import get_checkpoint_interval
 import fire
 
 def run(
-        filepath: str = "../../data/241010_FoldingUponBinding/output/CD28-A/241122-Explore/CD28_alpha_equilibrated.pdb", 
+        filepath: str = "../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb", 
         output_dir: str = 'test',
-        restart: bool = False,
         ):
         
     FILEPATH = filepath
@@ -13,12 +12,13 @@ def run(
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
-    PADDING = 4
     MDTIME = 1000
-    UPPER_WALL_AT = 5
+    
+    # PADDING = 4
+    BOX_SIZE = [14, 14, 14]
+
     # 1. PLUMED CONFIG
     # CVs are cmap, d in that order
-
     import MDAnalysis as mda
     universe = mda.Universe(FILEPATH)
     BINDER_LENGTH = len(universe.select_atoms('chainid A'))
@@ -57,22 +57,22 @@ def run(
         'cv1.grid_min': 0,
         'cv1.grid_max': 45,
         'cv1.grid_bin': 200,
-        'cv1.pbc': True,
+        'cv1.pbc': False,
         'cv2.type': 'd',
         'cv2.sigma': 0.27,
         'cv2.grid_min': 0,
         'cv2.grid_max': 7,
         'cv2.grid_bin': 200,
-        'cv2.pbc': True,
+        'cv2.pbc': False,
         'metad.height': 1.25, # 1/2 * kBT
         'metad.biasfactor': 48,
-        'upper_wall.at': UPPER_WALL_AT, # keep this at UW=5, we are primarily looking at BIASFACTOR now
+        'upper_wall.at': None, # keep this at UW=5, we are primarily looking at BIASFACTOR now
         'upper_wall.exp': 6,
         'upper_wall.kappa': 1000.0,
         'spot1_residues': None,
         'spot2_residues': None,
         'idr_residues': idr_residues,
-        'restart': restart,
+        'restart': False,
         'trajectory_logging': True
     }
 
@@ -92,11 +92,13 @@ def run(
         timestep=TIMESTEP,
         device_index=gpu_indices,
         device='cuda',
+        device_precision='mixed',
         split_chains=False,
         logging_frequency=LOGGING_FREQUENCY,
         config=config,
-        padding=PADDING,
-        chain_mode='two-chain'
+        box_size=BOX_SIZE,
+        chain_mode='two-chain',
+        equilibrate_only=True,
     )
 
 
