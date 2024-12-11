@@ -117,7 +117,6 @@ def plot_summary(directory, system, simulation_type):
 from matplotlib.animation import FuncAnimation, PillowWriter
 from tqdm import tqdm
 
-
 def plot_colvar_traj_in_fes(directory, system):
     """Create an animated plot of the CV trajectory overlaid on the FES."""
     # Setup figure
@@ -129,19 +128,30 @@ def plot_colvar_traj_in_fes(directory, system):
     colvar_df = read_colvar_file(colvar_file)
     
     # Get trajectory data (subsample)
-    cv1_traj = colvar_df[cvs[0]].values[::1000]
-    cv2_traj = colvar_df[cvs[1]].values[::1000]
+    # Ensure 'd' CV is on x-axis
+    if cvs[0] == 'd':
+        cv1_traj = colvar_df[cvs[0]].values[::1000]  # d on x-axis
+        cv2_traj = colvar_df[cvs[1]].values[::1000]
+        x_bins, y_bins = cv1_bins, cv2_bins
+        fes_plot = fes
+        x_label, y_label = cvs[0], cvs[1]
+    else:
+        cv1_traj = colvar_df[cvs[1]].values[::1000]  # d on x-axis
+        cv2_traj = colvar_df[cvs[0]].values[::1000]
+        x_bins, y_bins = cv2_bins, cv1_bins
+        fes_plot = fes.T  # Transpose FES to match swapped axes
+        x_label, y_label = cvs[1], cvs[0]
     
     # Plot FES
-    cntr = ax.contourf(cv1_bins, cv2_bins, fes, levels=100, cmap=plt.cm.jet)
+    cntr = ax.contourf(x_bins, y_bins, fes_plot, levels=100, cmap=plt.cm.jet)
     plt.colorbar(cntr, ax=ax, label="FES [kJ/mol]")
     
     # Initialize trajectory line and point
     line, = ax.plot([], [], 'k-', alpha=0.8, linewidth=1)
     point, = ax.plot([], [], 'ko', markersize=8)
     
-    ax.set_xlabel(cvs[0])
-    ax.set_ylabel(cvs[1])
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
     ax.set_title(f"System: {system}")
     
     def init():
