@@ -58,12 +58,6 @@ def get_contact_map(
     if mode is None:
         raise ValueError('Mode is required')
     
-    if os.path.exists(f'{output_dir}/{filename}_equilibrated.pdb'):
-        logger.info('Using equilibrated pdb file to compute contact map')
-        universe = mda.Universe(f'{output_dir}/{filename}_equilibrated.pdb')
-    else:
-        raise ValueError(f'Cannot compute contact map with no equilibrated pdb file found for {filename}')
-
     if os.path.exists(f'{output_dir}/{filename}_equilibrated.cif'):
         cif = PDBxFile(f'{output_dir}/{filename}_equilibrated.cif')
         universe = mda.Universe(cif)

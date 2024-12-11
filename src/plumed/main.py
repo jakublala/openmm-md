@@ -52,7 +52,11 @@ def main(
     except FileNotFoundError:
         pass
     else:
-        raise FileExistsError(f"Output directory {output_dir} and its .out file already exists, refusing to overwrite! Delete .out file if you believe it is safe to do so.")
+        # if the file is empty continue and overwrite it, otherwise raise an error
+        if os.path.getsize(get_file_by_extension(output_dir, '.out')) == 0:
+            logger.info("Output directory and its .out file already exists, but it is empty. Overwriting...")
+        else:
+            raise FileExistsError(f"Output directory {output_dir} and its .out file already exists, refusing to overwrite! Delete .out file if you believe it is safe to do so.")
 
     os.makedirs(output_dir, exist_ok=True)
 
