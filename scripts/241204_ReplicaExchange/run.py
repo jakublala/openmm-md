@@ -72,7 +72,7 @@ def main():
     forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
 
 
-    n_replicas = 4  # Number of temperature replicas.
+    n_replicas = 8  # Number of temperature replicas.
     T_min = 300.0 * unit.kelvin  # Minimum temperature.
     T_max = 600.0 * unit.kelvin  # Maximum temperature.
 
@@ -145,7 +145,8 @@ def main():
             # TODO: check if true
         ))
     
-    N_ITERATIONS = 10
+    # run for 1 ns = 1000 ps
+    N_ITERATIONS = 1000
     from openmmtools.multistate import ReplicaExchangeSampler
     simulation = ReplicaExchangeSampler(
         replica_mixing_scheme='swap-all',

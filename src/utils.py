@@ -7,12 +7,12 @@ from openmm import Platform
 import logging
 logger = logging.getLogger(__name__)
 
-def get_platform_and_properties(device, device_index):
+def get_platform_and_properties(device, device_index, device_precision):
     """Get the platform and properties for the specified device."""
     if device == "cuda":
         logger.info(f'Using CUDA device {device_index}')
         platform = Platform.getPlatformByName('CUDA')
-        properties = {'DeviceIndex': device_index}
+        properties = {'DeviceIndex': device_index, 'Precision': device_precision}
     elif device == "cpu":
         logger.info('Using CPU')
         platform = Platform.getPlatformByName('CPU')

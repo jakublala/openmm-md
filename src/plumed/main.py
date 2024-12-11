@@ -20,6 +20,7 @@ def main(
         timestep=2,
         temperature=300,
         device='cuda',
+        device_precision='double',
         output_dir=None,
         padding=None,
         split_chains=None,
@@ -38,6 +39,10 @@ def main(
 
     if output_dir is None:
         raise ValueError('Output directory is required')
+
+    if os.path.exists(output_dir) and get_file_by_extension(output_dir, '.out') is not None:
+        raise FileExistsError(f"Output directory {output_dir} and its .out file already exists, refusing to overwrite! Delete .out file if you believe it is safe to do so.")
+
     os.makedirs(output_dir, exist_ok=True)
 
     if config is None:
@@ -113,6 +118,10 @@ def main(
                     f.write(line)
             logger.info("Restarting MetaD as requested...")
             restart_checkpoint = get_file_by_extension(input_dir, '.chk')
+
+            # TODO: you should probably also copy the .plumed FILE!!!! not re-built it!!
+
+
         else:
             restart_checkpoint = None
 
@@ -128,14 +137,13 @@ def main(
     logger.info(f"CV1: {config['cv1.type']} with {config['cv1.sigma']=}, {config['cv1.grid_min']=}, {config['cv1.grid_max']=}, {config['cv1.grid_bin']=}")
     logger.info(f"CV2: {config['cv2.type']} with {config['cv2.sigma']=}, {config['cv2.grid_min']=}, {config['cv2.grid_max']=}, {config['cv2.grid_bin']=}")
 
-    if not os.path.exists(f"{output_dir}/{filename}_equilibrated.pdb"):
-        logger.info('No equilibrated pdb file found, checking whether we need to run relaxation...')
-        if not os.path.exists(f'{output_dir}/{filename}_solvated.pdb'):
+    if not os.path.exists(f"{output_dir}/{filename}_equilibrated.cif"):
+        logger.info('No equilibrated cif file found, checking whether we need to run relaxation...')
+        if not os.path.exists(f'{output_dir}/{filename}_solvated.cif'):
 
             if split_chains:
                 if ('CD28' in filepath) or ('A-synuclein' in filepath):
                     raise Exception("CD28 and A-synuclein are already split, you might be doing something wrong...")
-
 
             logger.info('No solvated pdb file found, running solvation...')
             # 1. load the PDB and fix errors
@@ -153,6 +161,7 @@ def main(
                 device_index=str(device_index),
                 constraints=None,
                 device=device,
+                device_precision=device_precision,
                 output_dir=output_dir,
                 padding=padding,
                 box_size=box_size,
@@ -168,6 +177,7 @@ def main(
         timestep=timestep,
         temperature=temperature,
         device=device,
+        device_precision=device_precision,
         output_dir=output_dir,
         logging_frequency=logging_frequency,
         plumed_config=config,

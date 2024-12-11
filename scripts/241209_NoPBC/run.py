@@ -5,7 +5,11 @@ import fire
 def run(
         filepath: str = "../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb", 
         output_dir: str = 'test',
+        device_precision: str = None,
         ):
+    
+    if device_precision is None:
+        raise ValueError('Device precision must be provided')
         
     FILEPATH = filepath
     OUTPUT_DIR = output_dir
@@ -98,6 +102,7 @@ def run(
         timestep=TIMESTEP,
         device_index=gpu_indices,
         device='cuda',
+        device_precision=device_precision,
         split_chains=False,
         logging_frequency=LOGGING_FREQUENCY,
         config=config,

@@ -5,6 +5,7 @@ import fire
 import logging
 import numpy as np
 import time
+from openmm.app import PDBxFile, PDBFile
 
 from src.utils import get_platform_and_properties
 
@@ -14,6 +15,7 @@ def minimize(
         filename=None,
         max_iterations=None,
         device_index='0',
+        device_precision='double',
         constraints=None,
         device="cuda",
         output_dir=None,
@@ -39,7 +41,7 @@ def minimize(
 
     # 2: FORCE FIELD AND SYSTEM
     # load the forcefield that is specified in an xml file
-    forcefield = ForceField('amber14/protein.ff14SB.xml', 'amber14/tip3pfb.xml')
+    forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
     # one can use more advanced AMBER forcefields with a more custom setup
     # or also CHARMM forcefields
     # e.g. we specifiy long-range interactions with PME (Particle Mesh Ewald)
@@ -62,6 +64,10 @@ def minimize(
         modeller.addSolvent(forcefield, padding=padding * nanometer)
     else:
         raise ValueError('Either box size or padding must be provided')
+    
+    # given we might be using a 4-point water model, add extra particles
+    logger.info('Adding extra particles (useful for 4-point water models)...')
+    modeller.addExtraParticles(forcefield)
 
     # modeller could also add a membrane or ions (ionic strength of the solvent)
     system = forcefield.createSystem(modeller.topology, nonbondedMethod=PME,
@@ -71,7 +77,7 @@ def minimize(
     # integrator = LangevinMiddleIntegrator(300*kelvin, 1/picosecond, 0.004*picoseconds)
 
     # 4: SIMULATION
-    platform, properties = get_platform_and_properties(device, device_index)
+    platform, properties = get_platform_and_properties(device, device_index, device_precision)
     
     class Reporter(MinimizationReporter):
         def __init__(self):
@@ -112,7 +118,7 @@ def minimize(
     non_hydrogen_ids = [atom.index for atom in modeller.topology.atoms() if atom.element.symbol != 'H']
     
     # save the topology now into a PDB
-    PDBFile.writeFile(modeller.topology, modeller.positions, open(f'{output_dir}/{filename}_solvated.pdb', 'w'))
+    PDBxFile.writeFile(modeller.topology, modeller.positions, open(f'{output_dir}/{filename}_solvated.cif', 'w'))
 
     # 0: first first minimize just the hydrogens
     non_hydrogen_restraint = CustomExternalForce('k*periodicdistance(x, y, z, x0, y0, z0)^2')
@@ -297,8 +303,7 @@ def minimize(
 
     logger.info('Saving...')
     positions = simulation.context.getState(getPositions=True).getPositions()
-    PDBFile.writeFile(simulation.topology, positions, open(f'{output_dir}/{filename}_solvated.pdb', 'w'))
-
+    PDBxFile.writeFile(simulation.topology, positions, open(f'{output_dir}/{filename}_solvated.cif', 'w'))
     # Plot energies
     plt.figure(figsize=(10, 6))
 
