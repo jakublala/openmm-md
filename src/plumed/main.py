@@ -31,6 +31,7 @@ def main(
         config=None, # only contains opes stuff for now
         chain_mode: Optional[Literal['single-chain', 'two-chain']] = None,
         equilibrate_only=False,
+        generate_plumed_input=True,
         ):
     
     # TODO: the config should be saved somewhere as a JSON!!!
@@ -38,8 +39,6 @@ def main(
     # as parsing, for instance, plumed.dat is a mess
 
 
-
-    print("SPLIT CHAINS ARE", split_chains)
 
     if chain_mode is None:
         raise ValueError('Chain mode is required')
@@ -76,8 +75,8 @@ def main(
         logger.info('Input PDB file is equilibrated, assuming it comes from a previous run...')
         logger.info('Copying fixed, equilibrated and solvated pdb files to output directory')
         fixed_pdb = get_file_by_extension(input_dir, '_fixed.pdb')
-        equilibrated_pdb = get_file_by_extension(input_dir, '_equilibrated.pdb')
-        solvated_pdb = get_file_by_extension(input_dir, '_solvated.pdb')
+        equilibrated_pdb = get_file_by_extension(input_dir, '_equilibrated.cif')
+        solvated_pdb = get_file_by_extension(input_dir, '_solvated.cif')
         # copy all to the output_dir
         for file in [fixed_pdb, equilibrated_pdb, solvated_pdb]:
             shutil.copy(file, output_dir)
@@ -191,7 +190,8 @@ def main(
         plumed_config=config,
         plumed_mode=chain_mode,
         restart_checkpoint=restart_checkpoint,
-        equilibrate_only=equilibrate_only
+        equilibrate_only=equilibrate_only,
+        generate_plumed_input=generate_plumed_input
         )
 
 
