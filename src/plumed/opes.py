@@ -26,6 +26,7 @@ def run_plumed(
         plumed_config=None,
         plumed_mode=None,
         equilibrate_only=False,
+        generate_plumed_input=True,
         ):
     """Run an OpenMM molecular dynamics simulation with Metadynamics or OPES (On-the-fly Probability Enhanced Sampling).
     
@@ -207,12 +208,18 @@ def run_plumed(
     if plumed_config is None:
         raise ValueError('PLUMED config is required')
     
-    create_plumed_input(
-        filename=filename, 
-        output_dir=output_dir,
-        config=plumed_config,
-        mode=plumed_mode
-        )
+    if generate_plumed_input:
+        create_plumed_input(
+            filename=filename, 
+            output_dir=output_dir,
+            config=plumed_config,
+            mode=plumed_mode
+            )
+    else:
+        if not os.path.exists(f'{output_dir}/{filename}_plumed.dat'):
+            raise ValueError(f'PLUMED input file {output_dir}/{filename}_plumed.dat not found')
+        else:
+            logger.info(f'PLUMED input file {output_dir}/{filename}_plumed.dat found, skipping generation. Possibly a manual overwrite.')
 
     # Add PLUMED bias
     with open(f'{output_dir}/{filename}_plumed.dat', 'r') as file:

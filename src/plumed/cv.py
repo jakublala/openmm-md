@@ -1,4 +1,5 @@
 import MDAnalysis as mda
+from openmm.app import PDBxFile
 from MDAnalysis.analysis.distances import contact_matrix
 import numpy as np
 import logging

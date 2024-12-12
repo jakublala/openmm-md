@@ -62,6 +62,7 @@ def main(
         replica_exchange=False,
         swap_time=None,
         temperatures=None,
+        generate_plumed_input=True,
         ):
 
 
@@ -81,7 +82,11 @@ def main(
     except FileNotFoundError:
         pass
     else:
-        raise FileExistsError(f"Output directory {output_dir} and its .out file already exists, refusing to overwrite! Delete .out file if you believe it is safe to do so.")
+        # if the file is empty continue and overwrite it, otherwise raise an error
+        if os.path.getsize(get_file_by_extension(output_dir, '.out')) == 0:
+            logger.info("Output directory and its .out file already exists, but it is empty. Overwriting...")
+        else:
+            raise FileExistsError(f"Output directory {output_dir} and its .out file already exists, refusing to overwrite! Delete .out file if you believe it is safe to do so.")
 
     os.makedirs(output_dir, exist_ok=True)
 
@@ -111,8 +116,11 @@ def main(
             solvated_pdb = get_file_by_extension(input_dir, '_solvated.pdb')
             # copy all to the output_dir
             for file in [fixed_pdb, equilibrated_pdb, solvated_pdb]:
-                shutil.copy(file, output_dir)
-        
+                try:
+                    shutil.copy(file, output_dir)
+                except shutil.SameFileError:
+                    logger.warning(f"File {file} is the same as the one in the output directory, skipping copy... You are likely doing something manually. Be careful!")
+            
 
     assert f'output/{filename}' not in os.listdir(), f"Folder output/{filename} already exists. It might overwrite existing data!"
 
@@ -213,9 +221,7 @@ def main(
     MPI.COMM_WORLD.Barrier()
 
     if replica_exchange:
-
         assert IS_MPI_INITIALIZED, "Replica exchange requires MPI"
-
         if not os.path.exists(f"{output_dir}/{filename}_equilibrated.cif"):
             logger.info('No equilibrated cif file found, running equilibriation...')
             # HACK: this is very hacky!!!!
@@ -248,7 +254,6 @@ def main(
             plumed_config=config,
             chain_mode=chain_mode,
         )
-
     else:
         assert rank == 0, "Usual single replica run doesn't support MPI"
         assert IS_MPI_INITIALIZED == False, "Usual single replica run doesn't support MPI"
@@ -265,8 +270,9 @@ def main(
             plumed_config=config,
             plumed_mode=chain_mode,
             restart_checkpoint=restart_checkpoint,
-            equilibrate_only=equilibrate_only
-        )
+            equilibrate_only=equilibrate_only,
+            generate_plumed_input=generate_plumed_input
+            )
 
 
 

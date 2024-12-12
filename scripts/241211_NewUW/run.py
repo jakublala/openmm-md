@@ -3,10 +3,10 @@ from src.plumed.utils import get_checkpoint_interval
 import fire
 
 def run(
-        filepath: str = "../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb", 
-        output_dir: str = 'test',
+        filepath: str = "../../data/241010_FoldingUponBinding/output/CD28-G/241211-NewUW/CD28_general_equilibrated.cif", 
+        output_dir: str = '../../data/241010_FoldingUponBinding/output/CD28-G/241211-NewUW',
         ):
-        
+    
     FILEPATH = filepath
     OUTPUT_DIR = output_dir
     TEMPERATURE = 300
@@ -20,9 +20,13 @@ def run(
     # 1. PLUMED CONFIG
     # CVs are cmap, d in that order
     import MDAnalysis as mda
-    universe = mda.Universe(FILEPATH)
+    if 'cif' in FILEPATH:
+        from openmm.app import PDBxFile
+        cif = PDBxFile(FILEPATH)
+        universe = mda.Universe(cif)
+    else:
+        universe = mda.Universe(FILEPATH)
     BINDER_LENGTH = len(universe.select_atoms('chainid A'))
-
 
     # FOR CD28
     # we will exclude this from computing the centre of masses
@@ -98,7 +102,8 @@ def run(
         config=config,
         box_size=BOX_SIZE,
         chain_mode='two-chain',
-        equilibrate_only=True,
+        equilibrate_only=False,
+        generate_plumed_input=False,
     )
 
 
