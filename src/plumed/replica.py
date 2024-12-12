@@ -20,7 +20,7 @@ from openmm.openmm import Platform
 
 import logging
 import sys
-
+import numpy as np
 from mpi4py import MPI
 import MDAnalysis as mda
 
@@ -46,22 +46,40 @@ def _setup_mpi():
 
 def _setup_logging(rank):
     # Configure logging
+    logger = logging.getLogger(__name__)  # Get logger for this module specifically
     if rank == 0:
-        logger = logging.getLogger()
-        logging.basicConfig(
-            level=logging.DEBUG,
-            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            stream=sys.stdout
+        # Clear any existing handlers to avoid duplicate logging
+        logger.handlers.clear()
+        
+        # Create console handler
+        console_handler = logging.StreamHandler(sys.stdout)
+        console_handler.setLevel(logging.DEBUG)
+        
+        # Create formatter
+        formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         )
+        console_handler.setFormatter(formatter)
+        
+        # Add handler to logger
+        logger.addHandler(console_handler)
+        logger.setLevel(logging.DEBUG)
+        
+        # Prevent propagation to root logger
+        logger.propagate = False
     else:
         class NoOpLogger:
             def __getattr__(self, name):
                 def method(*args, **kwargs):
                     pass
                 return method
-
         logger = NoOpLogger()
     return logger
+
+
+rank, n_procs = _setup_mpi()
+logger = _setup_logging(rank)
+
 
 def _get_platform(device, rank):
     assert device == 'cuda', "Only CUDA is supported for Replica Exchange for now"
@@ -86,8 +104,9 @@ def _nc_cleanup(rank, storage_path):
     if rank == 0:
         # if exists, delete
         if storage_path.exists():
+            logger.info(f"Deleting {storage_path} for next replica exchange simulation")
             storage_path.unlink()
-        checkpoint_path = pathlib.Path('results/replica_exchange_checkpoint.nc')
+        checkpoint_path = pathlib.Path(str(storage_path).replace('.nc', '') + '_checkpoint.nc')
         if checkpoint_path.exists():
             checkpoint_path.unlink()
     
@@ -113,15 +132,11 @@ def run_replica_plumed(
         mode=chain_mode,
         )
 
-    comm = MPI.COMM_WORLD
-    rank = comm.Get_rank()
-    n_procs = comm.Get_size()
-
-    logger = _setup_logging(rank)
     logger.info(f"Running replica {rank} of {n_procs} replicas")
 
-    # _ = _get_platform(device, rank)
-    TIMESTEP = timestep * unit.femtoseconds
+    _ = _get_platform(device, rank)
+    # TIMESTEP = timestep * unit.femtoseconds
+    TIMESTEP = 2.0 * unit.femtoseconds
     SWAP_TIME = swap_time * unit.picoseconds
     SWAP_STEPS = int(SWAP_TIME / TIMESTEP)
     N_STEPS = int(mdtime / timestep)
@@ -134,28 +149,36 @@ def run_replica_plumed(
     N_REPLICAS = len(temperatures)
     logger.info(f"Running {N_REPLICAS} replicas with temperatures {temperatures}")
 
-
-
     # assert temperatures elements have unit of unit.kelvin
     assert all(isinstance(temp, unit.Quantity) and temp.unit == unit.kelvin for temp in temperatures), "Temperatures must have units of kelvin"
     logger.info(f"Assigning temperatures: {temperatures}")
+
+    # System Configuration
+    nonbondedMethod = PME
+    nonbondedCutoff = 1.0*unit.nanometers  # This cutoff and the following for tolerance are standard values
+    ewaldErrorTolerance = 10**(-4)
+    constraints = HBonds
+    rigidWater = True
+    constraintTolerance = 10**(-4)
 
     # Create systems and add independent plumed forces to each
     systems = []
     for i in range(N_REPLICAS):
         _system = forcefield.createSystem(
             topology=cif.topology, 
-            nonbondedMethod=PME,
-            nonbondedCutoff=1*unit.nanometer,
-            constraints=HBonds
-            )
+            nonbondedMethod=nonbondedMethod, 
+            nonbondedCutoff=nonbondedCutoff,
+            constraints=constraints, 
+            rigidWater=rigidWater, 
+            ewaldErrorTolerance=ewaldErrorTolerance,
+        )
         if rank == 0:
             plumed_filepath = get_file_by_extension(output_dir, f'{filename}_plumed.dat')
             _replicate_plumed_file(filename, plumed_filepath, output_dir, i)
-        
+            
         with open(f'{output_dir}/{filename}_plumed_{i}.dat', 'r') as file:
             plumed_script = file.read()
-        _system.addForce(PlumedForce(plumed_script))
+        # _system.addForce(PlumedForce(plumed_script))
         systems.append(_system)
     
     
@@ -173,19 +196,27 @@ def run_replica_plumed(
     move = mcmc.LangevinDynamicsMove(
         timestep=timestep,
         collision_rate=1/unit.picoseconds,
-        n_steps=SWAP_STEPS
+        n_steps=SWAP_STEPS,
+        constraint_tolerance=constraintTolerance
     )
 
+    thermodynamic_states = [
+        states.ThermodynamicState(system=system, temperature=T) 
+        for system, T in zip(systems, temperatures)
+    ]
     # Create sampler state with both positions and box vectors
     # this contains the State, meaning the positions, velocities, and box vectors, etc.
     sampler_states = []
-    for system in systems:
-        sampler_states.append(states.SamplerState(
+    for i, system in enumerate(systems):
+        sampler_state = states.SamplerState(
             positions=cif.positions,
-            box_vectors=system.getDefaultPeriodicBoxVectors()
-            # hopefully velocities if None are set then by the temperature later
-            # TODO: check if true
-        ))
+            box_vectors=system.getDefaultPeriodicBoxVectors(),
+        )
+
+        print(f"Kinetic energy: {sampler_state.kinetic_energy}")
+        print(f"Potential energy: {sampler_state.potential_energy}")
+        sampler_states.append(sampler_state)
+
 
     simulation = ReplicaExchangeSampler(
         replica_mixing_scheme='swap-all',
@@ -194,8 +225,7 @@ def run_replica_plumed(
         mcmc_moves=move, 
         number_of_iterations=N_ITERATIONS # this does 50 iterations of the move, hence 50 * 500 steps
         )
-    
-    thermodynamic_states = [states.ThermodynamicState(system=system, temperature=T) for system, T in zip(systems, temperatures)]
+
 
     storage_path = pathlib.Path(f'{output_dir}/{filename}_replica_exchange.nc')
     _nc_cleanup(rank, storage_path)

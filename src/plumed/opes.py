@@ -190,7 +190,7 @@ def run_plumed(
     else:
         simulation.context.setPositions(positions)
 
-        #Equilibrate
+        # Equilibrate
         logger.info('Equilibrating...')
         simulation.context.setVelocitiesToTemperature(temperature)
         # TODO: make it random, by having the number of steps be also somewhat number

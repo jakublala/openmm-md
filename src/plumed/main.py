@@ -18,9 +18,12 @@ def _setup_mpi():
         comm = MPI.COMM_WORLD
         rank = comm.Get_rank()
         n_procs = comm.Get_size()
+        print("MPI initialized, running in multi process mode with n_procs = ", n_procs)
     else:
         rank = 0
         n_procs = 1
+        print("No MPI initialized, running in single process mode")
+
     return IS_MPI_INITIALIZED, rank, n_procs
 
 def _setup_logging(rank):
@@ -256,8 +259,7 @@ def main(
             chain_mode=chain_mode,
         )
     else:
-        assert rank == 0, "Usual single replica run doesn't support MPI"
-        assert IS_MPI_INITIALIZED == False, "Usual single replica run doesn't support MPI"
+        assert rank == 0, "Usual single replica run doesn't support MPI, we only support a single process run."
         run_plumed(
             filename=filename, 
             mdtime=mdtime, 

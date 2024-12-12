@@ -65,14 +65,17 @@ def main():
     properties = {'DeviceIndex': str(rank), 'Precision': 'mixed'}
     cache.global_context_cache.set_platform(platform, properties)
     
-    pdb_path = '../../data/241010_FoldingUponBinding/output/SUMO-1C/241128-MetaD/sumo1c_equilibrated.pdb'
+    # pdb_path = '../../data/241010_FoldingUponBinding/output/SUMO-1C/241128-MetaD/sumo1c_equilibrated.pdb'
+    # pdb = PDBFile(pdb_path)
 
-    pdb = PDBFile(pdb_path)
+    from openmm.app import PDBxFile
+    pdb_path = '../241211_ReplicaImplementation/test/CD28_general_equilibrated.cif'
+    pdb = PDBxFile(pdb_path)
 
     forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
 
 
-    n_replicas = 8  # Number of temperature replicas.
+    n_replicas = 4  # Number of temperature replicas.
     T_min = 300.0 * unit.kelvin  # Minimum temperature.
     T_max = 600.0 * unit.kelvin  # Maximum temperature.
 
@@ -99,12 +102,6 @@ def main():
                 plumed_script = file.read()
             _system.addForce(PlumedForce(plumed_script))
         systems.append(_system)
-    
-    # move = mcmc.GHMCMove(
-    #     timestep=timestep,  # Each integration step is 2 fs (Langevin dynamics)
-    #     n_steps=md_steps,
-    #     collision_rate=1/unit.picoseconds, # equivalent to friction coefficient in LangevinMiddleIntegrator
-    # )
 
     move = mcmc.LangevinDynamicsMove(
         timestep=timestep,
@@ -125,7 +122,7 @@ def main():
 
     # get atoms of all protein
     import MDAnalysis as mda
-    u = mda.Universe(pdb_path)
+    u = mda.Universe(pdb)
     protein_atom_ids = u.select_atoms("protein").ids
 
     reporter = MultiStateReporter(
@@ -144,7 +141,7 @@ def main():
             # hopefully velocities if None are set then by the temperature later
             # TODO: check if true
         ))
-    
+
     # run for 1 ns = 1000 ps
     N_ITERATIONS = 1000
     from openmmtools.multistate import ReplicaExchangeSampler
@@ -164,6 +161,7 @@ def main():
     thermodynamic_states = [states.ThermodynamicState(system=system, temperature=T) for system, T in zip(systems, temperatures)]
 
     # with no mpi4py, we are getting a single GPU performance
+
 
     simulation.create(
         thermodynamic_states=thermodynamic_states,

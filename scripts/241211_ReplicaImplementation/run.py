@@ -12,7 +12,7 @@ def run(
     OUTPUT_DIR = output_dir
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
-    TIMESTEP = 2
+    TIMESTEP = 1
     MDTIME = 1000
 
     T_MIN = 300
@@ -60,12 +60,18 @@ def run(
         'metad.pace': 500,
         'cv1.type': 'cmap',
         'cv1.sigma': 0.15,
+        'cv1.grid_min': None,
+        'cv1.grid_max': None,
+        'cv1.grid_bin': None,
         # 'cv1.grid_min': 0,
         # 'cv1.grid_max': 45,
         # 'cv1.grid_bin': 200,
         'cv1.pbc': False,
         'cv2.type': 'd',
         'cv2.sigma': 0.27,
+        'cv2.grid_min': None,
+        'cv2.grid_max': None,
+        'cv2.grid_bin': None,
         # 'cv2.grid_min': 0,
         # 'cv2.grid_max': 12,
         # 'cv2.grid_bin': 200,
@@ -108,6 +114,7 @@ def run(
         config=config,
         padding=PADDING,
         chain_mode='two-chain',
+        # replica_exchange=False,
         replica_exchange=True,
         swap_time=1,
         temperatures=TEMPERATURES,
