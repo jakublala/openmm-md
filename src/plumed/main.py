@@ -180,8 +180,9 @@ def main(
         logger.info(f"Bias factor {config['metad.biasfactor']} for MetaD")
     else:
         raise NotImplementedError(f"Type {config['type']} not implemented")
-    logger.info(f"CV1: {config['cv1.type']} with {config['cv1.sigma']=}, {config['cv1.grid_min']=}, {config['cv1.grid_max']=}, {config['cv1.grid_bin']=}")
-    logger.info(f"CV2: {config['cv2.type']} with {config['cv2.sigma']=}, {config['cv2.grid_min']=}, {config['cv2.grid_max']=}, {config['cv2.grid_bin']=}")
+
+    logger.info(f"CV1: {config['cv1.type']} with {config['cv1.sigma']=}") #, {config['cv1.grid_min']=}, {config['cv1.grid_max']=}, {config['cv1.grid_bin']=}")
+    logger.info(f"CV2: {config['cv2.type']} with {config['cv2.sigma']=}") #,  {config['cv2.grid_min']=}, {config['cv2.grid_max']=}, {config['cv2.grid_bin']=}")
 
     if not os.path.exists(f"{output_dir}/{filename}_equilibrated.cif"):
         logger.info('No equilibrated cif file found, checking whether we need to run relaxation...')

@@ -182,13 +182,20 @@ c2: COM ATOMS={spot2_com_CAs}"""
     elif config['type'] == 'metad':
         # assert that if grid, there's no artifacts
         from .utils import assert_correct_metad_grid
+
         assert_correct_metad_grid(config)
 
         restart_str = 'YES' if config['restart'] else 'NO'
         plumed_content += f"""metad: METAD ...
-\tARG={cv_arg_content} PACE={config['metad.pace']} SIGMA={config['cv1.sigma']},{config['cv2.sigma']} HEIGHT={config['metad.height']}
-\tGRID_MIN={config['cv1.grid_min']},{config['cv2.grid_min']} GRID_MAX={config['cv1.grid_max']},{config['cv2.grid_max']} GRID_BIN={config['cv1.grid_bin']},{config['cv2.grid_bin']}
-\tTEMP={config['temperature']} BIASFACTOR={config['metad.biasfactor']}
+\tARG={cv_arg_content} PACE={config['metad.pace']} SIGMA={config['cv1.sigma']},{config['cv2.sigma']} HEIGHT={config['metad.height']}\n"""
+        if (
+            config['cv1.sigma'] is not None and config['cv2.sigma'] is not None and 
+            config['cv1.grid_min'] is not None and config['cv2.grid_min'] is not None and 
+            config['cv1.grid_max'] is not None and config['cv2.grid_max'] is not None and 
+            config['cv1.grid_bin'] is not None and config['cv2.grid_bin'] is not None
+            ):
+            plumed_content += f"\tGRID_MIN={config['cv1.grid_min']},{config['cv2.grid_min']} GRID_MAX={config['cv1.grid_max']},{config['cv2.grid_max']} GRID_BIN={config['cv1.grid_bin']},{config['cv2.grid_bin']}\n"
+        plumed_content += f"""\tTEMP={config['temperature']} BIASFACTOR={config['metad.biasfactor']}
 \tFILE={output_dir}/{filename}.hills
 \tRESTART={restart_str}
 ...

@@ -12,7 +12,10 @@ def get_platform_and_properties(device, device_index, device_precision):
     if device == "cuda":
         logger.info(f'Using CUDA device {device_index}')
         platform = Platform.getPlatformByName('CUDA')
-        properties = {'DeviceIndex': device_index, 'Precision': device_precision}
+        if device_precision is None:
+            properties = {'DeviceIndex': device_index}
+        else:
+            properties = {'DeviceIndex': device_index, 'Precision': device_precision}
     elif device == "cpu":
         logger.info('Using CPU')
         platform = Platform.getPlatformByName('CPU')
