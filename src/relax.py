@@ -5,6 +5,8 @@ import fire
 import logging
 import numpy as np
 import time
+import matplotlib.pyplot as plt
+
 from openmm.app import PDBxFile, PDBFile
 
 from src.utils import get_platform_and_properties
@@ -52,8 +54,6 @@ def minimize(
     modeller.addHydrogens(forcefield, pH=7.0)
     logger.info('Adding solvent...')
     
-    logger.info(f'Padding solvent by {padding} nm')
-
     if box_size is not None:
         logger.info(f'Box size: {box_size} nm')
         modeller.addSolvent(forcefield, boxSize=box_size * nanometer)
@@ -105,7 +105,6 @@ def minimize(
             # You can use this functionality for early termination.
             return False
         
-    import matplotlib.pyplot as plt
 
     # Create separate Reporter instances for each minimization
     reporter_hyrogens = Reporter()
@@ -400,12 +399,8 @@ def relax_md_npt(
     system.addForce(MonteCarloBarostat(1*bar, current_T*kelvin))
 
     # 4: SIMULATION
-    properties = None
-    try:
-        platform = Platform.getPlatformByName('CUDA')
-        properties = {'DeviceIndex': device_index}
-    except:
-        platform = Platform.getPlatformByName('OpenCL')
+    from src.utils import get_platform_and_properties
+    platform, properties = get_platform_and_properties(device, device_index, device_precision)
 
     simulation = Simulation(pdb_file.topology, system, integrator, platform, properties)
     simulation.context.setPositions(pdb_file.positions)

@@ -2,18 +2,46 @@ import os
 import logging
 from typing import Optional, Literal
 import shutil
+from mpi4py import MPI
 from src.plumed.opes import run_plumed
 from src.relax import minimize
 from src.fixer import fixer
 from src.plumed.io import create_plumed_input
 from src.analysis.utils import get_file_by_extension
 from src.plumed.utils import get_checkpoint_interval, get_pace_from_metad, get_last_checkpoint_timestep, process_hills_for_restart
-            
-logging.basicConfig(
-    level=logging.INFO, 
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
-logger = logging.getLogger(__name__)
+from src.plumed.replica import run_replica_plumed
+import sys
+
+def _setup_mpi():
+    IS_MPI_INITIALIZED = MPI.Is_initialized()
+    if IS_MPI_INITIALIZED:
+        comm = MPI.COMM_WORLD
+        rank = comm.Get_rank()
+        n_procs = comm.Get_size()
+    else:
+        rank = 0
+        n_procs = 1
+    return IS_MPI_INITIALIZED, rank, n_procs
+
+def _setup_logging(rank):
+    # Configure logging
+    if rank == 0:
+        logger = logging.getLogger()
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+            stream=sys.stdout
+        )
+    else:
+        class NoOpLogger:
+            def __getattr__(self, name):
+                def method(*args, **kwargs):
+                    pass
+                return method
+
+        logger = NoOpLogger()
+    return logger
+
 
 def main(
         filepath=None, 
@@ -31,15 +59,18 @@ def main(
         config=None, # only contains opes stuff for now
         chain_mode: Optional[Literal['single-chain', 'two-chain']] = None,
         equilibrate_only=False,
+        replica_exchange=False,
+        swap_time=None,
+        temperatures=None,
         generate_plumed_input=True,
         ):
-    
-    # TODO: the config should be saved somewhere as a JSON!!!
-    # then very useful down the line for analysis
-    # as parsing, for instance, plumed.dat is a mess
 
 
+    IS_MPI_INITIALIZED, rank, n_procs = _setup_mpi()
 
+    logger = _setup_logging(rank)
+
+    # RUN this only on one process
     if chain_mode is None:
         raise ValueError('Chain mode is required')
 
@@ -76,19 +107,20 @@ def main(
     input_dir = os.path.dirname(filepath)
 
     if 'equilibrated' in filename:
-        logger.info('Input PDB file is equilibrated, assuming it comes from a previous run...')
-        logger.info('Copying fixed, equilibrated and solvated pdb files to output directory')
-        fixed_pdb = get_file_by_extension(input_dir, '_fixed.pdb')
-        equilibrated_pdb = get_file_by_extension(input_dir, '_equilibrated.cif')
-        solvated_pdb = get_file_by_extension(input_dir, '_solvated.cif')
-        # copy all to the output_dir
-        for file in [fixed_pdb, equilibrated_pdb, solvated_pdb]:
-            try:
-                shutil.copy(file, output_dir)
-            except shutil.SameFileError:
-                logger.warning(f"File {file} is the same as the one in the output directory, skipping copy... You are likely doing something manually. Be careful!")
         filename = filename.replace('_equilibrated', '')
-        
+        if rank == 0:
+            logger.info('Input PDB file is equilibrated, assuming it comes from a previous run...')
+            logger.info('Copying fixed, equilibrated and solvated pdb files to output directory')
+            fixed_pdb = get_file_by_extension(input_dir, '_fixed.pdb')
+            equilibrated_pdb = get_file_by_extension(input_dir, '_equilibrated.pdb')
+            solvated_pdb = get_file_by_extension(input_dir, '_solvated.pdb')
+            # copy all to the output_dir
+            for file in [fixed_pdb, equilibrated_pdb, solvated_pdb]:
+                try:
+                    shutil.copy(file, output_dir)
+                except shutil.SameFileError:
+                    logger.warning(f"File {file} is the same as the one in the output directory, skipping copy... You are likely doing something manually. Be careful!")
+            
 
     assert f'output/{filename}' not in os.listdir(), f"Folder output/{filename} already exists. It might overwrite existing data!"
 
@@ -104,7 +136,7 @@ def main(
         else:
             restart_checkpoint = None
     else:
-        if config['restart']:
+        if config['restart'] and rank == 0:
 
             # move hills file to output dir
             # chop off lines that are after the checkpoint
@@ -153,7 +185,7 @@ def main(
 
     if not os.path.exists(f"{output_dir}/{filename}_equilibrated.cif"):
         logger.info('No equilibrated cif file found, checking whether we need to run relaxation...')
-        if not os.path.exists(f'{output_dir}/{filename}_solvated.cif'):
+        if not os.path.exists(f'{output_dir}/{filename}_solvated.cif') and rank == 0:
 
             if split_chains:
                 if ('CD28' in filepath) or ('A-synuclein' in filepath):
@@ -183,23 +215,65 @@ def main(
         else:
             logger.info('Solvated and equilibrated pdb files found, skipping solvation and relaxation')
 
-        
-    run_plumed(
-        filename=filename, 
-        mdtime=mdtime, 
-        device_index=str(device_index),
-        timestep=timestep,
-        temperature=temperature,
-        device=device,
-        device_precision=device_precision,
-        output_dir=output_dir,
-        logging_frequency=logging_frequency,
-        plumed_config=config,
-        plumed_mode=chain_mode,
-        restart_checkpoint=restart_checkpoint,
-        equilibrate_only=equilibrate_only,
-        generate_plumed_input=generate_plumed_input
+
+
+    # wait for all processes to be ready
+    MPI.COMM_WORLD.Barrier()
+
+    if replica_exchange:
+        assert IS_MPI_INITIALIZED, "Replica exchange requires MPI"
+        if not os.path.exists(f"{output_dir}/{filename}_equilibrated.cif"):
+            logger.info('No equilibrated cif file found, running equilibriation...')
+            # HACK: this is very hacky!!!!
+            if rank == 0:
+                run_plumed(
+                    filename=filename, 
+                    mdtime=mdtime, 
+                    device_index=str(device_index),
+                    timestep=timestep,
+                    temperature=temperature,
+                    device=device,
+                    device_precision=device_precision,
+                    output_dir=output_dir,
+                    logging_frequency=logging_frequency,
+                    plumed_config=config,
+                    plumed_mode=chain_mode,
+                    equilibrate_only=True
+                )
+
+        run_replica_plumed(
+            filename=filename, 
+            mdtime=mdtime, 
+            timestep=timestep,
+            swap_time=swap_time,
+            temperatures=temperatures,
+            device=device,
+            device_precision=device_precision,
+            output_dir=output_dir,
+            logging_frequency=logging_frequency,
+            plumed_config=config,
+            chain_mode=chain_mode,
         )
+    else:
+        assert rank == 0, "Usual single replica run doesn't support MPI"
+        assert IS_MPI_INITIALIZED == False, "Usual single replica run doesn't support MPI"
+        run_plumed(
+            filename=filename, 
+            mdtime=mdtime, 
+            device_index=str(device_index),
+            timestep=timestep,
+            temperature=temperature,
+            device=device,
+            device_precision=device_precision,
+            output_dir=output_dir,
+            logging_frequency=logging_frequency,
+            plumed_config=config,
+            plumed_mode=chain_mode,
+            restart_checkpoint=restart_checkpoint,
+            equilibrate_only=equilibrate_only,
+            generate_plumed_input=generate_plumed_input
+            )
+
 
 
 

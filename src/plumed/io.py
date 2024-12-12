@@ -29,7 +29,7 @@ def create_plumed_input(
     
     assert_config(config)
 
-    get_file_by_extension(output_dir, 'equilibrated.cif', assert_exists=True)
+    get_file_by_extension(output_dir, '_equilibrated.cif', assert_exists=True)
     
     if output_dir is None:
         raise ValueError('Output directory is required')

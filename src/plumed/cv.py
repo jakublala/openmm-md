@@ -4,6 +4,7 @@ from MDAnalysis.analysis.distances import contact_matrix
 import numpy as np
 import logging
 from typing import Optional, Literal
+from openmm.app import PDBxFile
 
 import os
 from src.models import ContactMap, Contact, Residue
