@@ -83,7 +83,10 @@ def main(
         solvated_pdb = get_file_by_extension(input_dir, '_solvated.cif')
         # copy all to the output_dir
         for file in [fixed_pdb, equilibrated_pdb, solvated_pdb]:
-            shutil.copy(file, output_dir)
+            try:
+                shutil.copy(file, output_dir)
+            except shutil.SameFileError:
+                logger.warning(f"File {file} is the same as the one in the output directory, skipping copy... You are likely doing something manually. Be careful!")
         filename = filename.replace('_equilibrated', '')
         
 
