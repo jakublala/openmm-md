@@ -46,14 +46,14 @@ else:
     logger = NoOpLogger()
 
 
-def replicate_plumed_file(file_path, n_replicas):
+def replicate_plumed_file(file_path, n_replicas, temperatures):
     with open(file_path, 'r') as file:
         plumed_script = file.read()
-    for i in range(n_replicas):
+    for i, T in zip(range(n_replicas), temperatures):
         # Replace X with replica number in both hills and colvar filenames
-        modified_script = plumed_script.replace('sumo1c_X', f'results/sumo1c_{i}')
-        
-        with open(f'plumed_{i}.dat', 'w') as file:
+        modified_script = plumed_script.replace('CD28_general_X', f'results/CD28_general_{i}')
+        modified_script = modified_script.replace('TEMP=300', f'TEMP={T.value_in_unit(unit.kelvin)}')
+        with open(f'results/CD28_general_plumed_{i}.dat', 'w') as file:
             file.write(modified_script)
 
 def main():
@@ -67,22 +67,25 @@ def main():
     # pdb = PDBFile(pdb_path)
 
     from openmm.app import PDBxFile
-    pdb_path = '../241211_ReplicaImplementation/test/CD28_general_equilibrated.cif'
+    pdb_path = 'results/CD28_general_equilibrated.cif'
     pdb = PDBxFile(pdb_path)
 
     forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
 
 
-    n_replicas = 4  # Number of temperature replicas.
+    n_replicas = 2  # Number of temperature replicas.
     T_min = 300.0 * unit.kelvin  # Minimum temperature.
     T_max = 600.0 * unit.kelvin  # Maximum temperature.
 
     timestep = 2.0*unit.femtoseconds
     md_steps = 500 # as suggested in some paper
 
-    PLUMED = False
-
+    import numpy as np
+    temperatures = [T_min + (T_max - T_min) * (np.exp(float(i) / float(n_replicas-1)) - 1.0) / (np.e - 1.0) for i in range(n_replicas)]
+    replicate_plumed_file('results/CD28_general_plumed.dat', n_replicas, temperatures)    
     from openmmplumed import PlumedForce
+
+    plumed = True
 
     # system holds information on the force field parameters
     systems = []
@@ -93,9 +96,10 @@ def main():
             nonbondedCutoff=1*unit.nanometer,
             constraints=HBonds
             )
-        if PLUMED:
-            replicate_plumed_file('plumed.dat', n_replicas)
-            with open(f'plumed_{i}.dat', 'r') as file:
+        
+        if plumed:
+            logger.info(f"Adding PLUMED force for replica {i}")
+            with open(f'results/CD28_general_plumed_{i}.dat', 'r') as file:
                 plumed_script = file.read()
             _system.addForce(PlumedForce(plumed_script))
         systems.append(_system)
@@ -150,12 +154,12 @@ def main():
         number_of_iterations=N_ITERATIONS # this does 50 iterations of the move, hence 50 * 500 steps
         )
     
-    import numpy as np
-    temperatures = [T_min + (T_max - T_min) * (np.exp(float(i) / float(n_replicas-1)) - 1.0) / (np.e - 1.0) for i in range(n_replicas)]
     logger.info(f"Assigning temperatures: {temperatures}")
 
     # thermodynamic state holds information on ensemble parameters like temperture and pressure
-    thermodynamic_states = [states.ThermodynamicState(system=system, temperature=T) for system, T in zip(systems, temperatures)]
+    thermodynamic_states = [
+        states.ThermodynamicState(system=system, temperature=T) for system, T in zip(systems, temperatures)
+        ]
 
     # with no mpi4py, we are getting a single GPU performance
 
@@ -165,6 +169,11 @@ def main():
         sampler_states=sampler_states, # can be a single state, which gets copied to all replicas
         storage=reporter
         )
+    
+    print(f"{len(systems)=}")
+    print(f"{len(thermodynamic_states)=}")
+    print(f"{len(sampler_states)=}")
+
     
     simulation.run()
 
