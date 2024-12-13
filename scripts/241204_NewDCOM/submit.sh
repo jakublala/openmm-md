@@ -1,24 +1,21 @@
 #!/bin/bash
 
-# Get the template PBS file
-if [[ "$1" == "-f" && -n "$2" ]]; then
-    TEMPLATE="$2"
-    if [[ ! -f "$TEMPLATE" ]]; then
-        echo "Specified template file $TEMPLATE not found"
-        exit 1
-    fi
+# Detect environment based on current working directory
+CURRENT_PATH=$(pwd)
+
+if [[ "$CURRENT_PATH" == *"gpfs"* ]]; then
+    PROJECT_DIR="/gpfs/home/jl24018/projects/openmm-md"
+    TEMPLATE="hx1.pbs"
+elif [[ "$CURRENT_PATH" == *"mmm1486"* ]]; then
+    PROJECT_DIR="/home/mmm1486/projects/openmm-md"
+    TEMPLATE="mmm.pbs"
 else
-    if [[ -f "hx1.pbs" ]]; then
-        TEMPLATE="hx1.pbs"
-    elif [[ -f "cx3.pbs" ]]; then
-        TEMPLATE="cx3.pbs" 
-    elif [[ -f "mmm.pbs" ]]; then
-        TEMPLATE="mmm.pbs"
-    else
-        echo "No PBS template file found"
-        exit 1
-    fi
+    echo "Unknown environment: $CURRENT_PATH"
+    exit 1
 fi
+
+echo "Detected environment: Using $TEMPLATE with project dir: ${PROJECT_DIR}"
+
 
 
 submit_simulation() {
@@ -33,7 +30,7 @@ submit_simulation() {
 
 PROJECT_DIR="/home/mmm1486/projects/openmm-md"
 
-submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241204-Long2/CD28_general_equilibrated.pdb" \
+submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241204-Long3/CD28_general_equilibrated.pdb" \
                 "CD28-G" \
-                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241204-Long3" \
+                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241204-Long4" \
                 True

@@ -168,6 +168,21 @@ def main(
             logger.info("Restarting MetaD as requested...")
             restart_checkpoint = get_file_by_extension(input_dir, '.chk')
 
+            if os.path.exists(f"{output_dir}/{filename}_equilibrated.pdb"):
+                # no longer supported, need to convert into cif
+                from openmm.app import PDBxFile, PDBFile
+                pdb = PDBFile(f"{output_dir}/{filename}_equilibrated.pdb")
+                PDBxFile.writeFile(pdb.topology, pdb.positions, open(f"{output_dir}/{filename}_equilibrated.cif", 'w'))
+                os.remove(f"{output_dir}/{filename}_equilibrated.pdb")  # Optional: remove old PDB file
+            # do the same for _solvated.pdb
+            if os.path.exists(f"{output_dir}/{filename}_solvated.pdb"):
+                pdb = PDBFile(f"{output_dir}/{filename}_solvated.pdb")
+                PDBxFile.writeFile(pdb.topology, pdb.positions, open(f"{output_dir}/{filename}_solvated.cif", 'w'))
+                os.remove(f"{output_dir}/{filename}_solvated.pdb")  # Optional: remove old PDB file
+
+
+
+
             # TODO: you should probably also copy the .plumed FILE!!!! not re-built it!!
 
 
