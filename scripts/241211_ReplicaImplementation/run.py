@@ -12,8 +12,8 @@ def run(
     OUTPUT_DIR = output_dir
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
-    TIMESTEP = 1
-    MDTIME = 1000
+    TIMESTEP = 2
+    MDTIME = 1
 
     T_MIN = 300
     T_MAX = 600
@@ -68,7 +68,7 @@ def run(
         # 'cv1.grid_min': 0,
         # 'cv1.grid_max': 45,
         # 'cv1.grid_bin': 200,
-        'cv1.pbc': False,
+        'cv1.pbc': True,
         'cv2.type': 'd',
         'cv2.sigma': 0.27,
         'cv2.grid_min': None,
@@ -77,7 +77,7 @@ def run(
         # 'cv2.grid_min': 0,
         # 'cv2.grid_max': 12,
         # 'cv2.grid_bin': 200,
-        'cv2.pbc': False,
+        'cv2.pbc': True,
         'metad.height': 1.25, # 1/2 * kBT
         'metad.biasfactor': 48,
         'upper_wall.at': 6, # keep this at UW=5, we are primarily looking at BIASFACTOR now

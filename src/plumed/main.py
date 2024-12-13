@@ -35,6 +35,14 @@ def _setup_logging(rank):
             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
             stream=sys.stdout
         )
+        # Silence MDAnalysis
+        logging.getLogger('MDAnalysis').setLevel(logging.WARNING)
+        # Silence any other noisy loggers
+        logging.getLogger('parmed').setLevel(logging.WARNING)
+        logging.getLogger('matplotlib').setLevel(logging.WARNING)
+        # Keep OpenMMTools debug logging
+        logging.getLogger('openmmtools').setLevel(logging.DEBUG)
+        logging.getLogger('openmmtools.multistate').setLevel(logging.DEBUG)
     else:
         class NoOpLogger:
             def __getattr__(self, name):

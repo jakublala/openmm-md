@@ -46,6 +46,9 @@ if rank == 0:
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         stream=sys.stdout
     )
+    # Add these lines:
+    logging.getLogger('openmmtools').setLevel(logging.DEBUG)
+    logging.getLogger('openmmtools.multistate').setLevel(logging.DEBUG)
 else:
     class NoOpLogger:
         def __getattr__(self, name):
@@ -56,14 +59,19 @@ else:
     logger = NoOpLogger()
 
 
-def replicate_plumed_file(output_dir, filename, n_replicas):
-    for i in range(n_replicas):
+def replicate_plumed_file(output_dir, filename, n_replicas, temperatures):
+    for i, T in zip(range(n_replicas), temperatures):
         with open(f'{output_dir}/{filename}_plumed.dat', 'r') as file:
             plumed_script = file.read()
 
         modified_script = plumed_script.replace(
             f"FILE={output_dir}/{filename}", 
             f"FILE={output_dir}/{filename}_{i}"
+            )
+        
+        modified_script = modified_script.replace(
+            f"TEMP=300", 
+            f"TEMP={T.value_in_unit(unit.kelvin)}"
             )
             
         with open(f'{output_dir}/{filename}_plumed_{i}.dat', 'w') as file:
@@ -92,7 +100,7 @@ def run_replica_plumed(
         config=plumed_config,
         mode=chain_mode,
     )
-    replicate_plumed_file(output_dir, filename, n_replicas)
+    replicate_plumed_file(output_dir, filename, n_replicas, temperatures)
     
     if device != 'cuda':
         raise NotImplementedError("Replica exchange only supports CUDA")
@@ -115,8 +123,6 @@ def run_replica_plumed(
     md_steps = int(md_time / timestep)
     N_ITERATIONS = int(md_steps / swap_steps)
 
-    PLUMED = False
-
     # system holds information on the force field parameters
     systems = []
     for i in range(n_replicas):
@@ -126,17 +132,90 @@ def run_replica_plumed(
             nonbondedCutoff=1*unit.nanometer,
             constraints=HBonds
             )
-        if PLUMED:
-            with open(f'plumed_{i}.dat', 'r') as file:
-                plumed_script = file.read()
-            _system.addForce(PlumedForce(plumed_script))
+    
+        with open(f'{output_dir}/{filename}_plumed_{i}.dat', 'r') as file:
+            plumed_script = file.read()
+        _system.addForce(PlumedForce(plumed_script))
         systems.append(_system)
 
-    move = mcmc.LangevinDynamicsMove(
+    # print all the forces in the system
+    for i, system in enumerate(systems):
+        for force in system.getForces():
+            print(f"system {i=}", force.getName())
+
+
+    import openmm as mm
+
+    # chain_A: GROUP ATOMS=1-503
+    # chain_B: GROUP ATOMS=505-2713
+
+
+
+    class NoPeriodicCVLangevinDynamicsMove(mcmc.LangevinDynamicsMove):
+        def _after_integration(self,
+            context: mm.Context,
+            thermodynamic_state: states.ThermodynamicState
+            ):
+            """Wrap coordinates into primary unit cell after integration."""
+            system: mm.System = thermodynamic_state.get_system()
+            if system.usesPeriodicBoundaryConditions():
+                state = context.getState(getPositions=True, enforcePeriodicBox=True)
+                positions = state.getPositions()
+                box_vectors = state.getPeriodicBoxVectors()
+                
+                # we need to move the centre of each of these chains to be in the original, same unit cell
+                chain_A_positions = positions[1:504]
+                chain_B_positions = positions[505:2714]
+
+                # turn into a numpy array
+                chain_A_positions = np.array(chain_A_positions)
+                chain_B_positions = np.array(chain_B_positions)
+
+                chain_A_centre = np.mean(chain_A_positions, axis=0)
+                chain_B_centre = np.mean(chain_B_positions, axis=0)
+
+
+                with open(f"{output_dir}/chain_centres.txt", "a") as file:
+                    file.write(str(chain_A_centre[0].value_in_unit(unit.nanometer)))
+                    file.write("\t")
+                    file.write(str(chain_A_centre[1].value_in_unit(unit.nanometer)))
+                    file.write("\t")
+                    file.write(str(chain_A_centre[2].value_in_unit(unit.nanometer)))
+                    file.write("\t")
+                    file.write("\t")
+                    
+                    file.write(str(chain_B_centre[0].value_in_unit(unit.nanometer)))
+                    file.write("\t")
+                    file.write(str(chain_B_centre[1].value_in_unit(unit.nanometer)))
+                    file.write("\t")
+                    file.write(str(chain_B_centre[2].value_in_unit(unit.nanometer)))
+                    file.write("\n")
+
+            # Call parent method in case future versions add functionality
+            super()._after_integration(context, thermodynamic_state)
+
+    # if plumed_config['cv1.pbc'] and plumed_config['cv2.pbc']:
+    #     move = mcmc.LangevinDynamicsMove(
+    #         timestep=timestep,
+    #         collision_rate=1/unit.picoseconds,
+    #         n_steps=swap_steps,
+    #         reassign_velocities=True
+    #     )
+    # else:
+    #     move = NoPeriodicCVLangevinDynamicsMove(
+    #         timestep=timestep,
+    #         collision_rate=1/unit.picoseconds,
+    #         n_steps=swap_steps,
+    #         reassign_velocities=True
+    #     )
+    move = NoPeriodicCVLangevinDynamicsMove(
         timestep=timestep,
         collision_rate=1/unit.picoseconds,
-        n_steps=md_steps
+        n_steps=swap_steps,
+        reassign_velocities=True
     )
+
+    # TODO: adjust this move to move always to base image?
 
     storage_path = pathlib.Path(f"{output_dir}/replica_exchange.nc")
     if rank == 0:
@@ -156,14 +235,16 @@ def run_replica_plumed(
 
     # Create sampler state with both positions and box vectors
     # this contains the State, meaning the positions, velocities, and box vectors, etc.
-    sampler_states = []
-    for system in systems:
-        sampler_states.append(states.SamplerState(
-            positions=pdb.positions,
-            box_vectors=system.getDefaultPeriodicBoxVectors()
-            # hopefully velocities if None are set then by the temperature later
-            # TODO: check if true
-        ))
+    # sampler_states = []
+    # import copy
+    # for system in systems:
+    #     positions = copy.deepcopy(pdb.positions)
+    #     sampler_states.append(states.SamplerState(
+    #         positions=positions,
+    #         box_vectors=system.getDefaultPeriodicBoxVectors()
+    #         # hopefully velocities if None are set then by the temperature later
+    #         # TODO: check if true
+    #     ))
 
     simulation = ReplicaExchangeSampler(
         replica_mixing_scheme='swap-all',
@@ -174,14 +255,26 @@ def run_replica_plumed(
         )
     
     # thermodynamic state holds information on ensemble parameters like temperture and pressure
-    thermodynamic_states = [states.ThermodynamicState(system=system, temperature=T) for system, T in zip(systems, temperatures)]
+    thermodynamic_states = [
+        states.ThermodynamicState(system=system, temperature=T) 
+        for system, T in zip(systems, temperatures)
+    ]
 
     # with no mpi4py, we are getting a single GPU performance
 
+    logger.info(f"Running {n_replicas} replicas with temperatures {temperatures}")
+    logger.info(f"Running with timestep {timestep} and mdtime {mdtime * unit.nanoseconds}, which is {N_ITERATIONS} iterations of replica swaps.")
+    logger.info(f"Replica swaps every {swap_time}, which is {swap_steps} steps")
+
+
+    sampler_state = states.SamplerState(
+        positions=pdb.positions,
+        box_vectors=systems[0].getDefaultPeriodicBoxVectors()
+    )
 
     simulation.create(
         thermodynamic_states=thermodynamic_states,
-        sampler_states=sampler_states, # can be a single state, which gets copied to all replicas
+        sampler_states=sampler_state, # can be a single state, which gets copied to all replicas
         storage=reporter
         )
     
