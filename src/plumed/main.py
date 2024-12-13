@@ -115,8 +115,8 @@ def main(
             logger.info('Input PDB file is equilibrated, assuming it comes from a previous run...')
             logger.info('Copying fixed, equilibrated and solvated pdb files to output directory')
             fixed_pdb = get_file_by_extension(input_dir, '_fixed.pdb')
-            equilibrated_pdb = get_file_by_extension(input_dir, '_equilibrated.pdb')
-            solvated_pdb = get_file_by_extension(input_dir, '_solvated.pdb')
+            equilibrated_pdb = get_file_by_extension(input_dir, '_equilibrated.cif')
+            solvated_pdb = get_file_by_extension(input_dir, '_solvated.cif')
             # copy all to the output_dir
             for file in [fixed_pdb, equilibrated_pdb, solvated_pdb]:
                 try:
@@ -245,6 +245,7 @@ def main(
                     equilibrate_only=True
                 )
 
+        # TODO: hacking this as I am trying to isolate the bug
         run_replica_plumed(
             filename=filename, 
             mdtime=mdtime, 
@@ -257,6 +258,7 @@ def main(
             logging_frequency=logging_frequency,
             plumed_config=config,
             chain_mode=chain_mode,
+            n_replicas=4,
         )
     else:
         assert rank == 0, "Usual single replica run doesn't support MPI, we only support a single process run."

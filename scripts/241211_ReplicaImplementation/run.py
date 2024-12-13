@@ -4,8 +4,8 @@ import fire
 import numpy as np
 
 def run(
-        filepath: str = "../../data/241010_FoldingUponBinding/input/CD28/CD28_general.pdb", 
-        output_dir: str = 'test',
+        filepath: str = "results/CD28_general_equilibrated.cif", 
+        output_dir: str = 'results',
         ):
         
     FILEPATH = filepath
@@ -26,7 +26,9 @@ def run(
     # 1. PLUMED CONFIG
     # CVs are cmap, d in that order
     import MDAnalysis as mda
-    universe = mda.Universe(FILEPATH)
+    from openmm.app import PDBxFile
+    pdb = PDBxFile(FILEPATH)
+    universe = mda.Universe(pdb)
     BINDER_LENGTH = len(universe.select_atoms('chainid A'))
 
 

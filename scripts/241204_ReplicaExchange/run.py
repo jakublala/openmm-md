@@ -57,8 +57,6 @@ def replicate_plumed_file(file_path, n_replicas):
             file.write(modified_script)
 
 def main():
-
-
     from openmmtools import cache
     from openmm.openmm import Platform
     platform = Platform.getPlatformByName('CUDA')
@@ -82,8 +80,7 @@ def main():
     timestep = 2.0*unit.femtoseconds
     md_steps = 500 # as suggested in some paper
 
-
-    PLUMED = True
+    PLUMED = False
 
     from openmmplumed import PlumedForce
 

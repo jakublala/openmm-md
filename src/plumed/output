@@ -1,0 +1,1464 @@
+2024-12-12 18:56:32,610 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7f0d6d4733b0> to topology
+2024-12-12 18:56:32,610 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7f0d6d7438c0> to topology
+2024-12-12 18:56:32,610 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Bonds object at 0x7f0d6d473fb0> to topology
+2024-12-12 18:56:32,610 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7f0d6d473d10> to topology
+2024-12-12 18:56:32,610 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7f0d6f6ddc10> to topology
+2024-12-12 18:56:32,610 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7f0d6d473e90> to topology
+2024-12-12 18:56:32,610 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7f0d6f650d70> to topology
+2024-12-12 18:56:32,610 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7f0d6d473f20> to topology
+2024-12-12 18:56:32,610 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7f0d6e135df0> to topology
+2024-12-12 18:56:32,610 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7f0d6d473c20> to topology
+2024-12-12 18:56:32,611 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7f0d6d473b60> to topology
+2024-12-12 18:56:32,611 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7f0d6d4738c0> to topology
+2024-12-12 18:56:32,611 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7f0d6d473830> to topology
+2024-12-12 18:56:32,611 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7f0d6d473740> to topology
+2024-12-12 18:56:32,611 - MDAnalysis.core.universe - DEBUG - Universe.load_new(): loading <openmm.app.pdbxfile.PDBxFile object at 0x7f0d6d7a60f0>...
+2024-12-12 18:56:32,743 - MDAnalysis.core.universe - INFO - The attribute(s) types, masses have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2024-12-12 18:56:32,747 - MDAnalysis.guesser.base - INFO - There is no empty types values. Guesser did not guess any new values for types attribute
+2024-12-12 18:56:32,747 - MDAnalysis.guesser.base - INFO - There is no empty masses values. Guesser did not guess any new values for masses attribute
+2024-12-12 18:56:32,897 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7f0d6d5bccb0> to topology
+2024-12-12 18:56:32,897 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7f0d6d489910> to topology
+2024-12-12 18:56:32,897 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7f0d6d489af0> to topology
+2024-12-12 18:56:32,897 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7f0d6d489b80> to topology
+2024-12-12 18:56:32,897 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7f0d6d489c10> to topology
+2024-12-12 18:56:32,897 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7f0d6d489c40> to topology
+2024-12-12 18:56:32,897 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7f0d6d489ca0> to topology
+2024-12-12 18:56:32,897 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7f0d6d489be0> to topology
+2024-12-12 18:56:32,898 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7f0d6d489cd0> to topology
+2024-12-12 18:56:32,898 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7f0d6f6de540> to topology
+2024-12-12 18:56:32,898 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Bonds object at 0x7f0d6f7139e0> to topology
+2024-12-12 18:56:32,898 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7f0d96f641a0> to topology
+2024-12-12 18:56:32,898 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7f0d954c9970> to topology
+2024-12-12 18:56:32,898 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7f0d6d489a90> to topology
+2024-12-12 18:56:32,901 - MDAnalysis.core.universe - DEBUG - Universe.load_new(): loading [[[  7.2337003   21.266401     1.5067    ]
+  [ 10.0218      20.4893      -1.0135    ]
+  [ 12.076       18.2413       1.3813    ]
+  [  9.821       15.7942       3.3255    ]
+  [ 12.7947      14.7985       5.6457    ]
+  [ 14.0149      18.1438       7.2329    ]
+  [ 12.666399    19.717       10.425     ]
+  [ 11.192599    16.4464      11.5514    ]
+  [ 12.5954      13.772       14.0234995 ]
+  [ 10.9415      10.5136      15.296101  ]
+  [ 10.7043       9.8071995   19.15      ]
+  [  8.5791       6.4506      19.4505    ]
+  [  9.573601     3.2661      17.6428    ]
+  [  6.3275       3.0375001   15.4359    ]
+  [  7.1516       6.5451      14.008301  ]
+  [ 10.9622       5.7525005   13.644     ]
+  [  9.8761       2.5397      11.6336    ]
+  [  7.2928       4.5986       9.608     ]
+  [ 10.1008       7.2187       8.7022    ]
+  [ 11.8334       4.5344       6.5536    ]
+  [  8.6717       4.2718       4.2644    ]
+  [  8.6427       7.9683       3.5015    ]
+  [ 12.5915       7.9332       3.1233    ]
+  [ 12.5604       4.9837       0.6316    ]
+  [  9.6691       6.4183      -1.4238    ]
+  [ 11.8876       9.5759      -1.6501    ]
+  [ 15.0828       7.6231003   -2.4348    ]
+  [ 13.4542       5.6539      -5.2749996 ]
+  [ 12.180901     8.8469      -7.0628    ]
+  [ 15.2218      10.9366      -6.1607    ]
+  [ 12.2891       1.0030999  -25.0235    ]
+  [ 10.8619      -1.9327999  -27.017601  ]
+  [  7.3019      -3.2774     -27.3471    ]
+  [  6.6619005   -3.0087     -23.5439    ]
+  [  3.8084002   -2.367      -21.0812    ]
+  [  3.4872003    0.8026     -19.024101  ]
+  [  1.9203999    1.1974     -15.518     ]
+  [  1.1652       4.2798     -13.3114    ]
+  [  0.0979       4.8398      -9.678     ]
+  [ -0.84         7.7829      -7.2504997 ]
+  [  1.6642       9.01        -4.5647    ]
+  [ -0.0597       8.4848      -1.1502    ]
+  [ -3.0465002    7.0256       0.7718    ]
+  [ -4.7764997    6.2435       4.1061    ]
+  [ -6.7766       3.1866       4.8775    ]
+  [ -9.533299     4.8399       6.9075003 ]
+  [-11.6243       2.1847       8.8456    ]
+  [ -8.6619005   -0.2349       8.5463    ]
+  [ -9.4692      -0.954        4.8539    ]
+  [ -8.7178       0.6883       1.4455999 ]
+  [ -9.8286       0.78110003  -2.1758    ]
+  [ -6.9717       1.6168      -4.6435    ]
+  [ -6.5463       1.6985      -8.4807005 ]
+  [ -3.7563       1.3549     -11.222     ]
+  [ -3.9089       2.4664     -14.9719    ]
+  [ -1.8032999    0.8166     -17.7123    ]
+  [ -1.1443       0.64970005 -21.4905    ]
+  [  0.6007      -2.034      -23.798698  ]
+  [  2.1717      -2.1757002  -27.2701    ]
+  [  1.2713001   -5.8912997  -27.7932    ]
+  [ -1.8434      -7.8313     -29.1437    ]
+  [ -2.6613      -9.4848     -25.682299  ]
+  [ -5.8941     -11.3914     -25.0319    ]
+  [ -5.078      -12.055301   -21.2726    ]
+  [ -3.1753001  -10.1334     -18.465801  ]
+  [ -2.4888     -11.061601   -14.8601    ]
+  [ -2.4596      -8.1728     -12.3202    ]
+  [ -0.7954      -8.0456      -8.8387    ]
+  [  0.1152      -5.8192997   -5.8113003 ]
+  [  3.6318998   -6.1158      -4.0689    ]
+  [  4.9969      -4.6348      -0.8406    ]
+  [  8.4852      -3.0452      -0.06940001]
+  [ 11.6859      -2.5297      -2.3469    ]
+  [ 14.5967      -3.7148      -0.0959    ]
+  [ 12.5905      -6.816        0.7866    ]
+  [  9.975699    -7.1358004   -2.0997999 ]
+  [  7.255       -9.8524      -2.4447    ]
+  [  3.5252     -10.1833      -3.6728    ]
+  [  0.3473      -9.3544      -1.7356    ]
+  [ -2.6913      -9.8761      -4.0737    ]
+  [ -3.5073     -11.184501    -7.4958997 ]
+  [ -6.2788     -10.8598     -10.064301  ]
+  [ -6.5656     -13.2612     -13.017599  ]
+  [ -9.0521     -13.630199   -15.8716    ]
+  [-10.39       -12.868      -19.2841    ]
+  [-11.7577      -9.5494995  -20.358501  ]
+  [-15.3214     -11.065599   -20.3786    ]
+  [-15.1905     -10.335899   -16.5606    ]
+  [-14.730999   -14.1401005  -15.5112    ]
+  [-12.354799   -12.7491     -12.8132    ]
+  [-10.3959     -14.622001   -10.118099  ]
+  [ -8.8995     -12.9178      -7.0223    ]
+  [ -6.2106     -14.5442      -4.7747    ]
+  [ -4.3098     -13.685599    -1.5682    ]
+  [ -0.6943     -13.816       -0.7982    ]
+  [  1.5165999  -12.722599     2.275     ]
+  [ -1.6166999  -13.126        4.5886    ]
+  [ -3.3601      -9.9923       3.0058    ]
+  [ -7.3101997  -10.0359       2.7676    ]
+  [ -8.1238      -8.4608      -0.7276    ]
+  [-10.732       -7.9838      -3.4641001 ]
+  [-10.4458      -6.6245003   -7.0206    ]
+  [-11.4821005   -5.9477     -10.608701  ]
+  [ -9.6418      -5.8732004  -13.9872    ]
+  [-10.347       -5.0641003  -17.6307    ]
+  [ -8.929       -3.2229998  -20.815699  ]
+  [ -7.0738      -0.1796     -19.241299  ]
+  [ -6.9090996   -0.8166     -15.4433    ]
+  [ -6.8877      -2.8252     -12.1778    ]
+  [ -8.6956005   -1.8241      -8.9207    ]
+  [ -7.6823997   -3.4392      -5.5887003 ]
+  [ -9.7121      -3.56        -2.2519    ]
+  [ -7.4749      -4.4748       0.7716    ]
+  [ -9.1427      -5.198        4.1603    ]
+  [ -8.4523      -5.5536003    7.9616    ]
+  [ -5.0506      -3.7419       7.9943    ]
+  [ -2.7388      -3.4033      11.086399  ]
+  [ -0.6092      -0.22369999  11.8533    ]
+  [  2.8589      -1.8049      11.2912    ]
+  [  1.6839001   -2.8621001    7.7337003 ]
+  [  2.182        0.85879993   6.8017    ]
+  [  4.6944003    0.6893       3.9185    ]
+  [  4.9594       1.1060001    0.08620001]
+  [  2.6587      -1.0531      -2.0487    ]
+  [  3.3342001   -1.2786      -5.8484    ]
+  [  1.1322      -2.6511      -8.728701  ]
+  [  2.415       -5.0979     -11.4748    ]
+  [  0.8621      -6.0892     -14.8528    ]
+  [  1.9657999   -9.1232     -16.9065    ]
+  [  0.87920004 -10.858001   -20.060799  ]
+  [ -0.24949999 -14.5516     -20.102701  ]
+  [ -1.9029     -15.0457     -23.7031    ]
+  [ -1.1042     -15.1754     -26.624802  ]
+  [  2.5222998  -16.6719     -26.461     ]
+  [  5.4815     -16.3914     -27.351898  ]
+  [  5.5137005  -12.6721     -26.6543    ]
+  [  4.8866     -12.0219     -22.9093    ]
+  [  5.9965      -8.897699   -20.9552    ]
+  [  5.9008      -7.4794     -17.3076    ]
+  [  6.0145      -3.8751001  -15.9133005 ]
+  [  5.3842998   -2.0788     -12.5419    ]
+  [  4.5525       1.4353     -11.079201  ]
+  [  6.6587       3.5941      -8.6014    ]
+  [  4.1918       2.651       -5.8196    ]
+  [  1.9046999    4.2578      -3.1599    ]
+  [  2.5332       4.8729       0.5562    ]
+  [ -0.3443       3.2496       2.6002    ]
+  [ -0.69200003   4.7330003    6.0632997 ]
+  [ -3.0164       2.459        8.2702    ]
+  [ -5.1839       3.6854      11.214499  ]
+  [ -4.5903       3.0472002   14.9172    ]
+  [ -7.0902996    2.29        17.6562    ]
+  [ -5.8487997    4.2033      20.7378    ]
+  [ -2.8421       6.5815      19.5027    ]
+  [ -2.2627       8.5349      16.3275    ]
+  [ -0.1782       6.1401997   14.0931    ]
+  [  1.7997       9.3097      12.958401  ]
+  [  1.3986001   12.8162      14.3565    ]
+  [  4.6244      13.886       12.3083    ]
+  [  4.7734003   12.7829       8.7218    ]
+  [  2.4007      14.0714       5.7712    ]
+  [ -0.76240003  12.655        4.1801    ]
+  [ -1.8035      13.424        0.4829    ]
+  [ -1.8677001   17.2555       0.6819    ]
+  [  1.9106001   17.7834       1.0407    ]
+  [  4.1518      16.685501    -1.9639001 ]
+  [  6.5476      13.625099    -1.6829001 ]
+  [  7.8605995   13.4934      -5.3571997 ]
+  [ 10.9552      15.679501    -6.2726    ]
+  [ 10.85        18.8695      -8.5292    ]]]...
+2024-12-12 18:56:32,902 - MDAnalysis.core.universe - INFO - The attribute(s) types, masses have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2024-12-12 18:56:32,902 - MDAnalysis.guesser.base - INFO - There is no empty types values. Guesser did not guess any new values for types attribute
+2024-12-12 18:56:32,902 - MDAnalysis.guesser.base - INFO - There is no empty masses values. Guesser did not guess any new values for masses attribute
+2024-12-12 18:56:32,908 - src.plumed.cv - INFO - No spot definition provided, using all contacts
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7f0d6d3301a0> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7f0d6d3303e0> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7f0d6d330410> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7f0d6d330440> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7f0d6d330470> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7f0d6d3304a0> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7f0d6e135eb0> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7f0d6dd6d940> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7f0d6d3304d0> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7f0d6d330350> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7f0d6d330260> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7f0d6d3301d0> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7f0d6d330140> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7f0d6d3300b0> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7f0d6d3302c0> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7f0d6d331310> to topology
+2024-12-12 18:56:32,992 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7f0d6d3319d0> to topology
+2024-12-12 18:56:32,993 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7f0d6d331eb0> to topology
+2024-12-12 18:56:32,993 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Bonds object at 0x7f0d80749580> to topology
+2024-12-12 18:56:32,993 - MDAnalysis.core.universe - DEBUG - Universe.load_new(): loading /app/scripts/241211_ReplicaImplementation/test/CD28_general_fixed.pdb...
+2024-12-12 18:56:33,001 - MDAnalysis.core.universe - INFO - The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2024-12-12 18:56:33,002 - MDAnalysis.guesser.base - INFO - There is no empty types values. Guesser did not guess any new values for types attribute
+2024-12-12 18:56:33,003 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7f0d6d742600> to topology
+2024-12-12 18:56:33,003 - MDAnalysis.core.universe - INFO - attribute masses has been guessed successfully.
+2024-12-12 18:56:33,021 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7f0d6d4c24e0> to topology
+2024-12-12 18:56:33,021 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.AltLocs object at 0x7f0d6d4c1ee0> to topology
+2024-12-12 18:56:33,021 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7f0d6d4c1df0> to topology
+2024-12-12 18:56:33,021 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.RecordTypes object at 0x7f0d6d4c1d00> to topology
+2024-12-12 18:56:33,021 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7f0d6d4c1c70> to topology
+2024-12-12 18:56:33,021 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Tempfactors object at 0x7f0d6d4c1be0> to topology
+2024-12-12 18:56:33,021 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Occupancies object at 0x7f0d6d4c1ac0> to topology
+2024-12-12 18:56:33,021 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7f0d6d336120> to topology
+2024-12-12 18:56:33,021 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7f0d6d4c1a30> to topology
+2024-12-12 18:56:33,021 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7f0d6d4c2060> to topology
+2024-12-12 18:56:33,021 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7f0d6d4c2210> to topology
+2024-12-12 18:56:33,021 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7f0d6d4c2420> to topology
+2024-12-12 18:56:33,021 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.ICodes object at 0x7f0d6d4c2690> to topology
+2024-12-12 18:56:33,022 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7f0d6d4c28a0> to topology
+2024-12-12 18:56:33,022 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7f0d6d4c2a80> to topology
+2024-12-12 18:56:33,022 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7f0d6d4c3110> to topology
+2024-12-12 18:56:33,022 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7f0d6d4c3320> to topology
+2024-12-12 18:56:33,022 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7f0d6d4c3590> to topology
+2024-12-12 18:56:33,022 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Bonds object at 0x7f0d6d4bbbc0> to topology
+2024-12-12 18:56:33,022 - MDAnalysis.core.universe - DEBUG - Universe.load_new(): loading /app/scripts/241211_ReplicaImplementation/test/CD28_general_fixed.pdb...
+2024-12-12 18:56:33,031 - MDAnalysis.core.universe - INFO - The attribute(s) types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2024-12-12 18:56:33,031 - MDAnalysis.guesser.base - INFO - There is no empty types values. Guesser did not guess any new values for types attribute
+2024-12-12 18:56:33,032 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7f0d6dd6d940> to topology
+2024-12-12 18:56:33,032 - MDAnalysis.core.universe - INFO - attribute masses has been guessed successfully.
+2024-12-12 18:56:33,033 - root - INFO - Running replica 0 of 1 replicas
+2024-12-12 18:56:36,328 - root - INFO - Assigning temperatures: None
+2024-12-12 18:56:45,841 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomids object at 0x7f0d67cc0620> to topology
+2024-12-12 18:56:45,841 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomnames object at 0x7f0d67cc06e0> to topology
+2024-12-12 18:56:45,841 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Bonds object at 0x7f0d67cc06b0> to topology
+2024-12-12 18:56:45,841 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.ChainIDs object at 0x7f0d67cc0770> to topology
+2024-12-12 18:56:45,841 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resids object at 0x7f0d67cc03b0> to topology
+2024-12-12 18:56:45,841 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnums object at 0x7f0d67cc02f0> to topology
+2024-12-12 18:56:45,841 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resnames object at 0x7f0d67cc0260> to topology
+2024-12-12 18:56:45,841 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Segids object at 0x7f0d67cc01a0> to topology
+2024-12-12 18:56:45,841 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Elements object at 0x7f0d67cc01d0> to topology
+2024-12-12 18:56:45,841 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomtypes object at 0x7f0d67cc00e0> to topology
+2024-12-12 18:56:45,841 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Masses object at 0x7f0d67cc0170> to topology
+2024-12-12 18:56:45,841 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Atomindices object at 0x7f0d67cc16a0> to topology
+2024-12-12 18:56:45,841 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Resindices object at 0x7f0d67cc1880> to topology
+2024-12-12 18:56:45,841 - MDAnalysis.core.universe - DEBUG - _process_attr: Adding <MDAnalysis.core.topologyattrs.Segindices object at 0x7f0d67cc24e0> to topology
+2024-12-12 18:56:45,842 - MDAnalysis.core.universe - DEBUG - Universe.load_new(): loading <openmm.app.pdbxfile.PDBxFile object at 0x7f0d67ca0620>...
+2024-12-12 18:56:46,135 - MDAnalysis.core.universe - INFO - The attribute(s) types, masses have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2024-12-12 18:56:46,138 - MDAnalysis.guesser.base - INFO - There is no empty types values. Guesser did not guess any new values for types attribute
+2024-12-12 18:56:46,139 - MDAnalysis.guesser.base - INFO - There is no empty masses values. Guesser did not guess any new values for masses attribute
+2024-12-12 18:56:46,139 - openmmtools.multistate.multistatereporter - WARNING - Warning: The openmmtools.multistate API is experimental and may change in future releases
+2024-12-12 18:56:46,140 - openmmtools.multistate.multistatereporter - DEBUG - Initial checkpoint file automatically chosen as results/replica_exchange_checkpoint.nc
+2024-12-12 18:56:47,461 - openmmtools.multistate.multistatesampler - WARNING - Warning: The openmmtools.multistate API is experimental and may change in future releases
+2024-12-12 18:56:47,528 - openmmtools.multistate.multistatesampler - DEBUG - CUDA devices available: ('uuid, name, compute_mode', 'GPU-b86f87f6-289f-aece-693a-a2cc73a2e7ae, Quadro P4000, Default', 'GPU-e93403d9-5352-b9ab-6364-4ed425ae3d37, Quadro P4000, Default')
+2024-12-12 18:56:47,529 - root - INFO - Assigning temperatures: [Quantity(value=300.0, unit=kelvin), Quantity(value=369.07116490445713, unit=kelvin), Quantity(value=465.4677408602878, unit=kelvin), Quantity(value=600.0, unit=kelvin)]
+2024-12-12 18:56:51,731 - mpiplus.mpiplus - DEBUG - Cannot find MPI environment. MPI disabled.
+2024-12-12 18:56:51,731 - mpiplus.mpiplus - DEBUG - Single node: executing <bound method MultiStateReporter.storage_exists of <openmmtools.multistate.multistatereporter.MultiStateReporter object at 0x7f0d67c913a0>>
+2024-12-12 18:56:51,737 - mpiplus.mpiplus - DEBUG - Single node: executing <function ReplicaExchangeSampler._display_citations at 0x7f0d96f0f560>
+2024-12-12 18:56:51,737 - mpiplus.mpiplus - DEBUG - Single node: executing <function MultiStateSampler._display_citations at 0x7f0d9e9453a0>
+Please cite the following:
+
+        Friedrichs MS, Eastman P, Vaidyanathan V, Houston M, LeGrand S, Beberg AL, Ensign DL, Bruns CM, and Pande VS. Accelerating molecular dynamic simulations on graphics processing unit. J. Comput. Chem. 30:864, 2009. DOI: 10.1002/jcc.21209
+        Eastman P and Pande VS. OpenMM: A hardware-independent framework for molecular simulations. Comput. Sci. Eng. 12:34, 2010. DOI: 10.1109/MCSE.2010.27
+        Eastman P and Pande VS. Efficient nonbonded interactions for molecular dynamics on a graphics processing unit. J. Comput. Chem. 31:1268, 2010. DOI: 10.1002/jcc.21413
+        Eastman P and Pande VS. Constant constraint matrix approximation: A robust, parallelizable constraint method for molecular simulations. J. Chem. Theor. Comput. 6:434, 2010. DOI: 10.1021/ct900463w
+        Chodera JD and Shirts MR. Replica exchange and expanded ensemble simulations as Gibbs multistate: Simple improvements for enhanced mixing. J. Chem. Phys., 135:194110, 2011. DOI:10.1063/1.3660669
+        
+2024-12-12 18:56:51,737 - mpiplus.mpiplus - DEBUG - Single node: executing <function MultiStateSampler._initialize_reporter at 0x7f0d9e9456c0>
+2024-12-12 18:56:52,484 - openmmtools.multistate.multistatereporter - DEBUG - Serialized state thermodynamic_states/0 is  717317B | 700.505KB | 0.684MB
+2024-12-12 18:56:52,587 - openmmtools.utils.utils - DEBUG - Storing thermodynamic states took    0.839s
+2024-12-12 18:56:52,588 - openmmtools.multistate.multistatesampler - DEBUG - Storing general ReplicaExchange options...
+2024-12-12 18:56:52,592 - mpiplus.mpiplus - DEBUG - Single node: executing <function MultiStateSampler._report_iteration at 0x7f0d9e945800>
+2024-12-12 18:56:52,592 - mpiplus.mpiplus - DEBUG - Single node: executing <function MultiStateSampler._report_iteration_items at 0x7f0d9e945b20>
+2024-12-12 18:56:52,613 - openmmtools.utils.utils - DEBUG - Storing sampler states took    0.022s
+2024-12-12 18:56:52,729 - openmmtools.utils.utils - DEBUG - Writing iteration information to storage took    0.137s
+2024-12-12 18:56:52,729 - mpiplus.mpiplus - DEBUG - Running _compute_replica_energies serially.
+2024-12-12 18:56:53,479 - openmmtools.utils.utils - DEBUG - Computing energy matrix took    0.749s
+2024-12-12 18:56:53,479 - mpiplus.mpiplus - DEBUG - Single node: executing <bound method MultiStateReporter.write_energies of <openmmtools.multistate.multistatereporter.MultiStateReporter object at 0x7f0d67c913a0>>
+2024-12-12 18:56:53,480 - openmmtools.multistate.multistatesampler - INFO - ********************************************************************************
+2024-12-12 18:56:53,480 - openmmtools.multistate.multistatesampler - INFO - Iteration 1/1000
+2024-12-12 18:56:53,480 - openmmtools.multistate.multistatesampler - INFO - ********************************************************************************
+2024-12-12 18:56:53,480 - mpiplus.mpiplus - DEBUG - Single node: executing <function ReplicaExchangeSampler._mix_replicas at 0x7f0d96f0ede0>
+2024-12-12 18:56:53,480 - openmmtools.multistate.replicaexchange - DEBUG - Mixing replicas...
+2024-12-12 18:56:53,867 - numba.core.byteflow - DEBUG - bytecode dump:
+>          0	NOP(arg=None, lineno=294)
+           2	RESUME(arg=0, lineno=294)
+           4	LOAD_GLOBAL(arg=1, lineno=321)
+          14	LOAD_FAST(arg=0, lineno=321)
+          16	CALL(arg=1, lineno=321)
+          24	GET_ITER(arg=None, lineno=321)
+>         26	FOR_ITER(arg=242, lineno=321)
+          30	STORE_FAST(arg=6, lineno=321)
+          32	LOAD_GLOBAL(arg=2, lineno=324)
+          42	LOAD_ATTR(arg=4, lineno=324)
+          62	LOAD_ATTR(arg=7, lineno=324)
+          82	LOAD_FAST(arg=1, lineno=324)
+          84	CALL(arg=1, lineno=324)
+          92	STORE_FAST(arg=7, lineno=324)
+          94	LOAD_GLOBAL(arg=2, lineno=325)
+         104	LOAD_ATTR(arg=4, lineno=325)
+         124	LOAD_ATTR(arg=7, lineno=325)
+         144	LOAD_FAST(arg=1, lineno=325)
+         146	CALL(arg=1, lineno=325)
+         154	STORE_FAST(arg=8, lineno=325)
+         156	LOAD_FAST(arg=2, lineno=328)
+         158	LOAD_FAST(arg=7, lineno=328)
+         160	BINARY_SUBSCR(arg=None, lineno=328)
+         164	STORE_FAST(arg=9, lineno=328)
+         166	LOAD_FAST(arg=2, lineno=329)
+         168	LOAD_FAST(arg=8, lineno=329)
+         170	BINARY_SUBSCR(arg=None, lineno=329)
+         174	STORE_FAST(arg=10, lineno=329)
+         176	LOAD_FAST(arg=3, lineno=332)
+         178	LOAD_FAST(arg=7, lineno=332)
+         180	LOAD_FAST(arg=10, lineno=332)
+         182	BUILD_TUPLE(arg=2, lineno=332)
+         184	BINARY_SUBSCR(arg=None, lineno=332)
+         188	STORE_FAST(arg=11, lineno=332)
+         190	LOAD_FAST(arg=3, lineno=333)
+         192	LOAD_FAST(arg=8, lineno=333)
+         194	LOAD_FAST(arg=9, lineno=333)
+         196	BUILD_TUPLE(arg=2, lineno=333)
+         198	BINARY_SUBSCR(arg=None, lineno=333)
+         202	STORE_FAST(arg=12, lineno=333)
+         204	LOAD_FAST(arg=3, lineno=334)
+         206	LOAD_FAST(arg=7, lineno=334)
+         208	LOAD_FAST(arg=9, lineno=334)
+         210	BUILD_TUPLE(arg=2, lineno=334)
+         212	BINARY_SUBSCR(arg=None, lineno=334)
+         216	STORE_FAST(arg=13, lineno=334)
+         218	LOAD_FAST(arg=3, lineno=335)
+         220	LOAD_FAST(arg=8, lineno=335)
+         222	LOAD_FAST(arg=10, lineno=335)
+         224	BUILD_TUPLE(arg=2, lineno=335)
+         226	BINARY_SUBSCR(arg=None, lineno=335)
+         230	STORE_FAST(arg=14, lineno=335)
+         232	LOAD_FAST(arg=11, lineno=336)
+         234	LOAD_FAST(arg=12, lineno=336)
+         236	BINARY_OP(arg=0, lineno=336)
+         240	UNARY_NEGATIVE(arg=None, lineno=336)
+         242	LOAD_FAST(arg=13, lineno=336)
+         244	BINARY_OP(arg=0, lineno=336)
+         248	LOAD_FAST(arg=14, lineno=336)
+         250	BINARY_OP(arg=0, lineno=336)
+         254	STORE_FAST(arg=15, lineno=336)
+         256	LOAD_FAST(arg=5, lineno=339)
+         258	LOAD_FAST(arg=9, lineno=339)
+         260	LOAD_FAST(arg=10, lineno=339)
+         262	BUILD_TUPLE(arg=2, lineno=339)
+         264	COPY(arg=2, lineno=339)
+         266	COPY(arg=2, lineno=339)
+         268	BINARY_SUBSCR(arg=None, lineno=339)
+         272	LOAD_CONST(arg=1, lineno=339)
+         274	BINARY_OP(arg=13, lineno=339)
+         278	SWAP(arg=3, lineno=339)
+         280	SWAP(arg=2, lineno=339)
+         282	STORE_SUBSCR(arg=None, lineno=339)
+         286	LOAD_FAST(arg=5, lineno=340)
+         288	LOAD_FAST(arg=10, lineno=340)
+         290	LOAD_FAST(arg=9, lineno=340)
+         292	BUILD_TUPLE(arg=2, lineno=340)
+         294	COPY(arg=2, lineno=340)
+         296	COPY(arg=2, lineno=340)
+         298	BINARY_SUBSCR(arg=None, lineno=340)
+         302	LOAD_CONST(arg=1, lineno=340)
+         304	BINARY_OP(arg=13, lineno=340)
+         308	SWAP(arg=3, lineno=340)
+         310	SWAP(arg=2, lineno=340)
+         312	STORE_SUBSCR(arg=None, lineno=340)
+         316	LOAD_FAST(arg=15, lineno=343)
+         318	LOAD_CONST(arg=2, lineno=343)
+         320	COMPARE_OP(arg=92, lineno=343)
+         324	POP_JUMP_IF_TRUE(arg=53, lineno=343)
+         326	LOAD_GLOBAL(arg=2, lineno=343)
+         336	LOAD_ATTR(arg=4, lineno=343)
+         356	LOAD_ATTR(arg=9, lineno=343)
+         376	CALL(arg=0, lineno=343)
+         384	LOAD_GLOBAL(arg=3, lineno=343)
+         394	LOAD_ATTR(arg=10, lineno=343)
+         414	LOAD_FAST(arg=15, lineno=343)
+         416	CALL(arg=1, lineno=343)
+         424	COMPARE_OP(arg=2, lineno=343)
+         428	POP_JUMP_IF_TRUE(arg=1, lineno=343)
+         430	JUMP_BACKWARD(arg=203, lineno=343)
+>        432	LOAD_FAST(arg=10, lineno=345)
+         434	LOAD_FAST(arg=2, lineno=345)
+         436	LOAD_FAST(arg=7, lineno=345)
+         438	STORE_SUBSCR(arg=None, lineno=345)
+         442	LOAD_FAST(arg=9, lineno=346)
+         444	LOAD_FAST(arg=2, lineno=346)
+         446	LOAD_FAST(arg=8, lineno=346)
+         448	STORE_SUBSCR(arg=None, lineno=346)
+         452	LOAD_FAST(arg=4, lineno=348)
+         454	LOAD_FAST(arg=9, lineno=348)
+         456	LOAD_FAST(arg=10, lineno=348)
+         458	BUILD_TUPLE(arg=2, lineno=348)
+         460	COPY(arg=2, lineno=348)
+         462	COPY(arg=2, lineno=348)
+         464	BINARY_SUBSCR(arg=None, lineno=348)
+         468	LOAD_CONST(arg=1, lineno=348)
+         470	BINARY_OP(arg=13, lineno=348)
+         474	SWAP(arg=3, lineno=348)
+         476	SWAP(arg=2, lineno=348)
+         478	STORE_SUBSCR(arg=None, lineno=348)
+         482	LOAD_FAST(arg=4, lineno=349)
+         484	LOAD_FAST(arg=10, lineno=349)
+         486	LOAD_FAST(arg=9, lineno=349)
+         488	BUILD_TUPLE(arg=2, lineno=349)
+         490	COPY(arg=2, lineno=349)
+         492	COPY(arg=2, lineno=349)
+         494	BINARY_SUBSCR(arg=None, lineno=349)
+         498	LOAD_CONST(arg=1, lineno=349)
+         500	BINARY_OP(arg=13, lineno=349)
+         504	SWAP(arg=3, lineno=349)
+         506	SWAP(arg=2, lineno=349)
+         508	STORE_SUBSCR(arg=None, lineno=349)
+         512	JUMP_BACKWARD(arg=244, lineno=349)
+>        514	END_FOR(arg=None, lineno=321)
+         516	RETURN_CONST(arg=3, lineno=321)
+2024-12-12 18:56:53,867 - numba.core.byteflow - DEBUG - pending: deque([State(pc_initial=0 nstack_initial=0)])
+2024-12-12 18:56:53,867 - numba.core.byteflow - DEBUG - stack: []
+2024-12-12 18:56:53,867 - numba.core.byteflow - DEBUG - state.pc_initial: State(pc_initial=0 nstack_initial=0)
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - dispatch pc=0, inst=NOP(arg=None, lineno=294)
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - dispatch pc=2, inst=RESUME(arg=0, lineno=294)
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - dispatch pc=4, inst=LOAD_GLOBAL(arg=1, lineno=321)
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - dispatch pc=14, inst=LOAD_FAST(arg=0, lineno=321)
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - stack ['$null$4.1', '$4load_global.0']
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - dispatch pc=16, inst=CALL(arg=1, lineno=321)
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - stack ['$null$4.1', '$4load_global.0', '$nswap_attempts14.2']
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - dispatch pc=24, inst=GET_ITER(arg=None, lineno=321)
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - stack ['$16call.3']
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - end state. edges=[Edge(pc=26, stack=('$24get_iter.4',), blockstack=(), npush=0)]
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - pending: deque([State(pc_initial=26 nstack_initial=1)])
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - stack: ['$phi26.0']
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - state.pc_initial: State(pc_initial=26 nstack_initial=1)
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - dispatch pc=26, inst=FOR_ITER(arg=242, lineno=321)
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - stack ['$phi26.0']
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - end state. edges=[Edge(pc=514, stack=('$phi26.0', '$26for_iter.2'), blockstack=(), npush=0), Edge(pc=30, stack=('$phi26.0', '$26for_iter.2'), blockstack=(), npush=0)]
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - pending: deque([State(pc_initial=514 nstack_initial=2), State(pc_initial=30 nstack_initial=2)])
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - stack: ['$phi514.0', '$phi514.1']
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - state.pc_initial: State(pc_initial=514 nstack_initial=2)
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - dispatch pc=514, inst=END_FOR(arg=None, lineno=321)
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - stack ['$phi514.0', '$phi514.1']
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - dispatch pc=516, inst=RETURN_CONST(arg=3, lineno=321)
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - end state. edges=[]
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - pending: deque([State(pc_initial=30 nstack_initial=2)])
+2024-12-12 18:56:53,868 - numba.core.byteflow - DEBUG - stack: ['$phi30.0', '$phi30.1']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - state.pc_initial: State(pc_initial=30 nstack_initial=2)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=30, inst=STORE_FAST(arg=6, lineno=321)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$phi30.1']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=32, inst=LOAD_GLOBAL(arg=2, lineno=324)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=42, inst=LOAD_ATTR(arg=4, lineno=324)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$32load_global.2']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=62, inst=LOAD_ATTR(arg=7, lineno=324)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$42load_attr.3']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=82, inst=LOAD_FAST(arg=1, lineno=324)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$null$62.4', '$62load_attr.5']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=84, inst=CALL(arg=1, lineno=324)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$null$62.4', '$62load_attr.5', '$n_replicas82.6']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=92, inst=STORE_FAST(arg=7, lineno=324)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$84call.7']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=94, inst=LOAD_GLOBAL(arg=2, lineno=325)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=104, inst=LOAD_ATTR(arg=4, lineno=325)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$94load_global.8']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=124, inst=LOAD_ATTR(arg=7, lineno=325)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$104load_attr.9']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=144, inst=LOAD_FAST(arg=1, lineno=325)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$null$124.10', '$124load_attr.11']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=146, inst=CALL(arg=1, lineno=325)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$null$124.10', '$124load_attr.11', '$n_replicas144.12']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=154, inst=STORE_FAST(arg=8, lineno=325)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$146call.13']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=156, inst=LOAD_FAST(arg=2, lineno=328)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=158, inst=LOAD_FAST(arg=7, lineno=328)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_replica_thermodynamic_states156.14']
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - dispatch pc=160, inst=BINARY_SUBSCR(arg=None, lineno=328)
+2024-12-12 18:56:53,869 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_replica_thermodynamic_states156.14', '$replica_i158.15']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=164, inst=STORE_FAST(arg=9, lineno=328)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$160binary_subscr.16']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=166, inst=LOAD_FAST(arg=2, lineno=329)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=168, inst=LOAD_FAST(arg=8, lineno=329)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_replica_thermodynamic_states166.17']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=170, inst=BINARY_SUBSCR(arg=None, lineno=329)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_replica_thermodynamic_states166.17', '$replica_j168.18']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=174, inst=STORE_FAST(arg=10, lineno=329)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$170binary_subscr.19']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=176, inst=LOAD_FAST(arg=3, lineno=332)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=178, inst=LOAD_FAST(arg=7, lineno=332)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states176.20']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=180, inst=LOAD_FAST(arg=10, lineno=332)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states176.20', '$replica_i178.21']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=182, inst=BUILD_TUPLE(arg=2, lineno=332)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states176.20', '$replica_i178.21', '$thermodynamic_state_j180.22']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=184, inst=BINARY_SUBSCR(arg=None, lineno=332)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states176.20', '$182build_tuple.23']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=188, inst=STORE_FAST(arg=11, lineno=332)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$184binary_subscr.24']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=190, inst=LOAD_FAST(arg=3, lineno=333)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=192, inst=LOAD_FAST(arg=8, lineno=333)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states190.25']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=194, inst=LOAD_FAST(arg=9, lineno=333)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states190.25', '$replica_j192.26']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=196, inst=BUILD_TUPLE(arg=2, lineno=333)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states190.25', '$replica_j192.26', '$thermodynamic_state_i194.27']
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - dispatch pc=198, inst=BINARY_SUBSCR(arg=None, lineno=333)
+2024-12-12 18:56:53,870 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states190.25', '$196build_tuple.28']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=202, inst=STORE_FAST(arg=12, lineno=333)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$198binary_subscr.29']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=204, inst=LOAD_FAST(arg=3, lineno=334)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=206, inst=LOAD_FAST(arg=7, lineno=334)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states204.30']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=208, inst=LOAD_FAST(arg=9, lineno=334)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states204.30', '$replica_i206.31']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=210, inst=BUILD_TUPLE(arg=2, lineno=334)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states204.30', '$replica_i206.31', '$thermodynamic_state_i208.32']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=212, inst=BINARY_SUBSCR(arg=None, lineno=334)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states204.30', '$210build_tuple.33']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=216, inst=STORE_FAST(arg=13, lineno=334)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$212binary_subscr.34']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=218, inst=LOAD_FAST(arg=3, lineno=335)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=220, inst=LOAD_FAST(arg=8, lineno=335)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states218.35']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=222, inst=LOAD_FAST(arg=10, lineno=335)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states218.35', '$replica_j220.36']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=224, inst=BUILD_TUPLE(arg=2, lineno=335)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states218.35', '$replica_j220.36', '$thermodynamic_state_j222.37']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=226, inst=BINARY_SUBSCR(arg=None, lineno=335)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_energy_thermodynamic_states218.35', '$224build_tuple.38']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=230, inst=STORE_FAST(arg=14, lineno=335)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$226binary_subscr.39']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=232, inst=LOAD_FAST(arg=11, lineno=336)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=234, inst=LOAD_FAST(arg=12, lineno=336)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$energy_ij232.40']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=236, inst=BINARY_OP(arg=0, lineno=336)
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$energy_ij232.40', '$energy_ji234.41']
+2024-12-12 18:56:53,871 - numba.core.byteflow - DEBUG - dispatch pc=240, inst=UNARY_NEGATIVE(arg=None, lineno=336)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$binop_add236.42']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=242, inst=LOAD_FAST(arg=13, lineno=336)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$240unary_negative.43']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=244, inst=BINARY_OP(arg=0, lineno=336)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$240unary_negative.43', '$energy_ii242.44']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=248, inst=LOAD_FAST(arg=14, lineno=336)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$binop_add244.45']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=250, inst=BINARY_OP(arg=0, lineno=336)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$binop_add244.45', '$energy_jj248.46']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=254, inst=STORE_FAST(arg=15, lineno=336)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$binop_add250.47']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=256, inst=LOAD_FAST(arg=5, lineno=339)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=258, inst=LOAD_FAST(arg=9, lineno=339)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix256.48']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=260, inst=LOAD_FAST(arg=10, lineno=339)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix256.48', '$thermodynamic_state_i258.49']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=262, inst=BUILD_TUPLE(arg=2, lineno=339)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix256.48', '$thermodynamic_state_i258.49', '$thermodynamic_state_j260.50']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=264, inst=COPY(arg=2, lineno=339)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix256.48', '$262build_tuple.51']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=266, inst=COPY(arg=2, lineno=339)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix256.48', '$262build_tuple.51', '$_n_proposed_matrix256.48']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=268, inst=BINARY_SUBSCR(arg=None, lineno=339)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix256.48', '$262build_tuple.51', '$_n_proposed_matrix256.48', '$262build_tuple.51']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=272, inst=LOAD_CONST(arg=1, lineno=339)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix256.48', '$262build_tuple.51', '$268binary_subscr.52']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=274, inst=BINARY_OP(arg=13, lineno=339)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix256.48', '$262build_tuple.51', '$268binary_subscr.52', '$const272.53']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=278, inst=SWAP(arg=3, lineno=339)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix256.48', '$262build_tuple.51', '$binop_iadd274.54']
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - dispatch pc=280, inst=SWAP(arg=2, lineno=339)
+2024-12-12 18:56:53,872 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$binop_iadd274.54', '$262build_tuple.51', '$_n_proposed_matrix256.48']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=282, inst=STORE_SUBSCR(arg=None, lineno=339)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$binop_iadd274.54', '$_n_proposed_matrix256.48', '$262build_tuple.51']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=286, inst=LOAD_FAST(arg=5, lineno=340)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=288, inst=LOAD_FAST(arg=10, lineno=340)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix286.55']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=290, inst=LOAD_FAST(arg=9, lineno=340)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix286.55', '$thermodynamic_state_j288.56']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=292, inst=BUILD_TUPLE(arg=2, lineno=340)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix286.55', '$thermodynamic_state_j288.56', '$thermodynamic_state_i290.57']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=294, inst=COPY(arg=2, lineno=340)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix286.55', '$292build_tuple.58']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=296, inst=COPY(arg=2, lineno=340)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix286.55', '$292build_tuple.58', '$_n_proposed_matrix286.55']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=298, inst=BINARY_SUBSCR(arg=None, lineno=340)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix286.55', '$292build_tuple.58', '$_n_proposed_matrix286.55', '$292build_tuple.58']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=302, inst=LOAD_CONST(arg=1, lineno=340)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix286.55', '$292build_tuple.58', '$298binary_subscr.59']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=304, inst=BINARY_OP(arg=13, lineno=340)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix286.55', '$292build_tuple.58', '$298binary_subscr.59', '$const302.60']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=308, inst=SWAP(arg=3, lineno=340)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$_n_proposed_matrix286.55', '$292build_tuple.58', '$binop_iadd304.61']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=310, inst=SWAP(arg=2, lineno=340)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$binop_iadd304.61', '$292build_tuple.58', '$_n_proposed_matrix286.55']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=312, inst=STORE_SUBSCR(arg=None, lineno=340)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$binop_iadd304.61', '$_n_proposed_matrix286.55', '$292build_tuple.58']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=316, inst=LOAD_FAST(arg=15, lineno=343)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=318, inst=LOAD_CONST(arg=2, lineno=343)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$log_p_accept316.62']
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - dispatch pc=320, inst=COMPARE_OP(arg=92, lineno=343)
+2024-12-12 18:56:53,873 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$log_p_accept316.62', '$const318.63']
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - dispatch pc=324, inst=POP_JUMP_IF_TRUE(arg=53, lineno=343)
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - stack ['$phi30.0', '$320compare_op.64']
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - end state. edges=[Edge(pc=326, stack=('$phi30.0',), blockstack=(), npush=0), Edge(pc=432, stack=('$phi30.0',), blockstack=(), npush=0)]
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - pending: deque([State(pc_initial=326 nstack_initial=1), State(pc_initial=432 nstack_initial=1)])
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - stack: ['$phi326.0']
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - state.pc_initial: State(pc_initial=326 nstack_initial=1)
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - dispatch pc=326, inst=LOAD_GLOBAL(arg=2, lineno=343)
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - stack ['$phi326.0']
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - dispatch pc=336, inst=LOAD_ATTR(arg=4, lineno=343)
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - stack ['$phi326.0', '$326load_global.1']
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - dispatch pc=356, inst=LOAD_ATTR(arg=9, lineno=343)
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - stack ['$phi326.0', '$336load_attr.2']
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - dispatch pc=376, inst=CALL(arg=0, lineno=343)
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - stack ['$phi326.0', '$null$356.3', '$356load_attr.4']
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - dispatch pc=384, inst=LOAD_GLOBAL(arg=3, lineno=343)
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - stack ['$phi326.0', '$376call.5']
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - dispatch pc=394, inst=LOAD_ATTR(arg=10, lineno=343)
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - stack ['$phi326.0', '$376call.5', '$null$384.7', '$384load_global.6']
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - dispatch pc=414, inst=LOAD_FAST(arg=15, lineno=343)
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - stack ['$phi326.0', '$376call.5', '$null$384.7', '$394load_attr.8']
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - dispatch pc=416, inst=CALL(arg=1, lineno=343)
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - stack ['$phi326.0', '$376call.5', '$null$384.7', '$394load_attr.8', '$log_p_accept414.9']
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - dispatch pc=424, inst=COMPARE_OP(arg=2, lineno=343)
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - stack ['$phi326.0', '$376call.5', '$416call.10']
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - dispatch pc=428, inst=POP_JUMP_IF_TRUE(arg=1, lineno=343)
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - stack ['$phi326.0', '$424compare_op.11']
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - end state. edges=[Edge(pc=430, stack=('$phi326.0',), blockstack=(), npush=0), Edge(pc=432, stack=('$phi326.0',), blockstack=(), npush=0)]
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - pending: deque([State(pc_initial=432 nstack_initial=1), State(pc_initial=430 nstack_initial=1), State(pc_initial=432 nstack_initial=1)])
+2024-12-12 18:56:53,874 - numba.core.byteflow - DEBUG - stack: ['$phi432.0']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - state.pc_initial: State(pc_initial=432 nstack_initial=1)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=432, inst=LOAD_FAST(arg=10, lineno=345)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=434, inst=LOAD_FAST(arg=2, lineno=345)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$thermodynamic_state_j432.1']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=436, inst=LOAD_FAST(arg=7, lineno=345)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$thermodynamic_state_j432.1', '$_replica_thermodynamic_states434.2']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=438, inst=STORE_SUBSCR(arg=None, lineno=345)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$thermodynamic_state_j432.1', '$_replica_thermodynamic_states434.2', '$replica_i436.3']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=442, inst=LOAD_FAST(arg=9, lineno=346)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=444, inst=LOAD_FAST(arg=2, lineno=346)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$thermodynamic_state_i442.4']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=446, inst=LOAD_FAST(arg=8, lineno=346)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$thermodynamic_state_i442.4', '$_replica_thermodynamic_states444.5']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=448, inst=STORE_SUBSCR(arg=None, lineno=346)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$thermodynamic_state_i442.4', '$_replica_thermodynamic_states444.5', '$replica_j446.6']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=452, inst=LOAD_FAST(arg=4, lineno=348)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=454, inst=LOAD_FAST(arg=9, lineno=348)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix452.7']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=456, inst=LOAD_FAST(arg=10, lineno=348)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix452.7', '$thermodynamic_state_i454.8']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=458, inst=BUILD_TUPLE(arg=2, lineno=348)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix452.7', '$thermodynamic_state_i454.8', '$thermodynamic_state_j456.9']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=460, inst=COPY(arg=2, lineno=348)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix452.7', '$458build_tuple.10']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=462, inst=COPY(arg=2, lineno=348)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix452.7', '$458build_tuple.10', '$_n_accepted_matrix452.7']
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - dispatch pc=464, inst=BINARY_SUBSCR(arg=None, lineno=348)
+2024-12-12 18:56:53,875 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix452.7', '$458build_tuple.10', '$_n_accepted_matrix452.7', '$458build_tuple.10']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=468, inst=LOAD_CONST(arg=1, lineno=348)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix452.7', '$458build_tuple.10', '$464binary_subscr.11']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=470, inst=BINARY_OP(arg=13, lineno=348)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix452.7', '$458build_tuple.10', '$464binary_subscr.11', '$const468.12']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=474, inst=SWAP(arg=3, lineno=348)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix452.7', '$458build_tuple.10', '$binop_iadd470.13']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=476, inst=SWAP(arg=2, lineno=348)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$binop_iadd470.13', '$458build_tuple.10', '$_n_accepted_matrix452.7']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=478, inst=STORE_SUBSCR(arg=None, lineno=348)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$binop_iadd470.13', '$_n_accepted_matrix452.7', '$458build_tuple.10']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=482, inst=LOAD_FAST(arg=4, lineno=349)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=484, inst=LOAD_FAST(arg=10, lineno=349)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix482.14']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=486, inst=LOAD_FAST(arg=9, lineno=349)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix482.14', '$thermodynamic_state_j484.15']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=488, inst=BUILD_TUPLE(arg=2, lineno=349)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix482.14', '$thermodynamic_state_j484.15', '$thermodynamic_state_i486.16']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=490, inst=COPY(arg=2, lineno=349)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix482.14', '$488build_tuple.17']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=492, inst=COPY(arg=2, lineno=349)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix482.14', '$488build_tuple.17', '$_n_accepted_matrix482.14']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=494, inst=BINARY_SUBSCR(arg=None, lineno=349)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix482.14', '$488build_tuple.17', '$_n_accepted_matrix482.14', '$488build_tuple.17']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=498, inst=LOAD_CONST(arg=1, lineno=349)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix482.14', '$488build_tuple.17', '$494binary_subscr.18']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=500, inst=BINARY_OP(arg=13, lineno=349)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix482.14', '$488build_tuple.17', '$494binary_subscr.18', '$const498.19']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=504, inst=SWAP(arg=3, lineno=349)
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$_n_accepted_matrix482.14', '$488build_tuple.17', '$binop_iadd500.20']
+2024-12-12 18:56:53,876 - numba.core.byteflow - DEBUG - dispatch pc=506, inst=SWAP(arg=2, lineno=349)
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$binop_iadd500.20', '$488build_tuple.17', '$_n_accepted_matrix482.14']
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - dispatch pc=508, inst=STORE_SUBSCR(arg=None, lineno=349)
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - stack ['$phi432.0', '$binop_iadd500.20', '$_n_accepted_matrix482.14', '$488build_tuple.17']
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - dispatch pc=512, inst=JUMP_BACKWARD(arg=244, lineno=349)
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - stack ['$phi432.0']
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - end state. edges=[Edge(pc=26, stack=('$phi432.0',), blockstack=(), npush=0)]
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - pending: deque([State(pc_initial=430 nstack_initial=1), State(pc_initial=432 nstack_initial=1), State(pc_initial=26 nstack_initial=1)])
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - stack: ['$phi430.0']
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - state.pc_initial: State(pc_initial=430 nstack_initial=1)
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - dispatch pc=430, inst=JUMP_BACKWARD(arg=203, lineno=343)
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - stack ['$phi430.0']
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - end state. edges=[Edge(pc=26, stack=('$phi430.0',), blockstack=(), npush=0)]
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - pending: deque([State(pc_initial=432 nstack_initial=1), State(pc_initial=26 nstack_initial=1), State(pc_initial=26 nstack_initial=1)])
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - pending: deque([State(pc_initial=26 nstack_initial=1), State(pc_initial=26 nstack_initial=1)])
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - pending: deque([State(pc_initial=26 nstack_initial=1)])
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - -------------------------Prune PHIs-------------------------
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - Used_phis: defaultdict(<class 'set'>,
+            {State(pc_initial=0 nstack_initial=0): set(),
+             State(pc_initial=26 nstack_initial=1): {'$phi26.0'},
+             State(pc_initial=30 nstack_initial=2): {'$phi30.1'},
+             State(pc_initial=326 nstack_initial=1): set(),
+             State(pc_initial=430 nstack_initial=1): set(),
+             State(pc_initial=432 nstack_initial=1): set(),
+             State(pc_initial=514 nstack_initial=2): set()})
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - defmap: {'$phi26.0': State(pc_initial=0 nstack_initial=0),
+ '$phi30.1': State(pc_initial=26 nstack_initial=1),
+ '$phi514.1': State(pc_initial=26 nstack_initial=1)}
+2024-12-12 18:56:53,877 - numba.core.byteflow - DEBUG - phismap: defaultdict(<class 'set'>,
+            {'$phi26.0': {('$24get_iter.4',
+                           State(pc_initial=0 nstack_initial=0)),
+                          ('$phi430.0', State(pc_initial=430 nstack_initial=1)),
+                          ('$phi432.0',
+                           State(pc_initial=432 nstack_initial=1))},
+             '$phi30.0': {('$phi26.0', State(pc_initial=26 nstack_initial=1))},
+             '$phi30.1': {('$26for_iter.2',
+                           State(pc_initial=26 nstack_initial=1))},
+             '$phi326.0': {('$phi30.0', State(pc_initial=30 nstack_initial=2))},
+             '$phi430.0': {('$phi326.0',
+                            State(pc_initial=326 nstack_initial=1))},
+             '$phi432.0': {('$phi30.0', State(pc_initial=30 nstack_initial=2)),
+                           ('$phi326.0',
+                            State(pc_initial=326 nstack_initial=1))},
+             '$phi514.0': {('$phi26.0', State(pc_initial=26 nstack_initial=1))},
+             '$phi514.1': {('$26for_iter.2',
+                            State(pc_initial=26 nstack_initial=1))}})
+2024-12-12 18:56:53,878 - numba.core.byteflow - DEBUG - changing phismap: defaultdict(<class 'set'>,
+            {'$phi26.0': {('$24get_iter.4',
+                           State(pc_initial=0 nstack_initial=0)),
+                          ('$phi30.0', State(pc_initial=30 nstack_initial=2)),
+                          ('$phi326.0',
+                           State(pc_initial=326 nstack_initial=1))},
+             '$phi30.0': {('$24get_iter.4',
+                           State(pc_initial=0 nstack_initial=0)),
+                          ('$phi30.0', State(pc_initial=30 nstack_initial=2)),
+                          ('$phi326.0',
+                           State(pc_initial=326 nstack_initial=1))},
+             '$phi30.1': {('$26for_iter.2',
+                           State(pc_initial=26 nstack_initial=1))},
+             '$phi326.0': {('$24get_iter.4',
+                            State(pc_initial=0 nstack_initial=0)),
+                           ('$phi326.0',
+                            State(pc_initial=326 nstack_initial=1))},
+             '$phi430.0': {('$24get_iter.4',
+                            State(pc_initial=0 nstack_initial=0))},
+             '$phi432.0': {('$24get_iter.4',
+                            State(pc_initial=0 nstack_initial=0))},
+             '$phi514.0': {('$24get_iter.4',
+                            State(pc_initial=0 nstack_initial=0)),
+                           ('$phi30.0', State(pc_initial=30 nstack_initial=2)),
+                           ('$phi326.0',
+                            State(pc_initial=326 nstack_initial=1))},
+             '$phi514.1': {('$26for_iter.2',
+                            State(pc_initial=26 nstack_initial=1))}})
+2024-12-12 18:56:53,878 - numba.core.byteflow - DEBUG - changing phismap: defaultdict(<class 'set'>,
+            {'$phi26.0': {('$24get_iter.4',
+                           State(pc_initial=0 nstack_initial=0))},
+             '$phi30.0': {('$24get_iter.4',
+                           State(pc_initial=0 nstack_initial=0))},
+             '$phi30.1': {('$26for_iter.2',
+                           State(pc_initial=26 nstack_initial=1))},
+             '$phi326.0': {('$24get_iter.4',
+                            State(pc_initial=0 nstack_initial=0))},
+             '$phi430.0': {('$24get_iter.4',
+                            State(pc_initial=0 nstack_initial=0))},
+             '$phi432.0': {('$24get_iter.4',
+                            State(pc_initial=0 nstack_initial=0))},
+             '$phi514.0': {('$24get_iter.4',
+                            State(pc_initial=0 nstack_initial=0))},
+             '$phi514.1': {('$26for_iter.2',
+                            State(pc_initial=26 nstack_initial=1))}})
+2024-12-12 18:56:53,878 - numba.core.byteflow - DEBUG - changing phismap: defaultdict(<class 'set'>,
+            {'$phi26.0': {('$24get_iter.4',
+                           State(pc_initial=0 nstack_initial=0))},
+             '$phi30.0': {('$24get_iter.4',
+                           State(pc_initial=0 nstack_initial=0))},
+             '$phi30.1': {('$26for_iter.2',
+                           State(pc_initial=26 nstack_initial=1))},
+             '$phi326.0': {('$24get_iter.4',
+                            State(pc_initial=0 nstack_initial=0))},
+             '$phi430.0': {('$24get_iter.4',
+                            State(pc_initial=0 nstack_initial=0))},
+             '$phi432.0': {('$24get_iter.4',
+                            State(pc_initial=0 nstack_initial=0))},
+             '$phi514.0': {('$24get_iter.4',
+                            State(pc_initial=0 nstack_initial=0))},
+             '$phi514.1': {('$26for_iter.2',
+                            State(pc_initial=26 nstack_initial=1))}})
+2024-12-12 18:56:53,879 - numba.core.byteflow - DEBUG - keep phismap: {'$phi26.0': {('$24get_iter.4', State(pc_initial=0 nstack_initial=0))},
+ '$phi30.1': {('$26for_iter.2', State(pc_initial=26 nstack_initial=1))}}
+2024-12-12 18:56:53,879 - numba.core.byteflow - DEBUG - new_out: defaultdict(<class 'dict'>,
+            {State(pc_initial=0 nstack_initial=0): {'$phi26.0': '$24get_iter.4'},
+             State(pc_initial=26 nstack_initial=1): {'$phi30.1': '$26for_iter.2'}})
+2024-12-12 18:56:53,879 - numba.core.byteflow - DEBUG - ----------------------DONE Prune PHIs-----------------------
+2024-12-12 18:56:53,879 - numba.core.byteflow - DEBUG - block_infos State(pc_initial=0 nstack_initial=0):
+AdaptBlockInfo(insts=((0, {}), (2, {}), (4, {'idx': 0, 'res': '$4load_global.0'}), (14, {'res': '$nswap_attempts14.2'}), (16, {'func': '$4load_global.0', 'args': ['$nswap_attempts14.2'], 'kw_names': None, 'res': '$16call.3'}), (24, {'value': '$16call.3', 'res': '$24get_iter.4'})), outgoing_phis={'$phi26.0': '$24get_iter.4'}, blockstack=(), active_try_block=None, outgoing_edgepushed={26: ('$24get_iter.4',)})
+2024-12-12 18:56:53,879 - numba.core.byteflow - DEBUG - block_infos State(pc_initial=26 nstack_initial=1):
+AdaptBlockInfo(insts=((26, {'iterator': '$phi26.0', 'pair': '$26for_iter.1', 'indval': '$26for_iter.2', 'pred': '$26for_iter.3'}),), outgoing_phis={'$phi30.1': '$26for_iter.2'}, blockstack=(), active_try_block=None, outgoing_edgepushed={514: ('$phi26.0', '$26for_iter.2'), 30: ('$phi26.0', '$26for_iter.2')})
+2024-12-12 18:56:53,879 - numba.core.byteflow - DEBUG - block_infos State(pc_initial=30 nstack_initial=2):
+AdaptBlockInfo(insts=((30, {'value': '$phi30.1'}), (32, {'idx': 1, 'res': '$32load_global.2'}), (42, {'item': '$32load_global.2', 'res': '$42load_attr.3'}), (62, {'item': '$42load_attr.3', 'res': '$62load_attr.5'}), (82, {'res': '$n_replicas82.6'}), (84, {'func': '$62load_attr.5', 'args': ['$n_replicas82.6'], 'kw_names': None, 'res': '$84call.7'}), (92, {'value': '$84call.7'}), (94, {'idx': 1, 'res': '$94load_global.8'}), (104, {'item': '$94load_global.8', 'res': '$104load_attr.9'}), (124, {'item': '$104load_attr.9', 'res': '$124load_attr.11'}), (144, {'res': '$n_replicas144.12'}), (146, {'func': '$124load_attr.11', 'args': ['$n_replicas144.12'], 'kw_names': None, 'res': '$146call.13'}), (154, {'value': '$146call.13'}), (156, {'res': '$_replica_thermodynamic_states156.14'}), (158, {'res': '$replica_i158.15'}), (160, {'index': '$replica_i158.15', 'target': '$_replica_thermodynamic_states156.14', 'res': '$160binary_subscr.16'}), (164, {'value': '$160binary_subscr.16'}), (166, {'res': '$_replica_thermodynamic_states166.17'}), (168, {'res': '$replica_j168.18'}), (170, {'index': '$replica_j168.18', 'target': '$_replica_thermodynamic_states166.17', 'res': '$170binary_subscr.19'}), (174, {'value': '$170binary_subscr.19'}), (176, {'res': '$_energy_thermodynamic_states176.20'}), (178, {'res': '$replica_i178.21'}), (180, {'res': '$thermodynamic_state_j180.22'}), (182, {'items': ['$replica_i178.21', '$thermodynamic_state_j180.22'], 'res': '$182build_tuple.23'}), (184, {'index': '$182build_tuple.23', 'target': '$_energy_thermodynamic_states176.20', 'res': '$184binary_subscr.24'}), (188, {'value': '$184binary_subscr.24'}), (190, {'res': '$_energy_thermodynamic_states190.25'}), (192, {'res': '$replica_j192.26'}), (194, {'res': '$thermodynamic_state_i194.27'}), (196, {'items': ['$replica_j192.26', '$thermodynamic_state_i194.27'], 'res': '$196build_tuple.28'}), (198, {'index': '$196build_tuple.28', 'target': '$_energy_thermodynamic_states190.25', 'res': '$198binary_subscr.29'}), (202, {'value': '$198binary_subscr.29'}), (204, {'res': '$_energy_thermodynamic_states204.30'}), (206, {'res': '$replica_i206.31'}), (208, {'res': '$thermodynamic_state_i208.32'}), (210, {'items': ['$replica_i206.31', '$thermodynamic_state_i208.32'], 'res': '$210build_tuple.33'}), (212, {'index': '$210build_tuple.33', 'target': '$_energy_thermodynamic_states204.30', 'res': '$212binary_subscr.34'}), (216, {'value': '$212binary_subscr.34'}), (218, {'res': '$_energy_thermodynamic_states218.35'}), (220, {'res': '$replica_j220.36'}), (222, {'res': '$thermodynamic_state_j222.37'}), (224, {'items': ['$replica_j220.36', '$thermodynamic_state_j222.37'], 'res': '$224build_tuple.38'}), (226, {'index': '$224build_tuple.38', 'target': '$_energy_thermodynamic_states218.35', 'res': '$226binary_subscr.39'}), (230, {'value': '$226binary_subscr.39'}), (232, {'res': '$energy_ij232.40'}), (234, {'res': '$energy_ji234.41'}), (236, {'op': '+', 'lhs': '$energy_ij232.40', 'rhs': '$energy_ji234.41', 'res': '$binop_add236.42'}), (240, {'value': '$binop_add236.42', 'res': '$240unary_negative.43'}), (242, {'res': '$energy_ii242.44'}), (244, {'op': '+', 'lhs': '$240unary_negative.43', 'rhs': '$energy_ii242.44', 'res': '$binop_add244.45'}), (248, {'res': '$energy_jj248.46'}), (250, {'op': '+', 'lhs': '$binop_add244.45', 'rhs': '$energy_jj248.46', 'res': '$binop_add250.47'}), (254, {'value': '$binop_add250.47'}), (256, {'res': '$_n_proposed_matrix256.48'}), (258, {'res': '$thermodynamic_state_i258.49'}), (260, {'res': '$thermodynamic_state_j260.50'}), (262, {'items': ['$thermodynamic_state_i258.49', '$thermodynamic_state_j260.50'], 'res': '$262build_tuple.51'}), (268, {'index': '$262build_tuple.51', 'target': '$_n_proposed_matrix256.48', 'res': '$268binary_subscr.52'}), (272, {'res': '$const272.53'}), (274, {'op': '+=', 'lhs': '$268binary_subscr.52', 'rhs': '$const272.53', 'res': '$binop_iadd274.54'}), (282, {'target': '$_n_proposed_matrix256.48', 'index': '$262build_tuple.51', 'value': '$binop_iadd274.54'}), (286, {'res': '$_n_proposed_matrix286.55'}), (288, {'res': '$thermodynamic_state_j288.56'}), (290, {'res': '$thermodynamic_state_i290.57'}), (292, {'items': ['$thermodynamic_state_j288.56', '$thermodynamic_state_i290.57'], 'res': '$292build_tuple.58'}), (298, {'index': '$292build_tuple.58', 'target': '$_n_proposed_matrix286.55', 'res': '$298binary_subscr.59'}), (302, {'res': '$const302.60'}), (304, {'op': '+=', 'lhs': '$298binary_subscr.59', 'rhs': '$const302.60', 'res': '$binop_iadd304.61'}), (312, {'target': '$_n_proposed_matrix286.55', 'index': '$292build_tuple.58', 'value': '$binop_iadd304.61'}), (316, {'res': '$log_p_accept316.62'}), (318, {'res': '$const318.63'}), (320, {'lhs': '$log_p_accept316.62', 'rhs': '$const318.63', 'res': '$320compare_op.64'}), (324, {'pred': '$320compare_op.64'})), outgoing_phis={}, blockstack=(), active_try_block=None, outgoing_edgepushed={326: ('$phi30.0',), 432: ('$phi30.0',)})
+2024-12-12 18:56:53,879 - numba.core.byteflow - DEBUG - block_infos State(pc_initial=326 nstack_initial=1):
+AdaptBlockInfo(insts=((326, {'idx': 1, 'res': '$326load_global.1'}), (336, {'item': '$326load_global.1', 'res': '$336load_attr.2'}), (356, {'item': '$336load_attr.2', 'res': '$356load_attr.4'}), (376, {'func': '$356load_attr.4', 'args': [], 'kw_names': None, 'res': '$376call.5'}), (384, {'idx': 1, 'res': '$384load_global.6'}), (394, {'item': '$384load_global.6', 'res': '$394load_attr.8'}), (414, {'res': '$log_p_accept414.9'}), (416, {'func': '$394load_attr.8', 'args': ['$log_p_accept414.9'], 'kw_names': None, 'res': '$416call.10'}), (424, {'lhs': '$376call.5', 'rhs': '$416call.10', 'res': '$424compare_op.11'}), (428, {'pred': '$424compare_op.11'})), outgoing_phis={}, blockstack=(), active_try_block=None, outgoing_edgepushed={430: ('$phi326.0',), 432: ('$phi326.0',)})
+2024-12-12 18:56:53,879 - numba.core.byteflow - DEBUG - block_infos State(pc_initial=430 nstack_initial=1):
+AdaptBlockInfo(insts=((430, {}),), outgoing_phis={}, blockstack=(), active_try_block=None, outgoing_edgepushed={26: ('$phi430.0',)})
+2024-12-12 18:56:53,879 - numba.core.byteflow - DEBUG - block_infos State(pc_initial=432 nstack_initial=1):
+AdaptBlockInfo(insts=((432, {'res': '$thermodynamic_state_j432.1'}), (434, {'res': '$_replica_thermodynamic_states434.2'}), (436, {'res': '$replica_i436.3'}), (438, {'target': '$_replica_thermodynamic_states434.2', 'index': '$replica_i436.3', 'value': '$thermodynamic_state_j432.1'}), (442, {'res': '$thermodynamic_state_i442.4'}), (444, {'res': '$_replica_thermodynamic_states444.5'}), (446, {'res': '$replica_j446.6'}), (448, {'target': '$_replica_thermodynamic_states444.5', 'index': '$replica_j446.6', 'value': '$thermodynamic_state_i442.4'}), (452, {'res': '$_n_accepted_matrix452.7'}), (454, {'res': '$thermodynamic_state_i454.8'}), (456, {'res': '$thermodynamic_state_j456.9'}), (458, {'items': ['$thermodynamic_state_i454.8', '$thermodynamic_state_j456.9'], 'res': '$458build_tuple.10'}), (464, {'index': '$458build_tuple.10', 'target': '$_n_accepted_matrix452.7', 'res': '$464binary_subscr.11'}), (468, {'res': '$const468.12'}), (470, {'op': '+=', 'lhs': '$464binary_subscr.11', 'rhs': '$const468.12', 'res': '$binop_iadd470.13'}), (478, {'target': '$_n_accepted_matrix452.7', 'index': '$458build_tuple.10', 'value': '$binop_iadd470.13'}), (482, {'res': '$_n_accepted_matrix482.14'}), (484, {'res': '$thermodynamic_state_j484.15'}), (486, {'res': '$thermodynamic_state_i486.16'}), (488, {'items': ['$thermodynamic_state_j484.15', '$thermodynamic_state_i486.16'], 'res': '$488build_tuple.17'}), (494, {'index': '$488build_tuple.17', 'target': '$_n_accepted_matrix482.14', 'res': '$494binary_subscr.18'}), (498, {'res': '$const498.19'}), (500, {'op': '+=', 'lhs': '$494binary_subscr.18', 'rhs': '$const498.19', 'res': '$binop_iadd500.20'}), (508, {'target': '$_n_accepted_matrix482.14', 'index': '$488build_tuple.17', 'value': '$binop_iadd500.20'}), (512, {})), outgoing_phis={}, blockstack=(), active_try_block=None, outgoing_edgepushed={26: ('$phi432.0',)})
+2024-12-12 18:56:53,879 - numba.core.byteflow - DEBUG - block_infos State(pc_initial=514 nstack_initial=2):
+AdaptBlockInfo(insts=((516, {'retval': '$const516.2', 'castval': '$516return_const.3'}),), outgoing_phis={}, blockstack=(), active_try_block=None, outgoing_edgepushed={})
+2024-12-12 18:56:53,882 - numba.core.interpreter - DEBUG - label 0:
+    nswap_attempts = arg(0, name=nswap_attempts) ['nswap_attempts']
+    n_replicas = arg(1, name=n_replicas)     ['n_replicas']
+    _replica_thermodynamic_states = arg(2, name=_replica_thermodynamic_states) ['_replica_thermodynamic_states']
+    _energy_thermodynamic_states = arg(3, name=_energy_thermodynamic_states) ['_energy_thermodynamic_states']
+    _n_accepted_matrix = arg(4, name=_n_accepted_matrix) ['_n_accepted_matrix']
+    _n_proposed_matrix = arg(5, name=_n_proposed_matrix) ['_n_proposed_matrix']
+    $4load_global.0 = global(range: <class 'range'>) ['$4load_global.0']
+    $16call.3 = call $4load_global.0(nswap_attempts, func=$4load_global.0, args=[Var(nswap_attempts, replicaexchange.py:294)], kws=(), vararg=None, varkwarg=None, target=None) ['$16call.3', '$4load_global.0', 'nswap_attempts']
+    $24get_iter.4 = getiter(value=$16call.3) ['$16call.3', '$24get_iter.4']
+    $phi26.0 = $24get_iter.4                 ['$24get_iter.4', '$phi26.0']
+    jump 26                                  []
+label 26:
+    $26for_iter.1 = iternext(value=$phi26.0) ['$26for_iter.1', '$phi26.0']
+    $26for_iter.2 = pair_first(value=$26for_iter.1) ['$26for_iter.1', '$26for_iter.2']
+    $26for_iter.3 = pair_second(value=$26for_iter.1) ['$26for_iter.1', '$26for_iter.3']
+    $phi30.1 = $26for_iter.2                 ['$26for_iter.2', '$phi30.1']
+    branch $26for_iter.3, 30, 514            ['$26for_iter.3']
+label 30:
+    swap_attempt = $phi30.1                  ['$phi30.1', 'swap_attempt']
+    $32load_global.2 = global(np: <module 'numpy' from '/opt/conda/lib/python3.12/site-packages/numpy/__init__.py'>) ['$32load_global.2']
+    $42load_attr.3 = getattr(value=$32load_global.2, attr=random) ['$32load_global.2', '$42load_attr.3']
+    $62load_attr.5 = getattr(value=$42load_attr.3, attr=randint) ['$42load_attr.3', '$62load_attr.5']
+    replica_i = call $62load_attr.5(n_replicas, func=$62load_attr.5, args=[Var(n_replicas, replicaexchange.py:294)], kws=(), vararg=None, varkwarg=None, target=None) ['$62load_attr.5', 'n_replicas', 'replica_i']
+    $94load_global.8 = global(np: <module 'numpy' from '/opt/conda/lib/python3.12/site-packages/numpy/__init__.py'>) ['$94load_global.8']
+    $104load_attr.9 = getattr(value=$94load_global.8, attr=random) ['$104load_attr.9', '$94load_global.8']
+    $124load_attr.11 = getattr(value=$104load_attr.9, attr=randint) ['$104load_attr.9', '$124load_attr.11']
+    replica_j = call $124load_attr.11(n_replicas, func=$124load_attr.11, args=[Var(n_replicas, replicaexchange.py:294)], kws=(), vararg=None, varkwarg=None, target=None) ['$124load_attr.11', 'n_replicas', 'replica_j']
+    thermodynamic_state_i = getitem(value=_replica_thermodynamic_states, index=replica_i, fn=<built-in function getitem>) ['_replica_thermodynamic_states', 'replica_i', 'thermodynamic_state_i']
+    thermodynamic_state_j = getitem(value=_replica_thermodynamic_states, index=replica_j, fn=<built-in function getitem>) ['_replica_thermodynamic_states', 'replica_j', 'thermodynamic_state_j']
+    $182build_tuple.23 = build_tuple(items=[Var(replica_i, replicaexchange.py:324), Var(thermodynamic_state_j, replicaexchange.py:329)]) ['$182build_tuple.23', 'replica_i', 'thermodynamic_state_j']
+    energy_ij = getitem(value=_energy_thermodynamic_states, index=$182build_tuple.23, fn=<built-in function getitem>) ['$182build_tuple.23', '_energy_thermodynamic_states', 'energy_ij']
+    $196build_tuple.28 = build_tuple(items=[Var(replica_j, replicaexchange.py:325), Var(thermodynamic_state_i, replicaexchange.py:328)]) ['$196build_tuple.28', 'replica_j', 'thermodynamic_state_i']
+    energy_ji = getitem(value=_energy_thermodynamic_states, index=$196build_tuple.28, fn=<built-in function getitem>) ['$196build_tuple.28', '_energy_thermodynamic_states', 'energy_ji']
+    $210build_tuple.33 = build_tuple(items=[Var(replica_i, replicaexchange.py:324), Var(thermodynamic_state_i, replicaexchange.py:328)]) ['$210build_tuple.33', 'replica_i', 'thermodynamic_state_i']
+    energy_ii = getitem(value=_energy_thermodynamic_states, index=$210build_tuple.33, fn=<built-in function getitem>) ['$210build_tuple.33', '_energy_thermodynamic_states', 'energy_ii']
+    $224build_tuple.38 = build_tuple(items=[Var(replica_j, replicaexchange.py:325), Var(thermodynamic_state_j, replicaexchange.py:329)]) ['$224build_tuple.38', 'replica_j', 'thermodynamic_state_j']
+    energy_jj = getitem(value=_energy_thermodynamic_states, index=$224build_tuple.38, fn=<built-in function getitem>) ['$224build_tuple.38', '_energy_thermodynamic_states', 'energy_jj']
+    $binop_add236.42 = energy_ij + energy_ji ['$binop_add236.42', 'energy_ij', 'energy_ji']
+    $240unary_negative.43 = unary(fn=<built-in function neg>, value=$binop_add236.42) ['$240unary_negative.43', '$binop_add236.42']
+    $binop_add244.45 = $240unary_negative.43 + energy_ii ['$240unary_negative.43', '$binop_add244.45', 'energy_ii']
+    log_p_accept = $binop_add244.45 + energy_jj ['$binop_add244.45', 'energy_jj', 'log_p_accept']
+    $262build_tuple.51 = build_tuple(items=[Var(thermodynamic_state_i, replicaexchange.py:328), Var(thermodynamic_state_j, replicaexchange.py:329)]) ['$262build_tuple.51', 'thermodynamic_state_i', 'thermodynamic_state_j']
+    $268binary_subscr.52 = getitem(value=_n_proposed_matrix, index=$262build_tuple.51, fn=<built-in function getitem>) ['$262build_tuple.51', '$268binary_subscr.52', '_n_proposed_matrix']
+    $const272.53 = const(int, 1)             ['$const272.53']
+    $binop_iadd274.54 = inplace_binop(fn=<built-in function iadd>, immutable_fn=<built-in function add>, lhs=$268binary_subscr.52, rhs=$const272.53, static_lhs=Undefined, static_rhs=Undefined) ['$268binary_subscr.52', '$binop_iadd274.54', '$const272.53']
+    _n_proposed_matrix[$262build_tuple.51] = $binop_iadd274.54 ['$262build_tuple.51', '$binop_iadd274.54', '_n_proposed_matrix']
+    $292build_tuple.58 = build_tuple(items=[Var(thermodynamic_state_j, replicaexchange.py:329), Var(thermodynamic_state_i, replicaexchange.py:328)]) ['$292build_tuple.58', 'thermodynamic_state_i', 'thermodynamic_state_j']
+    $298binary_subscr.59 = getitem(value=_n_proposed_matrix, index=$292build_tuple.58, fn=<built-in function getitem>) ['$292build_tuple.58', '$298binary_subscr.59', '_n_proposed_matrix']
+    $const302.60 = const(int, 1)             ['$const302.60']
+    $binop_iadd304.61 = inplace_binop(fn=<built-in function iadd>, immutable_fn=<built-in function add>, lhs=$298binary_subscr.59, rhs=$const302.60, static_lhs=Undefined, static_rhs=Undefined) ['$298binary_subscr.59', '$binop_iadd304.61', '$const302.60']
+    _n_proposed_matrix[$292build_tuple.58] = $binop_iadd304.61 ['$292build_tuple.58', '$binop_iadd304.61', '_n_proposed_matrix']
+    $const318.63 = const(float, 0.0)         ['$const318.63']
+    $320compare_op.64 = log_p_accept >= $const318.63 ['$320compare_op.64', '$const318.63', 'log_p_accept']
+    bool324 = global(bool: <class 'bool'>)   ['bool324']
+    $324pred = call bool324($320compare_op.64, func=bool324, args=(Var($320compare_op.64, replicaexchange.py:343),), kws=(), vararg=None, varkwarg=None, target=None) ['$320compare_op.64', '$324pred', 'bool324']
+    branch $324pred, 432, 326                ['$324pred']
+label 326:
+    $326load_global.1 = global(np: <module 'numpy' from '/opt/conda/lib/python3.12/site-packages/numpy/__init__.py'>) ['$326load_global.1']
+    $336load_attr.2 = getattr(value=$326load_global.1, attr=random) ['$326load_global.1', '$336load_attr.2']
+    $356load_attr.4 = getattr(value=$336load_attr.2, attr=rand) ['$336load_attr.2', '$356load_attr.4']
+    $376call.5 = call $356load_attr.4(func=$356load_attr.4, args=[], kws=(), vararg=None, varkwarg=None, target=None) ['$356load_attr.4', '$376call.5']
+    $384load_global.6 = global(np: <module 'numpy' from '/opt/conda/lib/python3.12/site-packages/numpy/__init__.py'>) ['$384load_global.6']
+    $394load_attr.8 = getattr(value=$384load_global.6, attr=exp) ['$384load_global.6', '$394load_attr.8']
+    $416call.10 = call $394load_attr.8(log_p_accept, func=$394load_attr.8, args=[Var(log_p_accept, replicaexchange.py:336)], kws=(), vararg=None, varkwarg=None, target=None) ['$394load_attr.8', '$416call.10', 'log_p_accept']
+    $424compare_op.11 = $376call.5 < $416call.10 ['$376call.5', '$416call.10', '$424compare_op.11']
+    bool428 = global(bool: <class 'bool'>)   ['bool428']
+    $428pred = call bool428($424compare_op.11, func=bool428, args=(Var($424compare_op.11, replicaexchange.py:343),), kws=(), vararg=None, varkwarg=None, target=None) ['$424compare_op.11', '$428pred', 'bool428']
+    branch $428pred, 432, 430                ['$428pred']
+label 430:
+    jump 26                                  []
+label 432:
+    _replica_thermodynamic_states[replica_i] = thermodynamic_state_j ['_replica_thermodynamic_states', 'replica_i', 'thermodynamic_state_j']
+    _replica_thermodynamic_states[replica_j] = thermodynamic_state_i ['_replica_thermodynamic_states', 'replica_j', 'thermodynamic_state_i']
+    $458build_tuple.10 = build_tuple(items=[Var(thermodynamic_state_i, replicaexchange.py:328), Var(thermodynamic_state_j, replicaexchange.py:329)]) ['$458build_tuple.10', 'thermodynamic_state_i', 'thermodynamic_state_j']
+    $464binary_subscr.11 = getitem(value=_n_accepted_matrix, index=$458build_tuple.10, fn=<built-in function getitem>) ['$458build_tuple.10', '$464binary_subscr.11', '_n_accepted_matrix']
+    $const468.12 = const(int, 1)             ['$const468.12']
+    $binop_iadd470.13 = inplace_binop(fn=<built-in function iadd>, immutable_fn=<built-in function add>, lhs=$464binary_subscr.11, rhs=$const468.12, static_lhs=Undefined, static_rhs=Undefined) ['$464binary_subscr.11', '$binop_iadd470.13', '$const468.12']
+    _n_accepted_matrix[$458build_tuple.10] = $binop_iadd470.13 ['$458build_tuple.10', '$binop_iadd470.13', '_n_accepted_matrix']
+    $488build_tuple.17 = build_tuple(items=[Var(thermodynamic_state_j, replicaexchange.py:329), Var(thermodynamic_state_i, replicaexchange.py:328)]) ['$488build_tuple.17', 'thermodynamic_state_i', 'thermodynamic_state_j']
+    $494binary_subscr.18 = getitem(value=_n_accepted_matrix, index=$488build_tuple.17, fn=<built-in function getitem>) ['$488build_tuple.17', '$494binary_subscr.18', '_n_accepted_matrix']
+    $const498.19 = const(int, 1)             ['$const498.19']
+    $binop_iadd500.20 = inplace_binop(fn=<built-in function iadd>, immutable_fn=<built-in function add>, lhs=$494binary_subscr.18, rhs=$const498.19, static_lhs=Undefined, static_rhs=Undefined) ['$494binary_subscr.18', '$binop_iadd500.20', '$const498.19']
+    _n_accepted_matrix[$488build_tuple.17] = $binop_iadd500.20 ['$488build_tuple.17', '$binop_iadd500.20', '_n_accepted_matrix']
+    jump 26                                  []
+label 514:
+    $const516.2 = const(NoneType, None)      ['$const516.2']
+    $516return_const.3 = cast(value=$const516.2) ['$516return_const.3', '$const516.2']
+    return $516return_const.3                ['$516return_const.3']
+
+2024-12-12 18:56:53,898 - numba.core.ssa - DEBUG - ==== SSA block analysis pass on 0
+2024-12-12 18:56:53,898 - numba.core.ssa - DEBUG - Running <numba.core.ssa._GatherDefsHandler object at 0x7f0d6c077980>
+2024-12-12 18:56:53,898 - numba.core.ssa - DEBUG - on stmt: nswap_attempts = arg(0, name=nswap_attempts)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: n_replicas = arg(1, name=n_replicas)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: _replica_thermodynamic_states = arg(2, name=_replica_thermodynamic_states)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: _energy_thermodynamic_states = arg(3, name=_energy_thermodynamic_states)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: _n_accepted_matrix = arg(4, name=_n_accepted_matrix)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: _n_proposed_matrix = arg(5, name=_n_proposed_matrix)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: $4load_global.0 = global(range: <class 'range'>)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: $16call.3 = call $4load_global.0(nswap_attempts, func=$4load_global.0, args=[Var(nswap_attempts, replicaexchange.py:294)], kws=(), vararg=None, varkwarg=None, target=None)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: $24get_iter.4 = getiter(value=$16call.3)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: $phi26.0 = $24get_iter.4
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: jump 26
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - ==== SSA block analysis pass on 26
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - Running <numba.core.ssa._GatherDefsHandler object at 0x7f0d6c077980>
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: $26for_iter.1 = iternext(value=$phi26.0)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: $26for_iter.2 = pair_first(value=$26for_iter.1)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: $26for_iter.3 = pair_second(value=$26for_iter.1)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: $phi30.1 = $26for_iter.2
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: branch $26for_iter.3, 30, 514
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - ==== SSA block analysis pass on 30
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - Running <numba.core.ssa._GatherDefsHandler object at 0x7f0d6c077980>
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: swap_attempt = $phi30.1
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: $32load_global.2 = global(np: <module 'numpy' from '/opt/conda/lib/python3.12/site-packages/numpy/__init__.py'>)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: $42load_attr.3 = getattr(value=$32load_global.2, attr=random)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: $62load_attr.5 = getattr(value=$42load_attr.3, attr=randint)
+2024-12-12 18:56:53,899 - numba.core.ssa - DEBUG - on stmt: replica_i = call $62load_attr.5(n_replicas, func=$62load_attr.5, args=[Var(n_replicas, replicaexchange.py:294)], kws=(), vararg=None, varkwarg=None, target=None)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $94load_global.8 = global(np: <module 'numpy' from '/opt/conda/lib/python3.12/site-packages/numpy/__init__.py'>)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $104load_attr.9 = getattr(value=$94load_global.8, attr=random)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $124load_attr.11 = getattr(value=$104load_attr.9, attr=randint)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: replica_j = call $124load_attr.11(n_replicas, func=$124load_attr.11, args=[Var(n_replicas, replicaexchange.py:294)], kws=(), vararg=None, varkwarg=None, target=None)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: thermodynamic_state_i = getitem(value=_replica_thermodynamic_states, index=replica_i, fn=<built-in function getitem>)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: thermodynamic_state_j = getitem(value=_replica_thermodynamic_states, index=replica_j, fn=<built-in function getitem>)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $182build_tuple.23 = build_tuple(items=[Var(replica_i, replicaexchange.py:324), Var(thermodynamic_state_j, replicaexchange.py:329)])
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: energy_ij = getitem(value=_energy_thermodynamic_states, index=$182build_tuple.23, fn=<built-in function getitem>)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $196build_tuple.28 = build_tuple(items=[Var(replica_j, replicaexchange.py:325), Var(thermodynamic_state_i, replicaexchange.py:328)])
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: energy_ji = getitem(value=_energy_thermodynamic_states, index=$196build_tuple.28, fn=<built-in function getitem>)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $210build_tuple.33 = build_tuple(items=[Var(replica_i, replicaexchange.py:324), Var(thermodynamic_state_i, replicaexchange.py:328)])
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: energy_ii = getitem(value=_energy_thermodynamic_states, index=$210build_tuple.33, fn=<built-in function getitem>)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $224build_tuple.38 = build_tuple(items=[Var(replica_j, replicaexchange.py:325), Var(thermodynamic_state_j, replicaexchange.py:329)])
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: energy_jj = getitem(value=_energy_thermodynamic_states, index=$224build_tuple.38, fn=<built-in function getitem>)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $binop_add236.42 = energy_ij + energy_ji
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $240unary_negative.43 = unary(fn=<built-in function neg>, value=$binop_add236.42)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $binop_add244.45 = $240unary_negative.43 + energy_ii
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: log_p_accept = $binop_add244.45 + energy_jj
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $262build_tuple.51 = build_tuple(items=[Var(thermodynamic_state_i, replicaexchange.py:328), Var(thermodynamic_state_j, replicaexchange.py:329)])
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $268binary_subscr.52 = getitem(value=_n_proposed_matrix, index=$262build_tuple.51, fn=<built-in function getitem>)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $const272.53 = const(int, 1)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $binop_iadd274.54 = inplace_binop(fn=<built-in function iadd>, immutable_fn=<built-in function add>, lhs=$268binary_subscr.52, rhs=$const272.53, static_lhs=Undefined, static_rhs=Undefined)
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: _n_proposed_matrix[$262build_tuple.51] = $binop_iadd274.54
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $292build_tuple.58 = build_tuple(items=[Var(thermodynamic_state_j, replicaexchange.py:329), Var(thermodynamic_state_i, replicaexchange.py:328)])
+2024-12-12 18:56:53,900 - numba.core.ssa - DEBUG - on stmt: $298binary_subscr.59 = getitem(value=_n_proposed_matrix, index=$292build_tuple.58, fn=<built-in function getitem>)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $const302.60 = const(int, 1)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $binop_iadd304.61 = inplace_binop(fn=<built-in function iadd>, immutable_fn=<built-in function add>, lhs=$298binary_subscr.59, rhs=$const302.60, static_lhs=Undefined, static_rhs=Undefined)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: _n_proposed_matrix[$292build_tuple.58] = $binop_iadd304.61
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $const318.63 = const(float, 0.0)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $320compare_op.64 = log_p_accept >= $const318.63
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: bool324 = global(bool: <class 'bool'>)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $324pred = call bool324($320compare_op.64, func=bool324, args=(Var($320compare_op.64, replicaexchange.py:343),), kws=(), vararg=None, varkwarg=None, target=None)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: branch $324pred, 432, 326
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - ==== SSA block analysis pass on 326
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - Running <numba.core.ssa._GatherDefsHandler object at 0x7f0d6c077980>
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $326load_global.1 = global(np: <module 'numpy' from '/opt/conda/lib/python3.12/site-packages/numpy/__init__.py'>)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $336load_attr.2 = getattr(value=$326load_global.1, attr=random)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $356load_attr.4 = getattr(value=$336load_attr.2, attr=rand)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $376call.5 = call $356load_attr.4(func=$356load_attr.4, args=[], kws=(), vararg=None, varkwarg=None, target=None)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $384load_global.6 = global(np: <module 'numpy' from '/opt/conda/lib/python3.12/site-packages/numpy/__init__.py'>)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $394load_attr.8 = getattr(value=$384load_global.6, attr=exp)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $416call.10 = call $394load_attr.8(log_p_accept, func=$394load_attr.8, args=[Var(log_p_accept, replicaexchange.py:336)], kws=(), vararg=None, varkwarg=None, target=None)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $424compare_op.11 = $376call.5 < $416call.10
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: bool428 = global(bool: <class 'bool'>)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $428pred = call bool428($424compare_op.11, func=bool428, args=(Var($424compare_op.11, replicaexchange.py:343),), kws=(), vararg=None, varkwarg=None, target=None)
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: branch $428pred, 432, 430
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - ==== SSA block analysis pass on 430
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - Running <numba.core.ssa._GatherDefsHandler object at 0x7f0d6c077980>
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: jump 515
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - ==== SSA block analysis pass on 432
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - Running <numba.core.ssa._GatherDefsHandler object at 0x7f0d6c077980>
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: _replica_thermodynamic_states[replica_i] = thermodynamic_state_j
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: _replica_thermodynamic_states[replica_j] = thermodynamic_state_i
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $458build_tuple.10 = build_tuple(items=[Var(thermodynamic_state_i, replicaexchange.py:328), Var(thermodynamic_state_j, replicaexchange.py:329)])
+2024-12-12 18:56:53,901 - numba.core.ssa - DEBUG - on stmt: $464binary_subscr.11 = getitem(value=_n_accepted_matrix, index=$458build_tuple.10, fn=<built-in function getitem>)
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - on stmt: $const468.12 = const(int, 1)
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - on stmt: $binop_iadd470.13 = inplace_binop(fn=<built-in function iadd>, immutable_fn=<built-in function add>, lhs=$464binary_subscr.11, rhs=$const468.12, static_lhs=Undefined, static_rhs=Undefined)
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - on stmt: _n_accepted_matrix[$458build_tuple.10] = $binop_iadd470.13
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - on stmt: $488build_tuple.17 = build_tuple(items=[Var(thermodynamic_state_j, replicaexchange.py:329), Var(thermodynamic_state_i, replicaexchange.py:328)])
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - on stmt: $494binary_subscr.18 = getitem(value=_n_accepted_matrix, index=$488build_tuple.17, fn=<built-in function getitem>)
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - on stmt: $const498.19 = const(int, 1)
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - on stmt: $binop_iadd500.20 = inplace_binop(fn=<built-in function iadd>, immutable_fn=<built-in function add>, lhs=$494binary_subscr.18, rhs=$const498.19, static_lhs=Undefined, static_rhs=Undefined)
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - on stmt: _n_accepted_matrix[$488build_tuple.17] = $binop_iadd500.20
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - on stmt: jump 515
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - ==== SSA block analysis pass on 514
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - Running <numba.core.ssa._GatherDefsHandler object at 0x7f0d6c077980>
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - on stmt: $const516.2 = const(NoneType, None)
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - on stmt: $516return_const.3 = cast(value=$const516.2)
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - on stmt: return $516return_const.3
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - ==== SSA block analysis pass on 515
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - Running <numba.core.ssa._GatherDefsHandler object at 0x7f0d6c077980>
+2024-12-12 18:56:53,902 - numba.core.ssa - DEBUG - on stmt: jump 26
+2024-12-12 18:56:53,904 - numba.core.ssa - DEBUG - defs defaultdict(<class 'list'>,
+            {'$104load_attr.9': [(<numba.core.ir.Assign object at 0x7f0d6c0999d0>,
+                                  30)],
+             '$124load_attr.11': [(<numba.core.ir.Assign object at 0x7f0d6c099640>,
+                                   30)],
+             '$16call.3': [(<numba.core.ir.Assign object at 0x7f0d6c09b440>,
+                            0)],
+             '$182build_tuple.23': [(<numba.core.ir.Assign object at 0x7f0d6c0929f0>,
+                                     30)],
+             '$196build_tuple.28': [(<numba.core.ir.Assign object at 0x7f0d6c0932c0>,
+                                     30)],
+             '$210build_tuple.33': [(<numba.core.ir.Assign object at 0x7f0d6c092420>,
+                                     30)],
+             '$224build_tuple.38': [(<numba.core.ir.Assign object at 0x7f0d6c091760>,
+                                     30)],
+             '$240unary_negative.43': [(<numba.core.ir.Assign object at 0x7f0d6c0915b0>,
+                                        30)],
+             '$24get_iter.4': [(<numba.core.ir.Assign object at 0x7f0d6c09b140>,
+                                0)],
+             '$262build_tuple.51': [(<numba.core.ir.Assign object at 0x7f0d6c08bd10>,
+                                     30)],
+             '$268binary_subscr.52': [(<numba.core.ir.Assign object at 0x7f0d6c08b8c0>,
+                                       30)],
+             '$26for_iter.1': [(<numba.core.ir.Assign object at 0x7f0d6c09ab70>,
+                                26)],
+             '$26for_iter.2': [(<numba.core.ir.Assign object at 0x7f0d6c09aa20>,
+                                26)],
+             '$26for_iter.3': [(<numba.core.ir.Assign object at 0x7f0d6c09a900>,
+                                26)],
+             '$292build_tuple.58': [(<numba.core.ir.Assign object at 0x7f0d6c08aab0>,
+                                     30)],
+             '$298binary_subscr.59': [(<numba.core.ir.Assign object at 0x7f0d6c08a660>,
+                                       30)],
+             '$320compare_op.64': [(<numba.core.ir.Assign object at 0x7f0d6c089580>,
+                                    30)],
+             '$324pred': [(<numba.core.ir.Assign object at 0x7f0d6c088a10>,
+                           30)],
+             '$326load_global.1': [(<numba.core.ir.Assign object at 0x7f0d6c093650>,
+                                    326)],
+             '$32load_global.2': [(<numba.core.ir.Assign object at 0x7f0d6c09a420>,
+                                   30)],
+             '$336load_attr.2': [(<numba.core.ir.Assign object at 0x7f0d6c092ab0>,
+                                  326)],
+             '$356load_attr.4': [(<numba.core.ir.Assign object at 0x7f0d6c091df0>,
+                                  326)],
+             '$376call.5': [(<numba.core.ir.Assign object at 0x7f0d6c090a10>,
+                             326)],
+             '$384load_global.6': [(<numba.core.ir.Assign object at 0x7f0d6c092060>,
+                                    326)],
+             '$394load_attr.8': [(<numba.core.ir.Assign object at 0x7f0d6c098f50>,
+                                  326)],
+             '$416call.10': [(<numba.core.ir.Assign object at 0x7f0d6c09b020>,
+                              326)],
+             '$424compare_op.11': [(<numba.core.ir.Assign object at 0x7f0d6c08b020>,
+                                    326)],
+             '$428pred': [(<numba.core.ir.Assign object at 0x7f0d6c088890>,
+                           326)],
+             '$42load_attr.3': [(<numba.core.ir.Assign object at 0x7f0d6c09a240>,
+                                 30)],
+             '$458build_tuple.10': [(<numba.core.ir.Assign object at 0x7f0d6c082510>,
+                                     432)],
+             '$464binary_subscr.11': [(<numba.core.ir.Assign object at 0x7f0d6c083f80>,
+                                       432)],
+             '$488build_tuple.17': [(<numba.core.ir.Assign object at 0x7f0d6c083080>,
+                                     432)],
+             '$494binary_subscr.18': [(<numba.core.ir.Assign object at 0x7f0d6c082cf0>,
+                                       432)],
+             '$4load_global.0': [(<numba.core.ir.Assign object at 0x7f0d6c09bc50>,
+                                  0)],
+             '$516return_const.3': [(<numba.core.ir.Assign object at 0x7f0d6c089760>,
+                                     514)],
+             '$62load_attr.5': [(<numba.core.ir.Assign object at 0x7f0d6c09a0f0>,
+                                 30)],
+             '$94load_global.8': [(<numba.core.ir.Assign object at 0x7f0d6c099a30>,
+                                   30)],
+             '$binop_add236.42': [(<numba.core.ir.Assign object at 0x7f0d6c090d10>,
+                                   30)],
+             '$binop_add244.45': [(<numba.core.ir.Assign object at 0x7f0d6c0918b0>,
+                                   30)],
+             '$binop_iadd274.54': [(<numba.core.ir.Assign object at 0x7f0d6c08b3b0>,
+                                    30)],
+             '$binop_iadd304.61': [(<numba.core.ir.Assign object at 0x7f0d6c08a240>,
+                                    30)],
+             '$binop_iadd470.13': [(<numba.core.ir.Assign object at 0x7f0d6c083b00>,
+                                    432)],
+             '$binop_iadd500.20': [(<numba.core.ir.Assign object at 0x7f0d6c082540>,
+                                    432)],
+             '$const272.53': [(<numba.core.ir.Assign object at 0x7f0d6c08b770>,
+                               30)],
+             '$const302.60': [(<numba.core.ir.Assign object at 0x7f0d6c08a4b0>,
+                               30)],
+             '$const318.63': [(<numba.core.ir.Assign object at 0x7f0d6c089af0>,
+                               30)],
+             '$const468.12': [(<numba.core.ir.Assign object at 0x7f0d6c083d40>,
+                               432)],
+             '$const498.19': [(<numba.core.ir.Assign object at 0x7f0d6c082c30>,
+                               432)],
+             '$const516.2': [(<numba.core.ir.Assign object at 0x7f0d6c089be0>,
+                              514)],
+             '$phi26.0': [(<numba.core.ir.Assign object at 0x7f0d6c09b890>, 0)],
+             '$phi30.1': [(<numba.core.ir.Assign object at 0x7f0d6c09ad20>,
+                           26)],
+             '_energy_thermodynamic_states': [(<numba.core.ir.Assign object at 0x7f0d6c09d4c0>,
+                                               0)],
+             '_n_accepted_matrix': [(<numba.core.ir.Assign object at 0x7f0d6c098290>,
+                                     0)],
+             '_n_proposed_matrix': [(<numba.core.ir.Assign object at 0x7f0d6c09b5f0>,
+                                     0)],
+             '_replica_thermodynamic_states': [(<numba.core.ir.Assign object at 0x7f0d6c09d610>,
+                                                0)],
+             'bool324': [(<numba.core.ir.Assign object at 0x7f0d6c088e30>, 30)],
+             'bool428': [(<numba.core.ir.Assign object at 0x7f0d6c08ae70>,
+                          326)],
+             'energy_ii': [(<numba.core.ir.Assign object at 0x7f0d6c0921e0>,
+                            30)],
+             'energy_ij': [(<numba.core.ir.Assign object at 0x7f0d6c093f80>,
+                            30)],
+             'energy_ji': [(<numba.core.ir.Assign object at 0x7f0d6c092ed0>,
+                            30)],
+             'energy_jj': [(<numba.core.ir.Assign object at 0x7f0d6c0910d0>,
+                            30)],
+             'log_p_accept': [(<numba.core.ir.Assign object at 0x7f0d6c089400>,
+                               30)],
+             'n_replicas': [(<numba.core.ir.Assign object at 0x7f0d6c09cb00>,
+                             0)],
+             'nswap_attempts': [(<numba.core.ir.Assign object at 0x7f0d6c09cf80>,
+                                 0)],
+             'replica_i': [(<numba.core.ir.Assign object at 0x7f0d6c099d00>,
+                            30)],
+             'replica_j': [(<numba.core.ir.Assign object at 0x7f0d6c0991f0>,
+                            30)],
+             'swap_attempt': [(<numba.core.ir.Assign object at 0x7f0d6c09a600>,
+                               30)],
+             'thermodynamic_state_i': [(<numba.core.ir.Assign object at 0x7f0d6c0984d0>,
+                                        30)],
+             'thermodynamic_state_j': [(<numba.core.ir.Assign object at 0x7f0d6c098140>,
+                                        30)]})
+2024-12-12 18:56:53,904 - numba.core.ssa - DEBUG - SSA violators <numba.core.utils.OrderedSet object at 0x7f0d67c0ecf0>
+2024-12-12 18:56:53,911 - numba.core.byteflow - DEBUG - bytecode dump:
+>          0	NOP(arg=None, lineno=570)
+           2	RESUME(arg=0, lineno=570)
+           4	LOAD_GLOBAL(arg=0, lineno=570)
+          14	LOAD_ATTR(arg=2, lineno=570)
+          34	LOAD_ATTR(arg=5, lineno=570)
+          54	LOAD_CONST(arg=1, lineno=570)
+          56	LOAD_FAST(arg=0, lineno=570)
+          58	CALL(arg=2, lineno=570)
+          66	RETURN_VALUE(arg=None, lineno=570)
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - pending: deque([State(pc_initial=0 nstack_initial=0)])
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - stack: []
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - state.pc_initial: State(pc_initial=0 nstack_initial=0)
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - dispatch pc=0, inst=NOP(arg=None, lineno=570)
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - dispatch pc=2, inst=RESUME(arg=0, lineno=570)
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - dispatch pc=4, inst=LOAD_GLOBAL(arg=0, lineno=570)
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - dispatch pc=14, inst=LOAD_ATTR(arg=2, lineno=570)
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - stack ['$4load_global.0']
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - dispatch pc=34, inst=LOAD_ATTR(arg=5, lineno=570)
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - stack ['$14load_attr.1']
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - dispatch pc=54, inst=LOAD_CONST(arg=1, lineno=570)
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - stack ['$null$34.2', '$34load_attr.3']
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - dispatch pc=56, inst=LOAD_FAST(arg=0, lineno=570)
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - stack ['$null$34.2', '$34load_attr.3', '$const54.4']
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - dispatch pc=58, inst=CALL(arg=2, lineno=570)
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - stack ['$null$34.2', '$34load_attr.3', '$const54.4', '$low56.5']
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - dispatch pc=66, inst=RETURN_VALUE(arg=None, lineno=570)
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - stack ['$58call.6']
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - end state. edges=[]
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - -------------------------Prune PHIs-------------------------
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - Used_phis: defaultdict(<class 'set'>, {State(pc_initial=0 nstack_initial=0): set()})
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - defmap: {}
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - phismap: defaultdict(<class 'set'>, {})
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - changing phismap: defaultdict(<class 'set'>, {})
+2024-12-12 18:56:53,912 - numba.core.byteflow - DEBUG - keep phismap: {}
+2024-12-12 18:56:53,913 - numba.core.byteflow - DEBUG - new_out: defaultdict(<class 'dict'>, {})
+2024-12-12 18:56:53,913 - numba.core.byteflow - DEBUG - ----------------------DONE Prune PHIs-----------------------
+2024-12-12 18:56:53,913 - numba.core.byteflow - DEBUG - block_infos State(pc_initial=0 nstack_initial=0):
+AdaptBlockInfo(insts=((0, {}), (2, {}), (4, {'idx': 0, 'res': '$4load_global.0'}), (14, {'item': '$4load_global.0', 'res': '$14load_attr.1'}), (34, {'item': '$14load_attr.1', 'res': '$34load_attr.3'}), (54, {'res': '$const54.4'}), (56, {'res': '$low56.5'}), (58, {'func': '$34load_attr.3', 'args': ['$const54.4', '$low56.5'], 'kw_names': None, 'res': '$58call.6'}), (66, {'retval': '$58call.6', 'castval': '$66return_value.7'})), outgoing_phis={}, blockstack=(), active_try_block=None, outgoing_edgepushed={})
+2024-12-12 18:56:53,913 - numba.core.interpreter - DEBUG - label 0:
+    low = arg(0, name=low)                   ['low']
+    $4load_global.0 = global(np: <module 'numpy' from '/opt/conda/lib/python3.12/site-packages/numpy/__init__.py'>) ['$4load_global.0']
+    $14load_attr.1 = getattr(value=$4load_global.0, attr=random) ['$14load_attr.1', '$4load_global.0']
+    $34load_attr.3 = getattr(value=$14load_attr.1, attr=randint) ['$14load_attr.1', '$34load_attr.3']
+    $const54.4 = const(int, 0)               ['$const54.4']
+    $58call.6 = call $34load_attr.3($const54.4, low, func=$34load_attr.3, args=[Var($const54.4, randomimpl.py:570), Var(low, randomimpl.py:570)], kws=(), vararg=None, varkwarg=None, target=None) ['$34load_attr.3', '$58call.6', '$const54.4', 'low']
+    $66return_value.7 = cast(value=$58call.6) ['$58call.6', '$66return_value.7']
+    return $66return_value.7                 ['$66return_value.7']
+
+2024-12-12 18:56:53,918 - numba.core.ssa - DEBUG - ==== SSA block analysis pass on 0
+2024-12-12 18:56:53,918 - numba.core.ssa - DEBUG - Running <numba.core.ssa._GatherDefsHandler object at 0x7f0d6c077560>
+2024-12-12 18:56:53,918 - numba.core.ssa - DEBUG - on stmt: low = arg(0, name=low)
+2024-12-12 18:56:53,918 - numba.core.ssa - DEBUG - on stmt: $4load_global.0 = global(np: <module 'numpy' from '/opt/conda/lib/python3.12/site-packages/numpy/__init__.py'>)
+2024-12-12 18:56:53,918 - numba.core.ssa - DEBUG - on stmt: $14load_attr.1 = getattr(value=$4load_global.0, attr=random)
+2024-12-12 18:56:53,918 - numba.core.ssa - DEBUG - on stmt: $34load_attr.3 = getattr(value=$14load_attr.1, attr=randint)
+2024-12-12 18:56:53,918 - numba.core.ssa - DEBUG - on stmt: $const54.4 = const(int, 0)
+2024-12-12 18:56:53,919 - numba.core.ssa - DEBUG - on stmt: $58call.6 = call $34load_attr.3($const54.4, low, func=$34load_attr.3, args=[Var($const54.4, randomimpl.py:570), Var(low, randomimpl.py:570)], kws=(), vararg=None, varkwarg=None, target=None)
+2024-12-12 18:56:53,919 - numba.core.ssa - DEBUG - on stmt: $66return_value.7 = cast(value=$58call.6)
+2024-12-12 18:56:53,919 - numba.core.ssa - DEBUG - on stmt: return $66return_value.7
+2024-12-12 18:56:53,919 - numba.core.ssa - DEBUG - defs defaultdict(<class 'list'>,
+            {'$14load_attr.1': [(<numba.core.ir.Assign object at 0x7f0d6c076d80>,
+                                 0)],
+             '$34load_attr.3': [(<numba.core.ir.Assign object at 0x7f0d6c0766f0>,
+                                 0)],
+             '$4load_global.0': [(<numba.core.ir.Assign object at 0x7f0d6c077290>,
+                                  0)],
+             '$58call.6': [(<numba.core.ir.Assign object at 0x7f0d6c075ca0>,
+                            0)],
+             '$66return_value.7': [(<numba.core.ir.Assign object at 0x7f0d6c077530>,
+                                    0)],
+             '$const54.4': [(<numba.core.ir.Assign object at 0x7f0d6c076720>,
+                             0)],
+             'low': [(<numba.core.ir.Assign object at 0x7f0d6c075f10>, 0)]})
+2024-12-12 18:56:53,919 - numba.core.ssa - DEBUG - SSA violators <numba.core.utils.OrderedSet object at 0x7f0d6c077560>
+2024-12-12 18:56:53,922 - numba.core.byteflow - DEBUG - bytecode dump:
+>          0	NOP(arg=None, lineno=595)
+           2	COPY_FREE_VARS(arg=1, lineno=595)
+           4	RESUME(arg=0, lineno=595)
+           6	PUSH_NULL(arg=None, lineno=595)
+           8	LOAD_DEREF(arg=2, lineno=595)
+          10	LOAD_FAST(arg=0, lineno=595)
+          12	LOAD_FAST(arg=1, lineno=595)
+          14	CALL(arg=2, lineno=595)
+          22	RETURN_VALUE(arg=None, lineno=595)
+2024-12-12 18:56:53,922 - numba.core.byteflow - DEBUG - pending: deque([State(pc_initial=0 nstack_initial=0)])
+2024-12-12 18:56:53,922 - numba.core.byteflow - DEBUG - stack: []
+2024-12-12 18:56:53,922 - numba.core.byteflow - DEBUG - state.pc_initial: State(pc_initial=0 nstack_initial=0)
+2024-12-12 18:56:53,922 - numba.core.byteflow - DEBUG - dispatch pc=0, inst=NOP(arg=None, lineno=595)
+2024-12-12 18:56:53,922 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:53,922 - numba.core.byteflow - DEBUG - dispatch pc=2, inst=COPY_FREE_VARS(arg=1, lineno=595)
+2024-12-12 18:56:53,922 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:53,922 - numba.core.byteflow - DEBUG - dispatch pc=4, inst=RESUME(arg=0, lineno=595)
+2024-12-12 18:56:53,922 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:53,922 - numba.core.byteflow - DEBUG - dispatch pc=6, inst=PUSH_NULL(arg=None, lineno=595)
+2024-12-12 18:56:53,922 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:53,922 - numba.core.byteflow - DEBUG - dispatch pc=8, inst=LOAD_DEREF(arg=2, lineno=595)
+2024-12-12 18:56:53,922 - numba.core.byteflow - DEBUG - stack ['$null$6.0']
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - dispatch pc=10, inst=LOAD_FAST(arg=0, lineno=595)
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - stack ['$null$6.0', '$8load_deref.1']
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - dispatch pc=12, inst=LOAD_FAST(arg=1, lineno=595)
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - stack ['$null$6.0', '$8load_deref.1', '$low10.2']
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - dispatch pc=14, inst=CALL(arg=2, lineno=595)
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - stack ['$null$6.0', '$8load_deref.1', '$low10.2', '$high12.3']
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - dispatch pc=22, inst=RETURN_VALUE(arg=None, lineno=595)
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - stack ['$14call.4']
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - end state. edges=[]
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - -------------------------Prune PHIs-------------------------
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - Used_phis: defaultdict(<class 'set'>, {State(pc_initial=0 nstack_initial=0): set()})
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - defmap: {}
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - phismap: defaultdict(<class 'set'>, {})
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - changing phismap: defaultdict(<class 'set'>, {})
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - keep phismap: {}
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - new_out: defaultdict(<class 'dict'>, {})
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - ----------------------DONE Prune PHIs-----------------------
+2024-12-12 18:56:53,923 - numba.core.byteflow - DEBUG - block_infos State(pc_initial=0 nstack_initial=0):
+AdaptBlockInfo(insts=((0, {}), (2, {}), (4, {}), (6, {}), (8, {'res': '$8load_deref.1'}), (10, {'res': '$low10.2'}), (12, {'res': '$high12.3'}), (14, {'func': '$8load_deref.1', 'args': ['$low10.2', '$high12.3'], 'kw_names': None, 'res': '$14call.4'}), (22, {'retval': '$14call.4', 'castval': '$22return_value.5'})), outgoing_phis={}, blockstack=(), active_try_block=None, outgoing_edgepushed={})
+2024-12-12 18:56:53,924 - numba.core.interpreter - DEBUG - label 0:
+    low = arg(0, name=low)                   ['low']
+    high = arg(1, name=high)                 ['high']
+    $8load_deref.1 = freevar(_impl: <intrinsic _impl>) ['$8load_deref.1']
+    $14call.4 = call $8load_deref.1(low, high, func=$8load_deref.1, args=[Var(low, randomimpl.py:595), Var(high, randomimpl.py:595)], kws=(), vararg=None, varkwarg=None, target=None) ['$14call.4', '$8load_deref.1', 'high', 'low']
+    $22return_value.5 = cast(value=$14call.4) ['$14call.4', '$22return_value.5']
+    return $22return_value.5                 ['$22return_value.5']
+
+2024-12-12 18:56:53,929 - numba.core.ssa - DEBUG - ==== SSA block analysis pass on 0
+2024-12-12 18:56:53,929 - numba.core.ssa - DEBUG - Running <numba.core.ssa._GatherDefsHandler object at 0x7f0d6c06f050>
+2024-12-12 18:56:53,929 - numba.core.ssa - DEBUG - on stmt: low = arg(0, name=low)
+2024-12-12 18:56:53,929 - numba.core.ssa - DEBUG - on stmt: high = arg(1, name=high)
+2024-12-12 18:56:53,929 - numba.core.ssa - DEBUG - on stmt: $8load_deref.1 = freevar(_impl: <intrinsic _impl>)
+2024-12-12 18:56:53,929 - numba.core.ssa - DEBUG - on stmt: $14call.4 = call $8load_deref.1(low, high, func=$8load_deref.1, args=[Var(low, randomimpl.py:595), Var(high, randomimpl.py:595)], kws=(), vararg=None, varkwarg=None, target=None)
+2024-12-12 18:56:53,929 - numba.core.ssa - DEBUG - on stmt: $22return_value.5 = cast(value=$14call.4)
+2024-12-12 18:56:53,929 - numba.core.ssa - DEBUG - on stmt: return $22return_value.5
+2024-12-12 18:56:53,930 - numba.core.ssa - DEBUG - defs defaultdict(<class 'list'>,
+            {'$14call.4': [(<numba.core.ir.Assign object at 0x7f0d6c06d3a0>,
+                            0)],
+             '$22return_value.5': [(<numba.core.ir.Assign object at 0x7f0d6c06cf80>,
+                                    0)],
+             '$8load_deref.1': [(<numba.core.ir.Assign object at 0x7f0d6c06f2f0>,
+                                 0)],
+             'high': [(<numba.core.ir.Assign object at 0x7f0d6c06e1e0>, 0)],
+             'low': [(<numba.core.ir.Assign object at 0x7f0d6c06d520>, 0)]})
+2024-12-12 18:56:53,930 - numba.core.ssa - DEBUG - SSA violators <numba.core.utils.OrderedSet object at 0x7f0d6c06f050>
+2024-12-12 18:56:54,009 - numba.core.byteflow - DEBUG - bytecode dump:
+>          0	NOP(arg=None, lineno=1885)
+           2	RESUME(arg=0, lineno=1885)
+           4	LOAD_GLOBAL(arg=0, lineno=1886)
+          14	LOAD_ATTR(arg=2, lineno=1886)
+          34	LOAD_ATTR(arg=3, lineno=1886)
+          54	CALL(arg=0, lineno=1886)
+          62	RETURN_VALUE(arg=None, lineno=1886)
+2024-12-12 18:56:54,009 - numba.core.byteflow - DEBUG - pending: deque([State(pc_initial=0 nstack_initial=0)])
+2024-12-12 18:56:54,009 - numba.core.byteflow - DEBUG - stack: []
+2024-12-12 18:56:54,009 - numba.core.byteflow - DEBUG - state.pc_initial: State(pc_initial=0 nstack_initial=0)
+2024-12-12 18:56:54,009 - numba.core.byteflow - DEBUG - dispatch pc=0, inst=NOP(arg=None, lineno=1885)
+2024-12-12 18:56:54,009 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:54,009 - numba.core.byteflow - DEBUG - dispatch pc=2, inst=RESUME(arg=0, lineno=1885)
+2024-12-12 18:56:54,009 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:54,009 - numba.core.byteflow - DEBUG - dispatch pc=4, inst=LOAD_GLOBAL(arg=0, lineno=1886)
+2024-12-12 18:56:54,009 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:54,009 - numba.core.byteflow - DEBUG - dispatch pc=14, inst=LOAD_ATTR(arg=2, lineno=1886)
+2024-12-12 18:56:54,009 - numba.core.byteflow - DEBUG - stack ['$4load_global.0']
+2024-12-12 18:56:54,009 - numba.core.byteflow - DEBUG - dispatch pc=34, inst=LOAD_ATTR(arg=3, lineno=1886)
+2024-12-12 18:56:54,009 - numba.core.byteflow - DEBUG - stack ['$14load_attr.1']
+2024-12-12 18:56:54,010 - numba.core.byteflow - DEBUG - dispatch pc=54, inst=CALL(arg=0, lineno=1886)
+2024-12-12 18:56:54,010 - numba.core.byteflow - DEBUG - stack ['$null$34.2', '$34load_attr.3']
+2024-12-12 18:56:54,010 - numba.core.byteflow - DEBUG - dispatch pc=62, inst=RETURN_VALUE(arg=None, lineno=1886)
+2024-12-12 18:56:54,010 - numba.core.byteflow - DEBUG - stack ['$54call.4']
+2024-12-12 18:56:54,010 - numba.core.byteflow - DEBUG - end state. edges=[]
+2024-12-12 18:56:54,010 - numba.core.byteflow - DEBUG - -------------------------Prune PHIs-------------------------
+2024-12-12 18:56:54,010 - numba.core.byteflow - DEBUG - Used_phis: defaultdict(<class 'set'>, {State(pc_initial=0 nstack_initial=0): set()})
+2024-12-12 18:56:54,010 - numba.core.byteflow - DEBUG - defmap: {}
+2024-12-12 18:56:54,010 - numba.core.byteflow - DEBUG - phismap: defaultdict(<class 'set'>, {})
+2024-12-12 18:56:54,010 - numba.core.byteflow - DEBUG - changing phismap: defaultdict(<class 'set'>, {})
+2024-12-12 18:56:54,010 - numba.core.byteflow - DEBUG - keep phismap: {}
+2024-12-12 18:56:54,010 - numba.core.byteflow - DEBUG - new_out: defaultdict(<class 'dict'>, {})
+2024-12-12 18:56:54,010 - numba.core.byteflow - DEBUG - ----------------------DONE Prune PHIs-----------------------
+2024-12-12 18:56:54,010 - numba.core.byteflow - DEBUG - block_infos State(pc_initial=0 nstack_initial=0):
+AdaptBlockInfo(insts=((0, {}), (2, {}), (4, {'idx': 0, 'res': '$4load_global.0'}), (14, {'item': '$4load_global.0', 'res': '$14load_attr.1'}), (34, {'item': '$14load_attr.1', 'res': '$34load_attr.3'}), (54, {'func': '$34load_attr.3', 'args': [], 'kw_names': None, 'res': '$54call.4'}), (62, {'retval': '$54call.4', 'castval': '$62return_value.5'})), outgoing_phis={}, blockstack=(), active_try_block=None, outgoing_edgepushed={})
+2024-12-12 18:56:54,010 - numba.core.interpreter - DEBUG - label 0:
+    size = arg(0, name=size)                 ['size']
+    $4load_global.0 = global(np: <module 'numpy' from '/opt/conda/lib/python3.12/site-packages/numpy/__init__.py'>) ['$4load_global.0']
+    $14load_attr.1 = getattr(value=$4load_global.0, attr=random) ['$14load_attr.1', '$4load_global.0']
+    $34load_attr.3 = getattr(value=$14load_attr.1, attr=random) ['$14load_attr.1', '$34load_attr.3']
+    $54call.4 = call $34load_attr.3(func=$34load_attr.3, args=[], kws=(), vararg=None, varkwarg=None, target=None) ['$34load_attr.3', '$54call.4']
+    $62return_value.5 = cast(value=$54call.4) ['$54call.4', '$62return_value.5']
+    return $62return_value.5                 ['$62return_value.5']
+
+2024-12-12 18:56:54,015 - numba.core.ssa - DEBUG - ==== SSA block analysis pass on 0
+2024-12-12 18:56:54,015 - numba.core.ssa - DEBUG - Running <numba.core.ssa._GatherDefsHandler object at 0x7f0d67f1faa0>
+2024-12-12 18:56:54,015 - numba.core.ssa - DEBUG - on stmt: size = arg(0, name=size)
+2024-12-12 18:56:54,015 - numba.core.ssa - DEBUG - on stmt: $4load_global.0 = global(np: <module 'numpy' from '/opt/conda/lib/python3.12/site-packages/numpy/__init__.py'>)
+2024-12-12 18:56:54,015 - numba.core.ssa - DEBUG - on stmt: $14load_attr.1 = getattr(value=$4load_global.0, attr=random)
+2024-12-12 18:56:54,016 - numba.core.ssa - DEBUG - on stmt: $34load_attr.3 = getattr(value=$14load_attr.1, attr=random)
+2024-12-12 18:56:54,016 - numba.core.ssa - DEBUG - on stmt: $54call.4 = call $34load_attr.3(func=$34load_attr.3, args=[], kws=(), vararg=None, varkwarg=None, target=None)
+2024-12-12 18:56:54,016 - numba.core.ssa - DEBUG - on stmt: $62return_value.5 = cast(value=$54call.4)
+2024-12-12 18:56:54,016 - numba.core.ssa - DEBUG - on stmt: return $62return_value.5
+2024-12-12 18:56:54,016 - numba.core.ssa - DEBUG - defs defaultdict(<class 'list'>,
+            {'$14load_attr.1': [(<numba.core.ir.Assign object at 0x7f0d67f1df70>,
+                                 0)],
+             '$34load_attr.3': [(<numba.core.ir.Assign object at 0x7f0d67f1e2a0>,
+                                 0)],
+             '$4load_global.0': [(<numba.core.ir.Assign object at 0x7f0d67f1ec90>,
+                                  0)],
+             '$54call.4': [(<numba.core.ir.Assign object at 0x7f0d67f1f0e0>,
+                            0)],
+             '$62return_value.5': [(<numba.core.ir.Assign object at 0x7f0d67f1d0d0>,
+                                    0)],
+             'size': [(<numba.core.ir.Assign object at 0x7f0d6c07f650>, 0)]})
+2024-12-12 18:56:54,016 - numba.core.ssa - DEBUG - SSA violators <numba.core.utils.OrderedSet object at 0x7f0d67f1faa0>
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - bytecode dump:
+>          0	NOP(arg=None, lineno=251)
+           2	COPY_FREE_VARS(arg=1, lineno=251)
+           4	RESUME(arg=0, lineno=251)
+           6	PUSH_NULL(arg=None, lineno=251)
+           8	LOAD_DEREF(arg=0, lineno=251)
+          10	CALL(arg=0, lineno=251)
+          18	RETURN_VALUE(arg=None, lineno=251)
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - pending: deque([State(pc_initial=0 nstack_initial=0)])
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - stack: []
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - state.pc_initial: State(pc_initial=0 nstack_initial=0)
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - dispatch pc=0, inst=NOP(arg=None, lineno=251)
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - dispatch pc=2, inst=COPY_FREE_VARS(arg=1, lineno=251)
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - dispatch pc=4, inst=RESUME(arg=0, lineno=251)
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - dispatch pc=6, inst=PUSH_NULL(arg=None, lineno=251)
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - stack []
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - dispatch pc=8, inst=LOAD_DEREF(arg=0, lineno=251)
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - stack ['$null$6.0']
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - dispatch pc=10, inst=CALL(arg=0, lineno=251)
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - stack ['$null$6.0', '$8load_deref.1']
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - dispatch pc=18, inst=RETURN_VALUE(arg=None, lineno=251)
+2024-12-12 18:56:54,020 - numba.core.byteflow - DEBUG - stack ['$10call.2']
+2024-12-12 18:56:54,021 - numba.core.byteflow - DEBUG - end state. edges=[]
+2024-12-12 18:56:54,021 - numba.core.byteflow - DEBUG - -------------------------Prune PHIs-------------------------
+2024-12-12 18:56:54,021 - numba.core.byteflow - DEBUG - Used_phis: defaultdict(<class 'set'>, {State(pc_initial=0 nstack_initial=0): set()})
+2024-12-12 18:56:54,021 - numba.core.byteflow - DEBUG - defmap: {}
+2024-12-12 18:56:54,021 - numba.core.byteflow - DEBUG - phismap: defaultdict(<class 'set'>, {})
+2024-12-12 18:56:54,021 - numba.core.byteflow - DEBUG - changing phismap: defaultdict(<class 'set'>, {})
+2024-12-12 18:56:54,021 - numba.core.byteflow - DEBUG - keep phismap: {}
+2024-12-12 18:56:54,021 - numba.core.byteflow - DEBUG - new_out: defaultdict(<class 'dict'>, {})
+2024-12-12 18:56:54,021 - numba.core.byteflow - DEBUG - ----------------------DONE Prune PHIs-----------------------
+2024-12-12 18:56:54,021 - numba.core.byteflow - DEBUG - block_infos State(pc_initial=0 nstack_initial=0):
+AdaptBlockInfo(insts=((0, {}), (2, {}), (4, {}), (6, {}), (8, {'res': '$8load_deref.1'}), (10, {'func': '$8load_deref.1', 'args': [], 'kw_names': None, 'res': '$10call.2'}), (18, {'retval': '$10call.2', 'castval': '$18return_value.3'})), outgoing_phis={}, blockstack=(), active_try_block=None, outgoing_edgepushed={})
+2024-12-12 18:56:54,021 - numba.core.interpreter - DEBUG - label 0:
+    $8load_deref.1 = freevar(_impl: <intrinsic _impl>) ['$8load_deref.1']
+    $10call.2 = call $8load_deref.1(func=$8load_deref.1, args=[], kws=(), vararg=None, varkwarg=None, target=None) ['$10call.2', '$8load_deref.1']
+    $18return_value.3 = cast(value=$10call.2) ['$10call.2', '$18return_value.3']
+    return $18return_value.3                 ['$18return_value.3']
+
+2024-12-12 18:56:54,026 - numba.core.ssa - DEBUG - ==== SSA block analysis pass on 0
+2024-12-12 18:56:54,026 - numba.core.ssa - DEBUG - Running <numba.core.ssa._GatherDefsHandler object at 0x7f0d67f1daf0>
+2024-12-12 18:56:54,026 - numba.core.ssa - DEBUG - on stmt: $8load_deref.1 = freevar(_impl: <intrinsic _impl>)
+2024-12-12 18:56:54,026 - numba.core.ssa - DEBUG - on stmt: $10call.2 = call $8load_deref.1(func=$8load_deref.1, args=[], kws=(), vararg=None, varkwarg=None, target=None)
+2024-12-12 18:56:54,026 - numba.core.ssa - DEBUG - on stmt: $18return_value.3 = cast(value=$10call.2)
+2024-12-12 18:56:54,026 - numba.core.ssa - DEBUG - on stmt: return $18return_value.3
+2024-12-12 18:56:54,027 - numba.core.ssa - DEBUG - defs defaultdict(<class 'list'>,
+            {'$10call.2': [(<numba.core.ir.Assign object at 0x7f0d67f1cb60>,
+                            0)],
+             '$18return_value.3': [(<numba.core.ir.Assign object at 0x7f0d67f1f650>,
+                                    0)],
+             '$8load_deref.1': [(<numba.core.ir.Assign object at 0x7f0d67f1c0b0>,
+                                 0)]})
+2024-12-12 18:56:54,027 - numba.core.ssa - DEBUG - SSA violators <numba.core.utils.OrderedSet object at 0x7f0d67f1daf0>
+2024-12-12 18:56:54,222 - openmmtools.utils.utils - DEBUG - Mixing of replicas took    0.743s
+2024-12-12 18:56:54,223 - openmmtools.multistate.replicaexchange - DEBUG - Accepted 128/128 attempted swaps (100.0%)
+2024-12-12 18:56:54,223 - openmmtools.multistate.multistatesampler - DEBUG - Propagating all replicas...
+2024-12-12 18:56:54,223 - mpiplus.mpiplus - DEBUG - Running _propagate_replica serially.
+2024-12-12 18:56:54,953 - openmmtools.mcmc - DEBUG - LangevinDynamicsMove: Integrator using CUDA platform.
+2024-12-12 18:56:57,829 - openmmtools.mcmc - WARNING - Potential energy is NaN after 0 attempts of integration with move LangevinDynamicsMove Attempting a restart...
+2024-12-12 18:57:00,581 - openmmtools.mcmc - WARNING - Potential energy is NaN after 1 attempts of integration with move LangevinDynamicsMove Attempting a restart...
+2024-12-12 18:57:03,333 - openmmtools.mcmc - WARNING - Potential energy is NaN after 2 attempts of integration with move LangevinDynamicsMove Attempting a restart...
+2024-12-12 18:57:06,085 - openmmtools.mcmc - ERROR - Potential energy is NaN after 3 attempts of integration with move LangevinDynamicsMove Trying to reinitialize Context as a last-resort restart attempt...
+2024-12-12 18:57:09,166 - openmmtools.mcmc - ERROR - Potential energy is NaN after 4 attempts of integration with move LangevinDynamicsMove
+2024-12-12 18:57:10,277 - openmmtools.multistate.multistatesampler - CRITICAL - Propagating replica 0 at state 0 resulted in a NaN!
+The state of the system and integrator before the error were saved in results/nan-error-logs
+2024-12-12 18:57:10,525 - mpiplus.mpiplus - DEBUG - Single node: executing <bound method MultiStateReporter.close of <openmmtools.multistate.multistatereporter.MultiStateReporter object at 0x7f0d67c913a0>>
