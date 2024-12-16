@@ -4,8 +4,8 @@ import fire
 import numpy as np
 
 def run(
-        filepath: str = "results/CD28_general_equilibrated.cif", 
-        output_dir: str = 'results',
+        filepath: str = "tmp/CD28_general_equilibrated.cif", 
+        output_dir: str = 'tmp',
         ):
         
     FILEPATH = filepath
@@ -13,15 +13,15 @@ def run(
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
-    MDTIME = 1
+    MDTIME = 0.01
 
     T_MIN = 300
-    T_MAX = 600
+    T_MAX = 400
     N_REPLICAS = 4
 
     
-    PADDING = 2
-    # BOX_SIZE = [14, 14, 14]
+    # PADDING = 2
+    BOX_SIZE = [14, 14, 14]
 
     # 1. PLUMED CONFIG
     # CVs are cmap, d in that order
@@ -56,8 +56,8 @@ def run(
         'type': 'metad',
         'temperature': TEMPERATURE,
         'stride': 1,
-        'include_cutoff': 0.8,
-        'contact_threshold': 0.8,
+        'cmap.include_cutoff': 0.8,
+        'cmap.contact_threshold': 0.8,
         'restart_rfile': None,
         'state_wstride': get_checkpoint_interval(TIMESTEP),
         'metad.pace': 500,
@@ -109,11 +109,11 @@ def run(
         split_chains=False,
         logging_frequency=LOGGING_FREQUENCY,
         config=config,
-        padding=PADDING,
+        box_size=BOX_SIZE,
         chain_mode='two-chain',
         # replica_exchange=False,
         replica_exchange=True,
-        swap_time=1,
+        swap_time=0.01,
         temperatures=TEMPERATURES,
     )
 
