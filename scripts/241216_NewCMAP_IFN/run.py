@@ -24,8 +24,6 @@ def run(
         filepath: str, 
         system: str,
         output_dir: str,
-        metad_pace: int,
-        restart: bool
         ):
         
     FILEPATH = filepath
@@ -48,7 +46,9 @@ def run(
     NON_INF_LENGTH = BINDER_LENGTH + LINKER1_LENGTH + PROTEASE_LENGTH + LINKER2_LENGTH
 
     # nresidues = mda.Universe(FILEPATH)._topology.n_residues
-    universe = mda.Universe(FILEPATH)
+    from openmm.app import PDBxFile
+    cif = PDBxFile(FILEPATH)
+    universe = mda.Universe(cif)
     nresidues = len(universe.select_atoms("protein").residues)
     assert nresidues == (
         NON_INF_LENGTH + INF_LENGTH
@@ -97,7 +97,7 @@ def run(
         'cmap.include_cutoff': 1.5,
         'restart_rfile': None,
         'state_wstride': get_checkpoint_interval(TIMESTEP),
-        'metad.pace': metad_pace,
+        'metad.pace': 500,
         'cv1.type': 'cmap',
         'cv1.sigma': 0.15,
         'cv1.grid_min': 0,
@@ -117,7 +117,7 @@ def run(
         'spot1_residues': spot1_residues,
         'spot2_residues': spot2_residues,
         'idr_residues': None,
-        'restart': restart,
+        'restart': False,
         'trajectory_logging': True
     }
 
@@ -141,7 +141,7 @@ def run(
         logging_frequency=LOGGING_FREQUENCY,
         config=config,
         padding=padding,
-        chain_mode='single-chain'
+        chain_mode='single-chain',
     )
 
 

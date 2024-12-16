@@ -104,7 +104,7 @@ def run(
         box_size=BOX_SIZE,
         chain_mode='two-chain',
         equilibrate_only=False,
-        generate_plumed_input=True,
+        generate_plumed_input=False,
         replica_exchange=False,
     )
 
