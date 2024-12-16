@@ -194,26 +194,20 @@ def run_replica_plumed(
             # Call parent method in case future versions add functionality
             super()._after_integration(context, thermodynamic_state)
 
-    # if plumed_config['cv1.pbc'] and plumed_config['cv2.pbc']:
-    #     move = mcmc.LangevinDynamicsMove(
-    #         timestep=timestep,
-    #         collision_rate=1/unit.picoseconds,
-    #         n_steps=swap_steps,
-    #         reassign_velocities=True
-    #     )
-    # else:
-    #     move = NoPeriodicCVLangevinDynamicsMove(
-    #         timestep=timestep,
-    #         collision_rate=1/unit.picoseconds,
-    #         n_steps=swap_steps,
-    #         reassign_velocities=True
-    #     )
-    move = NoPeriodicCVLangevinDynamicsMove(
-        timestep=timestep,
-        collision_rate=1/unit.picoseconds,
-        n_steps=swap_steps,
-        reassign_velocities=True
-    )
+    if plumed_config['cv1.pbc'] and plumed_config['cv2.pbc']:
+        move = mcmc.LangevinDynamicsMove(
+            timestep=timestep,
+            collision_rate=1/unit.picoseconds,
+            n_steps=swap_steps,
+            reassign_velocities=True
+        )
+    else:
+        move = NoPeriodicCVLangevinDynamicsMove(
+            timestep=timestep,
+            collision_rate=1/unit.picoseconds,
+            n_steps=swap_steps,
+            reassign_velocities=True
+        )
 
     # TODO: adjust this move to move always to base image?
 
@@ -278,6 +272,11 @@ def run_replica_plumed(
         sampler_states=sampler_state, # can be a single state, which gets copied to all replicas
         storage=reporter
         )
+            
+    # Equilibriate the replicas at the new temperatures
+    equilibriation_time = 10 * unit.nanoseconds
+    equilibriation_steps = int(equilibriation_time / swap_time)
+    simulation.equilibrate(n_iterations=equilibriation_steps, mcmc_moves=move)
     
     # Equilibriate the replicas at the new temperatures
     equilibriation_time = 10 * unit.nanoseconds

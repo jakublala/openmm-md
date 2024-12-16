@@ -30,4 +30,4 @@ echo ${PROJECT_DIR}
 
 submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241211-NewUW/CD28_general_equilibrated.cif" \
                 "CD28-G-14" \
-                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241211-NewUW" \
+                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241215-NewUW" \
