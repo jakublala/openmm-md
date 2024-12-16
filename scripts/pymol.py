@@ -133,12 +133,21 @@ def colour_object(object_name, commands_file):
     # Join residue numbers with + to create a valid PyMOL selection
     binder_spots_str = '+'.join(binder_spots)
     target_spots_str = '+'.join(target_spots)
-    
-    cmd.color("blue", f"{object_name} and chain A")
-    cmd.color("green", f"{object_name} and chain B")
-    cmd.color("magenta", f"{object_name} and resi {binder_spots_str} and chain A")
-    cmd.color("yellow", f"{object_name} and resi {target_spots_str} and chain B")
-    
+
+    # compute the number of different chains
+    num_chains = len(set(cmd.get_chains(object_name)))
+    assert 0 == 1
+    if num_chains == 2:
+        cmd.color("blue", f"{object_name} and chain A")
+        cmd.color("green", f"{object_name} and chain B")
+        cmd.color("magenta", f"{object_name} and resi {binder_spots_str} and chain A")
+        cmd.color("yellow", f"{object_name} and resi {target_spots_str} and chain B")
+    elif num_chains == 1:
+        cmd.color("blue", f"{object_name} and chain A")
+        cmd.color("magenta", f"{object_name} and resi {binder_spots_str} and chain A")
+        cmd.color("yellow", f"{object_name} and resi {target_spots_str} and chain A")
+    else:
+        raise ValueError(f"Expected 1 or 2 chains, got {num_chains}")
 
 def load_trajectory(replicate=False):
     """
