@@ -61,7 +61,7 @@ def main(
         timestep=2,
         temperature=300,
         device='cuda',
-        device_precision='double',
+        device_precision='mixed',
         output_dir=None,
         padding=None,
         split_chains=None,

@@ -16,7 +16,7 @@ def run(
     MDTIME = 200
 
     T_MIN = 300
-    T_MAX = 600
+    T_MAX = 400
     N_REPLICAS = 4
 
     
@@ -114,7 +114,7 @@ def run(
         split_chains=False,
         logging_frequency=LOGGING_FREQUENCY,
         config=config,
-        padding=PADDING,
+        box_size=BOX_SIZE,
         chain_mode='two-chain',
         replica_exchange=True,
         swap_time=1, # in ps

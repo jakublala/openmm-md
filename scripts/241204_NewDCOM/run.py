@@ -20,7 +20,12 @@ def run(
     # CVs are cmap, d in that order
 
     import MDAnalysis as mda
-    universe = mda.Universe(FILEPATH)
+    if 'cif' in FILEPATH:
+        from openmm.app import PDBxFile
+        cif = PDBxFile(FILEPATH)
+        universe = mda.Universe(cif)
+    else:
+        universe = mda.Universe(FILEPATH)
     BINDER_LENGTH = len(universe.select_atoms('chainid A'))
 
 
@@ -91,6 +96,7 @@ def run(
         mdtime=MDTIME,
         timestep=TIMESTEP,
         device_index=gpu_indices,
+        device_precision='single',
         device='cuda',
         split_chains=False,
         logging_frequency=LOGGING_FREQUENCY,

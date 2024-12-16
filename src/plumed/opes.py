@@ -19,7 +19,7 @@ def run_plumed(
         temperature=300, 
         restart_checkpoint=None, 
         device='cuda', 
-        device_precision='double',
+        device_precision='mixed',
         device_index='0', 
         output_dir=None, 
         logging_frequency=None,
