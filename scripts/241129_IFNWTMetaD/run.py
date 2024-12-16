@@ -93,7 +93,8 @@ def run(
         'type': 'metad',
         'temperature': TEMPERATURE,
         'stride': 500,
-        'cutoff': 0.8,
+        'cmap.contact_threshold': 0.8,
+        'cmap.include_cutoff': 0.8,
         'restart_rfile': None,
         'state_wstride': get_checkpoint_interval(TIMESTEP),
         'metad.pace': metad_pace,
@@ -140,7 +141,7 @@ def run(
         logging_frequency=LOGGING_FREQUENCY,
         config=config,
         padding=padding,
-        chain_mode='single-chain'
+        chain_mode='single-chain',
     )
 
 
