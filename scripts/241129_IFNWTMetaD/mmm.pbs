@@ -41,7 +41,8 @@ PYTHON_CMD="python $HOME/projects/openmm-md/scripts/241129_IFNWTMetaD/run.py \
     --output_dir $OUTPUT_DIR \
     --system $SYSTEM \
     --filepath $FILEPATH \
-    --metad_pace $METAD_PACE"
+    --metad_pace $METAD_PACE \
+    --restart $RESTART"
 
 # Execute the command using apptainer
 apptainer exec \

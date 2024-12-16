@@ -1,24 +1,20 @@
 #!/bin/bash
 
-# Get the template PBS file
-if [[ "$1" == "-f" && -n "$2" ]]; then
-    TEMPLATE="$2"
-    if [[ ! -f "$TEMPLATE" ]]; then
-        echo "Specified template file $TEMPLATE not found"
-        exit 1
-    fi
+# Detect environment based on current working directory
+CURRENT_PATH=$(pwd)
+
+if [[ "$CURRENT_PATH" == *"gpfs"* ]]; then
+    PROJECT_DIR="/gpfs/home/jl24018/projects/openmm-md"
+    TEMPLATE="hx1.pbs"
+elif [[ "$CURRENT_PATH" == *"mmm1486"* ]]; then
+    PROJECT_DIR="/home/mmm1486/projects/openmm-md"
+    TEMPLATE="mmm.pbs"
 else
-    if [[ -f "hx1.pbs" ]]; then
-        TEMPLATE="hx1.pbs"
-    elif [[ -f "cx3.pbs" ]]; then
-        TEMPLATE="cx3.pbs" 
-    elif [[ -f "mmm.pbs" ]]; then
-        TEMPLATE="mmm.pbs"
-    else
-        echo "No PBS template file found"
-        exit 1
-    fi
+    echo "Unknown environment: $CURRENT_PATH"
+    exit 1
 fi
+
+echo "Detected environment: Using $TEMPLATE with project dir: ${PROJECT_DIR}"
 
 
 submit_simulation() {
@@ -26,12 +22,14 @@ submit_simulation() {
     local system=$2
     local metad_pace=$3
     local output_dir=$4
+    local restart=$5
     echo "Submitting $system with template $TEMPLATE"
 
-    qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,METAD_PACE=$metad_pace,OUTPUT_DIR=$output_dir" $TEMPLATE
+    qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,METAD_PACE=$metad_pace,OUTPUT_DIR=$output_dir,RESTART=$restart" $TEMPLATE
 }
 
-DATE="241204-MetaD"
+RESTART_DATE="241204-MetaD"
+DATE="241204-MetaD2"
 SYSTEM="Z1-B50L10W"
 PROJECT_DIR="/home/mmm1486/projects/openmm-md/data/241109_INFconstruct/output/"
 
@@ -47,10 +45,11 @@ PROJECT_DIR="/home/mmm1486/projects/openmm-md/data/241109_INFconstruct/output/"
 #                 100 \
 #                 "${PROJECT_DIR}/data/241109_INFconstruct/output/${SYSTEM}/${DATE}-MetaDPace100"
 
-submit_simulation "/home/mmm1486/projects/openmm-md/data/241109_INFconstruct/output/${SYSTEM}/241122-Explore/${SYSTEM}_equilibrated.pdb" \
+submit_simulation "/home/mmm1486/projects/openmm-md/data/241109_INFconstruct/output/${SYSTEM}/${RESTART_DATE}/${SYSTEM}_equilibrated.cif" \
                 "${SYSTEM}" \
                 500 \
-                "/home/mmm1486/projects/openmm-md/data/241109_INFconstruct/output/${SYSTEM}/${DATE}"
+                "/home/mmm1486/projects/openmm-md/data/241109_INFconstruct/output/${SYSTEM}/${DATE}" \
+                True
 
 
 # submit_simulation "${PROJECT_DIR}/${SYSTEM}/241122-Explore/${SYSTEM}_equilibrated.pdb" \

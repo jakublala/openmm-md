@@ -24,7 +24,8 @@ def run(
         filepath: str, 
         system: str,
         output_dir: str,
-        metad_pace: int
+        metad_pace: int,
+        restart: bool
         ):
         
     FILEPATH = filepath
@@ -96,12 +97,18 @@ def run(
         'restart_rfile': None,
         'state_wstride': get_checkpoint_interval(TIMESTEP),
         'metad.pace': metad_pace,
-        'cvs': ['cmap', 'd'],
-        'metad.sigma': f'0.15,0.05', # "0.04,0.01"
-        'metad.height': 1.25, # 1/2 * kBT
-        'metad.grid_min': f'0,0',
-        'metad.grid_max': f'52,{upper_wall_at+1.5}',
-        'metad.grid_bin': "200,200",
+        'cv1.type': 'cmap',
+        'cv1.sigma': 0.15,
+        'cv1.grid_min': 0,
+        'cv1.grid_max': 52,
+        'cv1.grid_bin': 200,
+        'cv1.pbc': True,
+        'cv2.type': 'd',
+        'cv2.sigma': 0.27,
+        'cv2.grid_min': 0,
+        'cv2.grid_max': upper_wall_at+1.5,
+        'cv2.grid_bin': 200,
+        'cv2.pbc': True,
         'metad.biasfactor': 50,
         'upper_wall.at': upper_wall_at, # keep this at UW=5, we are primarily looking at BIASFACTOR now
         'upper_wall.exp': 6,
@@ -109,7 +116,7 @@ def run(
         'spot1_residues': spot1_residues,
         'spot2_residues': spot2_residues,
         'idr_residues': None,
-        'restart': False,
+        'restart': restart,
         'trajectory_logging': True
     }
 

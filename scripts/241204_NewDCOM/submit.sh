@@ -30,7 +30,7 @@ submit_simulation() {
 
 PROJECT_DIR="/home/mmm1486/projects/openmm-md"
 
-submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241204-Long3/CD28_general_equilibrated.cif" \
+submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241204-Long4/CD28_general_equilibrated.cif" \
                 "CD28-G" \
-                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241204-Long4" \
+                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241204-Long5" \
                 True
