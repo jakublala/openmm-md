@@ -223,7 +223,7 @@ def run_replica_plumed(
     # Instantiate the reporter that only collects protein atoms
     reporter = MultiStateReporter(
         storage=storage_path,
-        checkpoint_path=checkpoint_path,
+        checkpoint_storage='replica_exchange_checkpoint.nc',
         checkpoint_interval=10,
         analysis_particle_indices=mda.Universe(pdb).select_atoms("protein").ids
         )
@@ -273,14 +273,9 @@ def run_replica_plumed(
         storage=reporter
         )
             
-    # Equilibriate the replicas at the new temperatures
-    equilibriation_time = 10 * unit.nanoseconds
-    equilibriation_steps = int(equilibriation_time / swap_time)
-    simulation.equilibrate(n_iterations=equilibriation_steps, mcmc_moves=move)
-    
-    # Equilibriate the replicas at the new temperatures
-    equilibriation_time = 10 * unit.nanoseconds
-    equilibriation_steps = int(equilibriation_time / swap_time)
-    simulation.equilibrate(n_iterations=equilibriation_steps, mcmc_moves=move)
+    # # Equilibriate the replicas at the new temperatures
+    # equilibriation_time = 10 * unit.nanoseconds
+    # equilibriation_steps = int(equilibriation_time / swap_time)
+    # simulation.equilibrate(n_iterations=equilibriation_steps, mcmc_moves=move)
     
     simulation.run()

@@ -113,12 +113,12 @@ import re
 
 def extract_residues(file_content):
     # Extract binding site residues
-    binding_pattern = r"select binding_site, resi ([\d+]+) and chain A"
+    binding_pattern = r"select binding_site, resi ([\d+]+) and chain"
     binding_match = re.search(binding_pattern, file_content)
     binder_spots = binding_match.group(1).split('+') if binding_match else []
     
     # Extract binder contact residues
-    contact_pattern = r"select binder_contacts, resi ([\d+]+) and chain B"
+    contact_pattern = r"select binder_contacts, resi ([\d+]+) and chain"
     contact_match = re.search(contact_pattern, file_content)
     target_spots = contact_match.group(1).split('+') if contact_match else []
     
@@ -133,11 +133,21 @@ def colour_object(object_name, commands_file):
     # Join residue numbers with + to create a valid PyMOL selection
     binder_spots_str = '+'.join(binder_spots)
     target_spots_str = '+'.join(target_spots)
-    
-    cmd.color("blue", f"{object_name} and chain A")
-    cmd.color("green", f"{object_name} and chain B")
-    cmd.color("magenta", f"{object_name} and resi {binder_spots_str} and chain A")
-    cmd.color("yellow", f"{object_name} and resi {target_spots_str} and chain B")
+
+    # compute the number of different chains
+    num_chains = len(set(cmd.get_chains(object_name)))
+
+    if num_chains == 2:
+        cmd.color("blue", f"{object_name} and chain A")
+        cmd.color("green", f"{object_name} and chain B")
+        cmd.color("magenta", f"{object_name} and resi {binder_spots_str} and chain A")
+        cmd.color("yellow", f"{object_name} and resi {target_spots_str} and chain B")
+    elif num_chains == 1:
+        cmd.color("blue", f"{object_name} and chain A")
+        cmd.color("magenta", f"{object_name} and resi {binder_spots_str} and chain A")
+        cmd.color("yellow", f"{object_name} and resi {target_spots_str} and chain A")
+    else:
+        raise ValueError(f"Expected 1 or 2 chains, got {num_chains}")
     
 
 def load_trajectory(replicate=False):
