@@ -12,7 +12,7 @@ def run(
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
-    MDTIME = 1
+    MDTIME = 1000
     
     # PADDING = 4
     BOX_SIZE = [14, 14, 14]
