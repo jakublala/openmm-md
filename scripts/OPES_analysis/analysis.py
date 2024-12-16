@@ -16,7 +16,6 @@ OPES_PACE = 500
 TEMP = 300
 STRIDE = 500
 
-
 def consider_walls(df):
     # compine opes.bias + uwall.bias and create a new column total_bias
     df["total_bias"] = df["opes.bias"] + df["uwall.bias"]
@@ -57,13 +56,7 @@ def plot_opes_values(colvar_df, axs):
 
 from src.analysis.colvar import plot_colvar_trajectories
 
-def plot_hills(directory, ax):
-    hills_file = get_file_by_extension(directory, '.hills')
-    hills_df = read_hills_file(hills_file)
-    ax.plot(hills_df['time'], hills_df['height'])
-    ax.set_xlabel("Time [ns]")
-    ax.set_ylabel("Height [kJ/mol]")
-    return ax
+from src.analysis.metad import plot_hills
 
 def plot_summary(directory, system, simulation_type):
     # Create figure with constrained layout for better spacing

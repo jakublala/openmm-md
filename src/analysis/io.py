@@ -4,7 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def read_colvar_file(filename):
+def read_colvar_file(filename, plumed_filename=None):
     # Read first line to get column names
     with open(filename) as f:
         header_line = f.readline().strip()
@@ -24,10 +24,12 @@ def read_colvar_file(filename):
         names=column_names
     )
 
-    filename = filename.replace(".colvar", "_plumed.dat")
-    with open(filename, "r") as f:
+    if plumed_filename is None:
+        plumed_filename = filename.replace(".colvar", "_plumed.dat")
+
+    with open(plumed_filename, "r") as f:
         content = f.read()
-    
+
     # depositing kernels
     pace_pattern = r"PACE=(\d+)"
     matches = re.findall(pace_pattern, content)

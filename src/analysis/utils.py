@@ -13,6 +13,7 @@ def get_file_by_extension(directory, extension, assert_exists=True):
         FileNotFoundError: If no file with extension is found
     """
     files = glob.glob(f"{directory}/*{extension}")
+    
     for i, file in enumerate(files):
         if 'bck.' in file:
             logger.warning(f"Found a backup file ({file}), ignoring it...")
@@ -26,6 +27,7 @@ def get_file_by_extension(directory, extension, assert_exists=True):
     return files[0]
 
 from src.constants import kB
+
 def convert_deltaG_to_kBT(deltaG_kJmol, TEMP):
     return deltaG_kJmol / (kB * TEMP)
 
