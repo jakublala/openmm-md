@@ -41,7 +41,8 @@ def filter_interchain_contacts(
 
 def get_contact_map(
         filename: str, 
-        cutoff: float, # in nm
+        contact_cutoff: float, # in nm
+        include_cutoff: float = None, # in nm
         output_dir: str = None,
         spot1_residues: Optional[Segment] = None,
         spot2_residues: Optional[Segment] = None,
@@ -50,11 +51,21 @@ def get_contact_map(
     """
     Creates a contact residue map for a given system.
     It outputs the indices of the contact residues.
+
+    Parameters
+    ----------
+    contact_cutoff : float
+        Cutoff for defining the actual contact / interaction cutoff for each contact [nm]
+    include_cutoff : float, optional
+        Cutoff for defining contacts that should be included in the contact map [nm]
     """
     # find the residue indices of the selected chains within a cutoff
 
     if output_dir is None:
         raise ValueError('Output directory is required')
+    
+    if include_cutoff is None:
+        include_cutoff = contact_cutoff
     
     if mode is None:
         raise ValueError('Mode is required')
@@ -93,11 +104,11 @@ def get_contact_map(
     global_to_local_map = _get_global_to_local_map(CA_universe)
 
     chain_ids = np.concatenate(CA_universe.segments.chainIDs)
-    
-    include_cutoff = 1.0*cutoff*10 # TODO: maybe include more contacts
+
+
     cmatrix = contact_matrix(
         CA_universe.atoms,
-        cutoff=include_cutoff,
+        cutoff=include_cutoff*10, # turn to angstroms
         box=CA_universe.dimensions, 
         )
     np.fill_diagonal(cmatrix, False)

@@ -24,8 +24,11 @@ def create_plumed_input(
         filename, 
         output_dir=None,
         config=None,
-        mode: Literal['single-chain', 'two-chain'] = 'single-chain',
+        mode: Literal['single-chain', 'two-chain'] = None,
         ):
+    
+    if mode is None:
+        raise ValueError('Mode is required')
     
     assert_config(config)
 
@@ -38,7 +41,8 @@ def create_plumed_input(
 
     contact_map = get_contact_map(
         filename=filename, 
-        cutoff=config['cutoff'],
+        contact_cutoff=config['cmap.contact_threshold'],
+        include_cutoff=config['cmap.include_cutoff'],
         output_dir=output_dir,
         spot1_residues=config['spot1_residues'],
         spot2_residues=config['spot2_residues'],
@@ -58,7 +62,7 @@ def create_plumed_input(
     with open(f'{output_dir}/{filename}_plumed.dat', 'w') as f:
         f.write(plumed_content)
 
-    write_pymol_commands(filename, output_dir, contact_map)
+    write_pymol_commands(filename, output_dir, contact_map, mode)
 
 
 def get_plumed_content(
@@ -117,14 +121,14 @@ WHOLEMOLECULES ENTITY0=chain_A ENTITY1=chain_B"""
             if config[f'{cv}.pbc']:
                 return f"""cmap: CONTACTMAP ... 
 {contact_map}
-\tSWITCH={{RATIONAL R_0={config['cutoff']}}}
+\tSWITCH={{RATIONAL R_0={config['cmap.contact_threshold']}}}
 \tSUM
 ...
 """
             else:
                 return f"""cmap: CONTACTMAP ... 
 {contact_map}
-\tSWITCH={{RATIONAL R_0={config['cutoff']}}}
+\tSWITCH={{RATIONAL R_0={config['cmap.contact_threshold']}}}
 \tSUM NOPBC
 ...
 """
@@ -229,15 +233,23 @@ PRINT ARG={print_arg} STRIDE={config['stride']} FILE={output_dir}/{filename}.col
     return plumed_content
 
 
-def write_pymol_commands(filename, output_dir, contact_map: ContactMap):
-    # assuming indexing of 1
-    # TODO: do proper assertion
-    residues_site_1 = set([i.residue1.index for i in contact_map.contacts])
-    residues_site_2 = set([i.residue2.index for i in contact_map.contacts])
-    binding_site_1_str = '+'.join(str(i) for i in residues_site_1)
-    binding_site_2_str = '+'.join(str(i) for i in residues_site_2)
-    site_1_chain_id = contact_map.contacts[0].residue1.chain_id
-    site_2_chain_id = contact_map.contacts[0].residue2.chain_id
+def write_pymol_commands(
+        filename, 
+        output_dir, 
+        contact_map: ContactMap,
+        mode: Literal['single-chain', 'two-chain'],
+        ):
+    if mode == 'two-chain':
+        # assuming indexing of 1
+        # TODO: do proper assertion
+        residues_site_1 = set([i.residue1.index for i in contact_map.contacts])
+        residues_site_2 = set([i.residue2.index for i in contact_map.contacts])
+        binding_site_1_str = '+'.join(str(i) for i in residues_site_1)
+        binding_site_2_str = '+'.join(str(i) for i in residues_site_2)
+        site_1_chain_id = contact_map.contacts[0].residue1.chain_id
+        site_2_chain_id = contact_map.contacts[0].residue2.chain_id
+    elif mode == 'single-chain':
+        raise NotImplementedError('Single chain mode not implemented')
     # Write PyMOL visualization commands
     pymol_commands = f"""load {output_dir}/{filename}_fixed.pdb
 
