@@ -29,7 +29,13 @@ def plot_replica_analysis(directory, system, cvs, n_replicas=4):
     replica_exchange_file = get_file_by_extension(directory, 'replica_exchange.nc')
     nc = netCDF4.Dataset(replica_exchange_file, 'r')
 
-    print(nc.variables.keys())
+    # print(nc.variables.keys())
+    # print(nc.variables['neighborhoods'][:])
+    # print(nc.variables['metadata'])
+    # print(nc.variables['options'])
+    # print(nc.variables['analysis_particle_indices'])
+
+
 
     # float64 energies(iteration, replica, state)
     # TODO: I am not sure what is the difference betweeen the replica and the state dimension
@@ -37,7 +43,7 @@ def plot_replica_analysis(directory, system, cvs, n_replicas=4):
     potential_energies = np.array(nc.variables['energies'])[:, 0, :].squeeze()
     for i in range(n_replicas):
         axs[0].hist(potential_energies[:, i], bins=100, label=f"Replica {i+1}")
-    axs[0].set_xlabel("Potential Energy [kJ/mol]")
+    axs[0].set_xlabel("Potential Energy [reduced units]")
     axs[0].set_ylabel("Frequency")
     axs[0].set_title("Distribution of Potential Energies")
     axs[0].legend()
