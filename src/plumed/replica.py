@@ -218,17 +218,18 @@ def run_replica_plumed(
     # TODO: adjust this move to move always to base image?
 
     storage_path = pathlib.Path(f"{output_dir}/replica_exchange.nc")
+    checkpoint_path = pathlib.Path(f"{output_dir}/replica_exchange_checkpoint.nc")
     if rank == 0:
         # if exists, delete
         if storage_path.exists():
             storage_path.unlink()
-        checkpoint_path = pathlib.Path(f"{output_dir}/replica_exchange_checkpoint.nc")
         if checkpoint_path.exists():
             checkpoint_path.unlink()
     
     # Instantiate the reporter that only collects protein atoms
     reporter = MultiStateReporter(
-        storage=storage_path, 
+        storage=storage_path,
+        checkpoint_path=checkpoint_path,
         checkpoint_interval=10,
         analysis_particle_indices=mda.Universe(pdb).select_atoms("protein").ids
         )
@@ -277,5 +278,10 @@ def run_replica_plumed(
         sampler_states=sampler_state, # can be a single state, which gets copied to all replicas
         storage=reporter
         )
+    
+    # Equilibriate the replicas at the new temperatures
+    equilibriation_time = 10 * unit.nanoseconds
+    equilibriation_steps = int(equilibriation_time / swap_time)
+    simulation.equilibrate(n_iterations=equilibriation_steps, mcmc_moves=move)
     
     simulation.run()
