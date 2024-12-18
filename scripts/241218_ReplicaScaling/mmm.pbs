@@ -1,8 +1,5 @@
 #!/bin/bash -l
 
-# Request a number of GPU cards, in this case 2 (the maximum)
-#$ -l gpu=1
-
 # Request ten minutes of wallclock time (format hours:minutes:seconds).
 #$ -l h_rt=48:00:0
 
@@ -32,16 +29,16 @@ apptainer pull $HOME/Scratch/openmm-md.sif docker://jakublala/openmm-md
 SYSTEM="${SYSTEM:?Missing SYSTEM}"
 FILEPATH="${FILEPATH:?Missing FILEPATH}"
 OUTPUT_DIR="${OUTPUT_DIR:?Missing OUTPUT_DIR}"
-RESTART="${RESTART:?Missing RESTART}"
+N_REPLICAS="${N_REPLICAS:?Missing N_REPLICAS}"
 
 echo "Running $SYSTEM with output_dir $OUTPUT_DIR"
 
 
 # Define the Python command
-PYTHON_CMD="python /home/mmm1486/projects/openmm-md/scripts/241211_NewUW/run.py \
+PYTHON_CMD="python /home/mmm1486/projects/openmm-md/scripts/241218_ReplicaScaling/run.py \
     --output_dir $OUTPUT_DIR \
     --filepath $FILEPATH \
-    --restart $RESTART"
+    --n_replicas $N_REPLICAS"
 
 # Execute the command using apptainer
 apptainer exec \

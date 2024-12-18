@@ -28,8 +28,8 @@ submit_simulation() {
     qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,METAD_PACE=$metad_pace,OUTPUT_DIR=$output_dir,RESTART=$restart" $TEMPLATE
 }
 
-RESTART_DATE="241204-MetaD"
-DATE="241204-MetaD2"
+RESTART_DATE="241204-MetaD2"
+DATE="241204-MetaD3"
 SYSTEM="Z1-B50L10W"
 PROJECT_DIR="/home/mmm1486/projects/openmm-md/data/241109_INFconstruct/output/"
 

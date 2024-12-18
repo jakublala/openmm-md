@@ -281,7 +281,6 @@ def main(
             logging_frequency=logging_frequency,
             plumed_config=config,
             chain_mode=chain_mode,
-            n_replicas=4,
         )
     else:
         assert rank == 0, "Usual single replica run doesn't support MPI, we only support a single process run."

@@ -4,6 +4,7 @@ import fire
 import numpy as np
 
 def run(
+        n_replicas: int,
         filepath: str = "results/CD28_general_equilibrated.cif", 
         output_dir: str = 'results',
         ):
@@ -13,11 +14,11 @@ def run(
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
-    MDTIME = 200
+    MDTIME = 0.25
 
     T_MIN = 300
     T_MAX = 360
-    N_REPLICAS = 4
+    N_REPLICAS = n_replicas
 
     
     # PADDING = 2
