@@ -35,11 +35,16 @@ echo "Running $SYSTEM with output_dir $OUTPUT_DIR"
 
 
 # Define the Python command
-PYTHON_CMD="python /home/mmm1486/projects/openmm-md/scripts/241218_ReplicaScaling/run.py \
-    --output_dir $OUTPUT_DIR \
-    --filepath $FILEPATH \
-    --n_replicas $N_REPLICAS"
 
+# PYTHON_CMD="mpirun -np $N_REPLICAS --hostfile hostfile_$N_REPLICAS \
+#     python /home/mmm1486/projects/openmm-md/scripts/241218_ReplicaScaling/run.py \
+#     --output_dir $OUTPUT_DIR \
+#     --filepath $FILEPATH \
+#     --n_replicas $N_REPLICAS"
+
+
+PYTHON_CMD="mpirun -np $N_REPLICAS --hostfile hostfile_$N_REPLICAS --mca btl self,sm \
+    python /home/mmm1486/projects/openmm-md/scripts/241218_ReplicaScaling/mpi_test.py"
 # Execute the command using apptainer
 apptainer exec \
     --nv \
@@ -51,3 +56,7 @@ apptainer exec \
 
 # Preferably, tar-up (archive) all output files onto the shared scratch area
 tar zcvf $HOME/Scratch/files_from_job_$JOB_ID.tar.gz $TMPDIR
+
+
+
+# TMPDIR=/tmpdir/job/1647804.undefined OMPI_MCA_plm_rsh_tmpdir=/tmpdir/job/1647804.undefined mpirun -np 4 mpi_test.py

@@ -90,7 +90,6 @@ def run_replica_plumed(
         logging_frequency: int,
         plumed_config: str,
         chain_mode: str,
-        n_replicas: int,
         ):
     
     from src.plumed.io import create_plumed_input

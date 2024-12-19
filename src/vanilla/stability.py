@@ -21,7 +21,7 @@ def stability(
         restart=False,
         logging_frequency=100,
         device="cuda",
-        output_dir=None
+        output_dir=None,
         ):
     
     time_step = 0.001*timestep*picoseconds
