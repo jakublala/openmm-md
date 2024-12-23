@@ -26,7 +26,7 @@ def stability(
         timestep=2, # in femtoseconds
         temperature=300,
         restart=False,
-        logging_frequency=100,
+        logging_frequency=None,
         device="cuda",
         output_dir=None,
         equilibrate_only=False,
@@ -56,6 +56,8 @@ def stability(
 
 
     forcefield = ForceField('amber14-all.xml', 'amber14/tip3pfb.xml')
+
+    traj_interval = int(1 * picosecond / dt)
     
     # System Configuration
     nonbondedMethod = PME
@@ -123,7 +125,7 @@ def stability(
     simulation.reporters.append(
         MDAReporter(
             f'{output_dir}/{filename}.dcd', 
-            logging_frequency, 
+            traj_interval, 
             enforcePeriodicBox=False, 
             selection="protein"
             )
@@ -133,7 +135,7 @@ def stability(
     simulation.reporters.append(
         StateDataReporter(
             file=f'{output_dir}/{filename}.out',
-            reportInterval=logging_frequency,
+            reportInterval=traj_interval,
             step=True,
             time=True,
             potentialEnergy=True,
