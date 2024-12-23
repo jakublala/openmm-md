@@ -7,7 +7,11 @@ from openmm import Platform
 import logging
 logger = logging.getLogger(__name__)
 
-def get_platform_and_properties(device, device_index, device_precision):
+def get_platform_and_properties(
+        device, 
+        device_index, 
+        device_precision = 'mixed',
+        ):
     """Get the platform and properties for the specified device."""
     if device == "cuda":
         logger.info(f'Using CUDA device {device_index}')
@@ -88,3 +92,14 @@ def get_gpu_indices():
             gpu_indices.append(index)
     
     return ','.join(gpu_indices) if gpu_indices else '0'
+
+from openmm.app import PDBxFile
+def save_equilibrated_state(
+        simulation,
+        output_dir,
+        filename
+        ) -> None:
+    topology = simulation.topology
+    positions = simulation.context.getState(getPositions=True).getPositions()
+    PDBxFile.writeFile(topology, positions, open(f'{output_dir}/{filename}_equilibrated.cif', 'w'))
+    logger.info(f'Equilibrated state saved to {output_dir}/{filename}_equilibrated.cif')

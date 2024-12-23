@@ -100,15 +100,15 @@ def run(
         'metad.pace': 500,
         'cv1.type': 'cmap',
         'cv1.sigma': 0.15,
-        'cv1.grid_min': 0,
-        'cv1.grid_max': 52,
-        'cv1.grid_bin': 200,
+        'cv1.grid_min': None,
+        'cv1.grid_max': None,
+        'cv1.grid_bin': None,
         'cv1.pbc': True,
         'cv2.type': 'd',
         'cv2.sigma': 0.27,
-        'cv2.grid_min': 0,
-        'cv2.grid_max': upper_wall_at+1.5,
-        'cv2.grid_bin': 200,
+        'cv2.grid_min': None,
+        'cv2.grid_max': None,
+        'cv2.grid_bin': None,
         'cv2.pbc': True,
         'metad.height': 1.25, # 1/2 * kBT
         'metad.biasfactor': 50,
@@ -119,7 +119,7 @@ def run(
         'spot1_residues': spot1_residues,
         'spot2_residues': spot2_residues,
         'idr_residues': None,
-        'restart': False,
+        'restart': True,
         'trajectory_logging': True
     }
 

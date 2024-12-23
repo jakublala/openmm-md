@@ -21,12 +21,15 @@ submit_simulation() {
     local filepath=$1
     local system=$2
     local output_dir=$3
+    local restart=$4
     echo "Submitting $system with template $TEMPLATE"
 
-    qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,OUTPUT_DIR=$output_dir" $TEMPLATE
+    qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,OUTPUT_DIR=$output_dir,RESTART=$restart" $TEMPLATE
 }
 
 echo ${PROJECT_DIR}
-submit_simulation "${PROJECT_DIR}/data/241109_INFconstruct/output/Z1-B50L10W/241216-NewCMAP/Z1-B50L10W_equilibrated.cif" \
-                "Z1-B50L10W-CMAP2" \
-                "${PROJECT_DIR}/data/241109_INFconstruct/output/Z1-B50L10W/241216-NewCMAP2" \
+
+submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241215-NewUW3/CD28_general_equilibrated.cif" \
+                "CD28-G-NewUW3" \
+                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241222-NewUW3" \
+                True

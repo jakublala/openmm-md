@@ -32,7 +32,6 @@ apptainer pull $HOME/Scratch/openmm-md.sif docker://jakublala/openmm-md
 SYSTEM="${SYSTEM:?Missing SYSTEM}"
 FILEPATH="${FILEPATH:?Missing FILEPATH}"
 OUTPUT_DIR="${OUTPUT_DIR:?Missing OUTPUT_DIR}"
-RESTART="${RESTART:?Missing RESTART}"
 
 echo "Running $SYSTEM with output_dir $OUTPUT_DIR"
 
@@ -40,8 +39,7 @@ echo "Running $SYSTEM with output_dir $OUTPUT_DIR"
 # Define the Python command
 PYTHON_CMD="python /home/mmm1486/projects/openmm-md/scripts/241211_NewUW/run.py \
     --output_dir $OUTPUT_DIR \
-    --filepath $FILEPATH \
-    --restart $RESTART"
+    --filepath $FILEPATH"
 
 # Execute the command using apptainer
 apptainer exec \

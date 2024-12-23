@@ -17,7 +17,7 @@ def minimize(
         filename=None,
         max_iterations=None,
         device_index='0',
-        device_precision='double',
+        device_precision='mixed',
         constraints=None,
         device="cuda",
         output_dir=None,

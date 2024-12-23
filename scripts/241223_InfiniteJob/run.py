@@ -1,36 +1,32 @@
 from src.plumed.main import main
 from src.plumed.utils import get_checkpoint_interval
 import fire
-import numpy as np
 
 def run(
-        filepath: str = "results/CD28_general_equilibrated.cif", 
-        output_dir: str = 'results',
+        filepath: str = "../../data/241010_FoldingUponBinding/output/CD28-G/241211-NewUW/CD28_general_equilibrated.cif", 
+        output_dir: str = '../../data/241010_FoldingUponBinding/output/CD28-G/241216-NewCMAP',
         ):
-        
+    
     FILEPATH = filepath
     OUTPUT_DIR = output_dir
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
-    MDTIME = 200
-
-    T_MIN = 300
-    T_MAX = 360
-    N_REPLICAS = 4
-
+    MDTIME = 0.1
     
-    # PADDING = 2
+    # PADDING = 4
     BOX_SIZE = [14, 14, 14]
 
     # 1. PLUMED CONFIG
     # CVs are cmap, d in that order
     import MDAnalysis as mda
-    from openmm.app import PDBxFile
-    pdb = PDBxFile(FILEPATH)
-    universe = mda.Universe(pdb)
+    if 'cif' in FILEPATH:
+        from openmm.app import PDBxFile
+        cif = PDBxFile(FILEPATH)
+        universe = mda.Universe(cif)
+    else:
+        universe = mda.Universe(FILEPATH)
     BINDER_LENGTH = len(universe.select_atoms('chainid A'))
-
 
     # FOR CD28
     # we will exclude this from computing the centre of masses
@@ -57,7 +53,7 @@ def run(
         'temperature': TEMPERATURE,
         'stride': 500,
         'cmap.contact_threshold': 0.8,
-        'cmap.include_cutoff': 0.8,
+        'cmap.include_cutoff': 1.5,
         'restart_rfile': None,
         'state_wstride': get_checkpoint_interval(TIMESTEP),
         'metad.pace': 500,
@@ -66,28 +62,21 @@ def run(
         'cv1.grid_min': None,
         'cv1.grid_max': None,
         'cv1.grid_bin': None,
-        # 'cv1.grid_min': 0,
-        # 'cv1.grid_max': 45,
-        # 'cv1.grid_bin': 200,
-        'cv1.pbc': True,
+        'cv1.pbc': False,
         'cv2.type': 'd',
         'cv2.sigma': 0.27,
         'cv2.grid_min': None,
         'cv2.grid_max': None,
         'cv2.grid_bin': None,
-        # 'cv2.grid_min': 0,
-        # 'cv2.grid_max': 12,
-        # 'cv2.grid_bin': 200,
-        'cv2.pbc': True,
+        'cv2.pbc': False,
         'metad.height': 1.25, # 1/2 * kBT
         'metad.biasfactor': 48,
-        'upper_wall.at': 6, # keep this at UW=5, we are primarily looking at BIASFACTOR now
+        'upper_wall.at': 5, # keep this at UW=5, we are primarily looking at BIASFACTOR now
         'upper_wall.exp': 6,
         'upper_wall.kappa': 1000.0,
         'spot1_residues': None,
         'spot2_residues': None,
         'idr_residues': idr_residues,
-        'restart': False,
         'trajectory_logging': True
     }
 
@@ -97,10 +86,6 @@ def run(
         gpu_indices = get_gpu_indices()
     else:
         gpu_indices = None
-
-    from openmm.unit import kelvin
-    TEMPERATURES = [T_MIN + (T_MAX - T_MIN) * (np.exp(float(i) / float(N_REPLICAS-1)) - 1.0) / (np.e - 1.0) for i in range(N_REPLICAS)]
-    TEMPERATURES = [T * kelvin for T in TEMPERATURES]
     
     # 2. RUN MINIMIZATION AND SIMULATION
     main(
@@ -109,7 +94,7 @@ def run(
         temperature=TEMPERATURE,
         mdtime=MDTIME,
         timestep=TIMESTEP,
-        device_index=None,
+        device_index=gpu_indices,
         device='cuda',
         device_precision='mixed',
         split_chains=False,
@@ -117,9 +102,9 @@ def run(
         config=config,
         box_size=BOX_SIZE,
         chain_mode='two-chain',
-        replica_exchange=True,
-        swap_time=1, # in ps
-        temperatures=TEMPERATURES,
+        equilibrate_only=False,
+        generate_plumed_input=False,
+        replica_exchange=False,
     )
 
 

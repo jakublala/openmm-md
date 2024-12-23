@@ -1,0 +1,49 @@
+INFO:    Using cached SIF image
+[hx1-d10-gpu-05:696600] shmem: mmap: an error occurred while determining whether or not /var/tmp/pbs.172135.pbs-6/ompi.hx1-d10-gpu-05.1327033/jf.0/3831562240/shared_mem_cuda_pool.hx1-d10-gpu-05 could be created.
+[hx1-d10-gpu-05:696600] create_and_attach: unable to create shared memory BTL coordinating structure :: size 134217728 
+mkdir -p failed for path /gpfs/home/jl24018/.config/matplotlib: [Errno 30] Read-only file system: '/gpfs/home/jl24018/.config'
+Matplotlib created a temporary cache directory at /var/tmp/pbs.172135.pbs-6/matplotlib-gaqmcbt0 because there was an issue with the default path (/gpfs/home/jl24018/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+Fontconfig error: No writable cache directories
+2024-12-22 18:39:12,445 - pymbar.timeseries - WARNING - Warning on use of the timeseries module: If the inherent timescales of the system are long compared to those being analyzed, this statistical inefficiency may be an underestimate.  The estimate presumes the use of many statistically independent samples.  Tests should be performed to assess whether this condition is satisfied.   Be cautious in the interpretation of the data.
+2024-12-22 18:39:15,092 - pymbar.mbar_solvers - WARNING - 
+****** PyMBAR will use 64-bit JAX! *******
+* JAX is currently set to 32-bit bitsize *
+* which is its default.                  *
+*                                        *
+* PyMBAR requires 64-bit mode and WILL   *
+* enable JAX's 64-bit mode when called.  *
+*                                        *
+* This MAY cause problems with other     *
+* Uses of JAX in the same code.          *
+******************************************
+
+2024-12-22 18:39:15,106 - pymbar.mbar_solvers - INFO - JAX detected. Using JAX acceleration.
+2024-12-22 18:39:25,283 - MDAnalysis.core.universe - INFO - The attribute(s) masses, types have already been read from the topology file. The guesser will only guess empty values for this attribute, if any exists. To overwrite it by completely guessed values, you can pass the attribute to the force_guess parameter instead of the to_guess one
+2024-12-22 18:39:25,289 - MDAnalysis.guesser.base - INFO - There is no empty types values. Guesser did not guess any new values for types attribute
+2024-12-22 18:39:25,291 - MDAnalysis.guesser.base - INFO - There is no empty masses values. Guesser did not guess any new values for masses attribute
+2024-12-22 18:39:25,343 - root - INFO - Output directory: /gpfs/home/jl24018/projects/openmm-md/data/241010_FoldingUponBinding/output/CD28-G/241216-NewCMAP2
+2024-12-22 18:39:25,344 - root - INFO - Input PDB file is equilibrated, assuming it comes from a previous run...
+2024-12-22 18:39:25,344 - root - INFO - Copying fixed, equilibrated and solvated pdb files to output directory
+2024-12-22 18:39:25,345 - root - WARNING - File /gpfs/home/jl24018/projects/openmm-md/data/241010_FoldingUponBinding/output/CD28-G/241216-NewCMAP2/CD28_general_fixed.pdb is the same as the one in the output directory, skipping copy... You are likely doing something manually. Be careful!
+2024-12-22 18:39:25,346 - root - WARNING - File /gpfs/home/jl24018/projects/openmm-md/data/241010_FoldingUponBinding/output/CD28-G/241216-NewCMAP2/CD28_general_equilibrated.cif is the same as the one in the output directory, skipping copy... You are likely doing something manually. Be careful!
+2024-12-22 18:39:25,347 - root - WARNING - File /gpfs/home/jl24018/projects/openmm-md/data/241010_FoldingUponBinding/output/CD28-G/241216-NewCMAP2/CD28_general_solvated.cif is the same as the one in the output directory, skipping copy... You are likely doing something manually. Be careful!
+Traceback (most recent call last):
+  File "/gpfs/home/jl24018/projects/openmm-md/scripts/241216_NewCMAP_FuB/run.py", line 114, in <module>
+    fire.Fire(run)
+  File "/opt/conda/lib/python3.12/site-packages/fire/core.py", line 135, in Fire
+    component_trace = _Fire(component, args, parsed_flag_args, context, name)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.12/site-packages/fire/core.py", line 468, in _Fire
+    component, remaining_args = _CallAndUpdateTrace(
+                                ^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/lib/python3.12/site-packages/fire/core.py", line 684, in _CallAndUpdateTrace
+    component = fn(*varargs, **kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^
+  File "/gpfs/home/jl24018/projects/openmm-md/scripts/241216_NewCMAP_FuB/run.py", line 93, in run
+    main(
+  File "/gpfs/home/jl24018/projects/openmm-md/src/plumed/main.py", line 165, in main
+    hills_file = get_file_by_extension(input_dir, '.hills')
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/gpfs/home/jl24018/projects/openmm-md/src/analysis/utils.py", line 24, in get_file_by_extension
+    raise FileNotFoundError(f"No file with extension {extension} found in {directory}")
+FileNotFoundError: No file with extension .hills found in /gpfs/home/jl24018/projects/openmm-md/data/241010_FoldingUponBinding/output/CD28-G/241216-NewCMAP2
