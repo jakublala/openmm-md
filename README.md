@@ -170,6 +170,21 @@ apptainer exec openmm-md_v1.0.0.sif python -c "import numpy; print(numpy.__versi
 ```
 
 
+
+### Use Docker as a local server and SSH into it
+Start the container in detached mode
+```
+docker run -d \
+    --gpus all \
+    -v $HOME/phd/openmm-md:/app \
+    -v $HOME/.vscode-server:/home/$(id -u)/.vscode-server \
+    -w /app \
+    --name openmm-dev \
+    --user $(id -u):$(id -g) \
+    jakublala/openmm-md \
+    tail -f /dev/null
+```
+Not sure how to do it, it doesn't work.
 ## Usage
 
 ### Replica Exchange (Multi-GPU)

@@ -67,7 +67,7 @@ def plot_replica_analysis(directory, system, cvs, n_replicas=4):
 
     # plot the states index across the temperatures
     T_MIN = 300
-    T_MAX = 600
+    T_MAX = 400
     TEMPERATURES = [T_MIN + (T_MAX - T_MIN) * (np.exp(float(i) / float(n_replicas-1)) - 1.0) / (np.e - 1.0) for i in range(n_replicas)]
     states = np.array(nc.variables['states'])[:]
     for i in range(states.shape[0]):

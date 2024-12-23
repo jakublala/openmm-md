@@ -13,7 +13,7 @@ def run(
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
-    MDTIME = 0.01
+    MDTIME = 0.001
 
     T_MIN = 300
     T_MAX = 400
