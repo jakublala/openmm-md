@@ -12,10 +12,11 @@ apptainer pull --force $HOME/openmm-md.sif docker://jakublala/openmm-md
 SYSTEM=${SYSTEM}
 FILEPATH=${FILEPATH}
 OUTPUT_DIR=${OUTPUT_DIR}
-
+RESTART=${RESTART}
 PYTHON_CMD="python run.py \
     --output_dir $OUTPUT_DIR \
-    --filepath $FILEPATH"
+    --filepath $FILEPATH \
+    --restart $RESTART"
 
 
 # Add this before the main apptainer exec command to test CUDA

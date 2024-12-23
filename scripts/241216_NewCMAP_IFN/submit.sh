@@ -28,5 +28,5 @@ submit_simulation() {
 
 echo ${PROJECT_DIR}
 submit_simulation "${PROJECT_DIR}/data/241109_INFconstruct/output/Z1-B50L10W/241216-NewCMAP/Z1-B50L10W_equilibrated.cif" \
-                "Z1-B50L10W-CMAP" \
-                "${PROJECT_DIR}/data/241109_INFconstruct/output/Z1-B50L10W/241216-NewCMAP" \
+                "Z1-B50L10W-CMAP2" \
+                "${PROJECT_DIR}/data/241109_INFconstruct/output/Z1-B50L10W/241216-NewCMAP2" \
