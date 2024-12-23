@@ -8,7 +8,8 @@ from src.relax import minimize
 from src.fixer import fixer
 from src.plumed.io import create_plumed_input
 from src.analysis.utils import get_file_by_extension
-from src.plumed.utils import get_checkpoint_interval, get_pace_from_metad, get_last_checkpoint_timestep, process_hills_for_restart
+from src.plumed.utils import get_pace_from_metad, get_last_checkpoint_timestep, process_hills_for_restart
+from src.utils import get_checkpoint_interval
 from src.plumed.replica import run_replica_plumed
 import sys
 
@@ -87,10 +88,11 @@ def main(
 
     if output_dir is None:
         raise ValueError('Output directory is required')
+    input_dir = os.path.dirname(filepath)
 
     # Deduce whether we are restarting from a previous run
     try:
-        out_file = get_file_by_extension(output_dir, '.out')
+        out_file = get_file_by_extension(input_dir, '.out')
         # Check if file has more than 2 lines
         with open(out_file, 'r') as f:
             line_count = sum(1 for line in f)
@@ -103,22 +105,23 @@ def main(
     # make a new subfolder for the restart
     # first look whether there is already a restart folder (which could be restart-i where i is the index of the restart)
     # get all folders with 'restart-' in the name
-    restart_folders = [f for f in os.listdir(output_dir) if f.startswith('restart-')]
-    if restart_folders:
-        logger.info(f"Found {len(restart_folders)} restart folders, going to add a new one...")
-        # get the index of the last restart folder
-        restart_folders.sort(key=lambda x: int(x.split('-')[-1]))
-        last_restart_index = int(restart_folders[-1].split('-')[-1])
-        # make a new restart folder with the next index
-        new_restart_index = last_restart_index + 1
+    if config['restart']:
+        restart_folders = [f for f in os.listdir(input_dir) if f.startswith('restart-')]
+        if restart_folders:
+            logger.info(f"Found {len(restart_folders)} restart folders, going to add a new one...")
+            # get the index of the last restart folder
+            restart_folders.sort(key=lambda x: int(x.split('-')[-1]))
+            last_restart_index = int(restart_folders[-1].split('-')[-1])
+            # make a new restart folder with the next index
+            new_restart_index = last_restart_index + 1
 
-        filepath = os.path.join(output_dir, f'restart-{last_restart_index}', os.path.basename(filepath))
-        # asser that the file exists
-        assert os.path.exists(filepath), f"File {filepath} does not exist, cannot restart properly..."
-        output_dir = os.path.join(output_dir, f'restart-{new_restart_index}')
+            filepath = os.path.join(input_dir, f'restart-{last_restart_index}', os.path.basename(filepath))
+            # asser that the file exists
+            assert os.path.exists(filepath), f"File {filepath} does not exist, cannot restart properly..."
+            output_dir = os.path.join(input_dir, f'restart-{new_restart_index}')
 
-    else:
-        output_dir = os.path.join(output_dir, 'restart-1')
+        else:
+            output_dir = os.path.join(input_dir, 'restart-1')
 
 
     try:

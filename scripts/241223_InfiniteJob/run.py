@@ -1,18 +1,18 @@
 from src.plumed.main import main
-from src.plumed.utils import get_checkpoint_interval
 import fire
 
+# /home/jakub/phd/openmm-md/data/241010_FoldingUponBinding/output/CD28-G/241215-NewUW3
 def run(
-        filepath: str = "../../data/241010_FoldingUponBinding/output/CD28-G/241211-NewUW/CD28_general_equilibrated.cif", 
-        output_dir: str = '../../data/241010_FoldingUponBinding/output/CD28-G/241216-NewCMAP',
+        filepath: str = "../../data/241010_FoldingUponBinding/output/CD28-G/241215-NewUW3/CD28_general_equilibrated.cif", 
+        output_dir: str = '../../data/241010_FoldingUponBinding/output/CD28-G/241222-NewUW3',
         ):
     
     FILEPATH = filepath
     OUTPUT_DIR = output_dir
     TEMPERATURE = 300
-    LOGGING_FREQUENCY = 100
+    LOGGING_FREQUENCY = 1
     TIMESTEP = 2
-    MDTIME = 0.1
+    MDTIME = 0.01
     
     # PADDING = 4
     BOX_SIZE = [14, 14, 14]
@@ -55,7 +55,7 @@ def run(
         'cmap.contact_threshold': 0.8,
         'cmap.include_cutoff': 1.5,
         'restart_rfile': None,
-        'state_wstride': get_checkpoint_interval(TIMESTEP),
+        'state_wstride': None,
         'metad.pace': 500,
         'cv1.type': 'cmap',
         'cv1.sigma': 0.15,
