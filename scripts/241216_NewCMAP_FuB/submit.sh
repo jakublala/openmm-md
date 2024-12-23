@@ -21,21 +21,19 @@ submit_simulation() {
     local filepath=$1
     local system=$2
     local output_dir=$3
-    local restart=$4
     echo "Submitting $system with template $TEMPLATE"
 
-    qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,OUTPUT_DIR=$output_dir,RESTART=$restart" $TEMPLATE
+    qsub -N "$system" -v "FILEPATH=$filepath,SYSTEM=$system,OUTPUT_DIR=$output_dir" $TEMPLATE
 }
 
 echo ${PROJECT_DIR}
 
-submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241222-LongCMAP/CD28_general_equilibrated.cif" \
-                "CD28-G-LongCMAP" \
-                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241222-LongCMAP" \
-                False
+# submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241222-LongCMAP/CD28_general_equilibrated.cif" \
+#                 "CD28-G-LongCMAP" \
+#                 "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241222-LongCMAP"
 
 
 submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241216-NewCMAP/CD28_general_equilibrated.cif" \
                 "CD28-G-CMAP2" \
-                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241216-NewCMAP2" \
-                True
+                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241216-NewCMAP"
+                
