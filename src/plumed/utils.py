@@ -80,3 +80,30 @@ def assert_correct_metad_grid(config):
 
     grid_spacing = (config['cv2.grid_max'] - config['cv2.grid_min']) / config['cv2.grid_bin']
     assert grid_spacing / 2 < config['cv2.sigma'], f'Grid spacing for {config['cv2.type']} is too large, increase SIGMA'
+
+
+
+def prepare_plumed_file_for_restart(plumed_file, output_dir, system):
+    with open(plumed_file, 'r') as f:
+        lines = f.readlines()
+    
+    # change the RESTART=NO to RESTART=YES
+    for i, line in enumerate(lines):
+        if 'RESTART=NO' in line:
+            lines[i] = line.replace('RESTART=NO', 'RESTART=YES')
+            break
+
+    # find FILE=<anything>.hills and FILE=<anything>.colvar and replace them with FILE=<output_dir>/restart-<index>/<anything>.hills and FILE=<output_dir>/restart-<index>/<anything>.colvar
+    # Use regex to find and replace FILE= patterns for both .hills and .colvar files
+    import re
+    for i, line in enumerate(lines):
+        if 'FILE=' in line:
+            # Replace any FILE=<path>/<name>.hills or FILE=<path>/<name>.colvar
+            line = re.sub(r'FILE=.*?\.hills', f'FILE={output_dir}/{system}.hills', line)
+            line = re.sub(r'FILE=.*?\.colvar', f'FILE={output_dir}/{system}.colvar', line)
+            lines[i] = line
+
+    with open(f'{output_dir}/{system}_plumed.dat', 'w') as f:
+        f.writelines(lines)
+
+    return f'{output_dir}/{system}_plumed.dat'

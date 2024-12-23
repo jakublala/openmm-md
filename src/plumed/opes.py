@@ -210,7 +210,7 @@ def run_plumed(
     if plumed_config is None:
         raise ValueError('PLUMED config is required')
     
-    if generate_plumed_input:
+    if generate_plumed_input and not plumed_config['restart']:
         create_plumed_input(
             filename=filename, 
             output_dir=output_dir,

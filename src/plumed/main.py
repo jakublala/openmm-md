@@ -88,6 +88,39 @@ def main(
     if output_dir is None:
         raise ValueError('Output directory is required')
 
+    # Deduce whether we are restarting from a previous run
+    try:
+        out_file = get_file_by_extension(output_dir, '.out')
+        # Check if file has more than 2 lines
+        with open(out_file, 'r') as f:
+            line_count = sum(1 for line in f)
+        if line_count > 2:
+            logger.info("Found existing .out file with content, setting restart to True")
+            config['restart'] = True
+    except FileNotFoundError:
+        config['restart'] = False
+
+    # make a new subfolder for the restart
+    # first look whether there is already a restart folder (which could be restart-i where i is the index of the restart)
+    # get all folders with 'restart-' in the name
+    restart_folders = [f for f in os.listdir(output_dir) if f.startswith('restart-')]
+    if restart_folders:
+        logger.info(f"Found {len(restart_folders)} restart folders, going to add a new one...")
+        # get the index of the last restart folder
+        restart_folders.sort(key=lambda x: int(x.split('-')[-1]))
+        last_restart_index = int(restart_folders[-1].split('-')[-1])
+        # make a new restart folder with the next index
+        new_restart_index = last_restart_index + 1
+
+        filepath = os.path.join(output_dir, f'restart-{last_restart_index}', os.path.basename(filepath))
+        # asser that the file exists
+        assert os.path.exists(filepath), f"File {filepath} does not exist, cannot restart properly..."
+        output_dir = os.path.join(output_dir, f'restart-{new_restart_index}')
+
+    else:
+        output_dir = os.path.join(output_dir, 'restart-1')
+
+
     try:
         get_file_by_extension(output_dir, '.out')
     except FileNotFoundError:
@@ -104,8 +137,6 @@ def main(
     if config is None:
         raise ValueError('Config is required')
     
-    logger.info(f"Output directory: {output_dir}")
-
     if isinstance(device_index, tuple) or isinstance(device_index, list):
         # this might happen if we send in CUDA_VISIBIBLE_DEVICES, which get converted to a tuple/list
         device_index = ",".join(str(x) for x in device_index)
@@ -161,6 +192,10 @@ def main(
             plumed_file = get_file_by_extension(input_dir, 'plumed.dat')
             metad_pace = get_pace_from_metad(plumed_file)
             assert metad_pace == config['metad.pace'], 'Previous MetaD pace does not match the current one.'
+
+            # copy the PLUMED file, but modify it
+            from src.plumed.utils import prepare_plumed_file_for_restart
+            prepare_plumed_file_for_restart(plumed_file, output_dir, filename)
             
             hills_file = get_file_by_extension(input_dir, '.hills')
             out_file = get_file_by_extension(input_dir, '.out')
@@ -189,15 +224,11 @@ def main(
                 os.remove(f"{output_dir}/{filename}_solvated.pdb")  # Optional: remove old PDB file
 
 
-
-
-            # TODO: you should probably also copy the .plumed FILE!!!! not re-built it!!
-
-
         else:
             restart_checkpoint = None
 
     logger.info(f'==================== Running {filename} ====================')
+    logger.info(f"Output directory: {output_dir}")
     logger.info(f"Running with timestep {timestep} fs and mdtime {mdtime} ns")
     if config['type'] in ['opes', 'opes-explore']:
         logger.info(f"Energy barrier {config['opes.barrier']} kJ/mol for OPES")
