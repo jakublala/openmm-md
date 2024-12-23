@@ -112,6 +112,7 @@ def run(
         'cv2.pbc': True,
         'metad.height': 1.25, # 1/2 * kBT
         'metad.biasfactor': 50,
+        'metad.height': 1.25, # 1/2 * kBT
         'upper_wall.at': upper_wall_at, # keep this at UW=5, we are primarily looking at BIASFACTOR now
         'upper_wall.exp': 6,
         'upper_wall.kappa': 1000.0,

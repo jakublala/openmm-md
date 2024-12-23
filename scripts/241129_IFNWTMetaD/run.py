@@ -48,7 +48,9 @@ def run(
     NON_INF_LENGTH = BINDER_LENGTH + LINKER1_LENGTH + PROTEASE_LENGTH + LINKER2_LENGTH
 
     # nresidues = mda.Universe(FILEPATH)._topology.n_residues
-    universe = mda.Universe(FILEPATH)
+    from openmm.app import PDBxFile
+    cif = PDBxFile(FILEPATH)
+    universe = mda.Universe(cif)
     nresidues = len(universe.select_atoms("protein").residues)
     assert nresidues == (
         NON_INF_LENGTH + INF_LENGTH
@@ -111,6 +113,7 @@ def run(
         'cv2.grid_bin': 200,
         'cv2.pbc': True,
         'metad.biasfactor': 50,
+        'metad.height': 1.25, # 1/2 * kBT
         'upper_wall.at': upper_wall_at, # keep this at UW=5, we are primarily looking at BIASFACTOR now
         'upper_wall.exp': 6,
         'upper_wall.kappa': 1000.0,
@@ -142,6 +145,7 @@ def run(
         config=config,
         padding=padding,
         chain_mode='single-chain',
+        device_precision='single'
     )
 
 

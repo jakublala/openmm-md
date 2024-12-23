@@ -48,45 +48,49 @@ def main(
         os.makedirs(output_dir)
 
 
-    # 1. load the PDB and fix errors
-    from fixer import fixer
-    fixer(
-        filepath=filepath, 
-        output_dir=output_dir,
-        split_chains=split_chains
-        )
+    # if solvated .cif already exists, go straight to stability
+    if not os.path.exists(f'{output_dir}/{filename}_solvated.cif'):
+        print("Solvated .cif already exists, going straight to stability")
+            
+        # 1. load the PDB and fix errors
+        from src.fixer import fixer
+        fixer(
+            filepath=filepath, 
+            output_dir=output_dir,
+            split_chains=split_chains
+            )
 
-    # 2. minimize the structure with LBFGS and H atoms mobile
-    from relax import minimize
-    minimize(
-        filename=filename, 
-        max_iterations=0, 
-        device_index=str(device_index),
-        constraints=None,
-        device=device,
-        output_dir=output_dir,
-        padding=padding
-        )
-    
-    # 3. run NPT relaxation / equilibriation
-    # # 3a. relax water
-    # relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix='protein')
-    # # 3b. relax protein
-    # relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix='water')
-    # 3c. relax both
-    # relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix=None)
+        # 2. minimize the structure with LBFGS and H atoms mobile
+        from src.relax import minimize
+        minimize(
+            filename=filename, 
+            max_iterations=0, 
+            device_index=str(device_index),
+            constraints=None,
+            device=device,
+            output_dir=output_dir,
+            padding=padding
+            )
+        
+        # 3. run NPT relaxation / equilibriation
+        # # 3a. relax water
+        # relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix='protein')
+        # # 3b. relax protein
+        # relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix='water')
+        # 3c. relax both
+        # relax_md_npt(filename=filename, mdtime=1, device_index=str(device_index), constraints=None, fix=None)
 
-    # 4. equilibriate the system with fixed H bonds
-    # TODO: fix this
-    # from openmm.app import HBonds
-    # relax_md_npt(
-    #     filename=filename, 
-    #     mdtime=1, 
-    #     device_index=str(device_index), 
-    #     constraints=HBonds, 
-    #     fix=None,
-    #     timestep=timestep
-    #     )
+        # 4. equilibriate the system with fixed H bonds
+        # TODO: fix this
+        # from openmm.app import HBonds
+        # relax_md_npt(
+        #     filename=filename, 
+        #     mdtime=1, 
+        #     device_index=str(device_index), 
+        #     constraints=HBonds, 
+        #     fix=None,
+        #     timestep=timestep
+        #     )
 
 
     
@@ -94,7 +98,7 @@ def main(
     now = datetime.now()
     dt_string = now.strftime("%y%m%d_%H%M%S")
 
-    from stability import stability
+    from src.vanilla.stability import stability
     stability(
         filename=filename, 
         mdtime=mdtime, 
@@ -103,7 +107,6 @@ def main(
         device=device,
         output_dir=output_dir,
         temperature=temperature,
-        padding=padding
         )
     
 def restart(filename=None):

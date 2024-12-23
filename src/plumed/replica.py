@@ -59,8 +59,8 @@ else:
     logger = NoOpLogger()
 
 
-def replicate_plumed_file(output_dir, filename, n_replicas, temperatures):
-    for i, T in zip(range(n_replicas), temperatures):
+def replicate_plumed_file(output_dir, filename, temperatures):
+    for i, T in enumerate(temperatures):
         with open(f'{output_dir}/{filename}_plumed.dat', 'r') as file:
             plumed_script = file.read()
 
@@ -90,7 +90,6 @@ def run_replica_plumed(
         logging_frequency: int,
         plumed_config: str,
         chain_mode: str,
-        n_replicas: int,
         ):
     
     from src.plumed.io import create_plumed_input
@@ -100,7 +99,7 @@ def run_replica_plumed(
         config=plumed_config,
         mode=chain_mode,
     )
-    replicate_plumed_file(output_dir, filename, n_replicas, temperatures)
+    replicate_plumed_file(output_dir, filename, temperatures)
     
     if device != 'cuda':
         raise NotImplementedError("Replica exchange only supports CUDA")
@@ -223,8 +222,8 @@ def run_replica_plumed(
     # Instantiate the reporter that only collects protein atoms
     reporter = MultiStateReporter(
         storage=storage_path,
-        checkpoint_path=checkpoint_path,
-        checkpoint_interval=10,
+        checkpoint_storage='replica_exchange_checkpoint.nc',
+        checkpoint_interval=100,
         analysis_particle_indices=mda.Universe(pdb).select_atoms("protein").ids
         )
 
@@ -273,14 +272,9 @@ def run_replica_plumed(
         storage=reporter
         )
             
-    # Equilibriate the replicas at the new temperatures
-    equilibriation_time = 10 * unit.nanoseconds
-    equilibriation_steps = int(equilibriation_time / swap_time)
-    simulation.equilibrate(n_iterations=equilibriation_steps, mcmc_moves=move)
-    
-    # Equilibriate the replicas at the new temperatures
-    equilibriation_time = 10 * unit.nanoseconds
-    equilibriation_steps = int(equilibriation_time / swap_time)
-    simulation.equilibrate(n_iterations=equilibriation_steps, mcmc_moves=move)
+    # # Equilibriate the replicas at the new temperatures
+    # equilibriation_time = 10 * unit.nanoseconds
+    # equilibriation_steps = int(equilibriation_time / swap_time)
+    # simulation.equilibrate(n_iterations=equilibriation_steps, mcmc_moves=move)
     
     simulation.run()

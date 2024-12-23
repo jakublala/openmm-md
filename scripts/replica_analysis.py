@@ -40,6 +40,7 @@ def plot_replica_analysis(directory, system, cvs, n_replicas=4):
     # float64 energies(iteration, replica, state)
     # TODO: I am not sure what is the difference betweeen the replica and the state dimension
     # HACK: for now, let's just assume that columns are constant-ish
+    import pdb; pdb.set_trace()
     potential_energies = np.array(nc.variables['energies'])[:, 0, :].squeeze()
     for i in range(n_replicas):
         axs[0].hist(potential_energies[:, i], bins=100, label=f"Replica {i+1}")
@@ -181,7 +182,7 @@ def reconstruct_dcd_from_nc(nc_file, output_dir):
 
 if __name__ == "__main__":
     # directory = "/home/jakub/phd/openmm-md/data/241010_FoldingUponBinding/output/CD28-G/241213-ReplicaPBC"
-    directory = "../data/241010_FoldingUponBinding/output/CD28-G/241213-ReplicaPBC"
+    directory = "../data/241010_FoldingUponBinding/output/CD28-G/241216-ReplicaPBC"
     system = "CD28-G"
     cvs = ["cmap", "d"]
     n_replicas = 4

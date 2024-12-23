@@ -4,8 +4,9 @@ import fire
 import numpy as np
 
 def run(
-        filepath: str = "tmp/CD28_general_equilibrated.cif", 
-        output_dir: str = 'tmp',
+        n_replicas: int,
+        filepath: str = "results/CD28_general_equilibrated.cif", 
+        output_dir: str = 'results',
         ):
         
     FILEPATH = filepath
@@ -13,11 +14,11 @@ def run(
     TEMPERATURE = 300
     LOGGING_FREQUENCY = 100
     TIMESTEP = 2
-    MDTIME = 0.01
+    MDTIME = 0.25
 
     T_MIN = 300
-    T_MAX = 400
-    N_REPLICAS = 4
+    T_MAX = 360
+    N_REPLICAS = n_replicas
 
     
     # PADDING = 2
@@ -55,9 +56,9 @@ def run(
     config = {
         'type': 'metad',
         'temperature': TEMPERATURE,
-        'stride': 1,
-        'cmap.include_cutoff': 0.8,
+        'stride': 500,
         'cmap.contact_threshold': 0.8,
+        'cmap.include_cutoff': 0.8,
         'restart_rfile': None,
         'state_wstride': get_checkpoint_interval(TIMESTEP),
         'metad.pace': 500,
@@ -66,12 +67,18 @@ def run(
         'cv1.grid_min': None,
         'cv1.grid_max': None,
         'cv1.grid_bin': None,
+        # 'cv1.grid_min': 0,
+        # 'cv1.grid_max': 45,
+        # 'cv1.grid_bin': 200,
         'cv1.pbc': True,
         'cv2.type': 'd',
         'cv2.sigma': 0.27,
         'cv2.grid_min': None,
         'cv2.grid_max': None,
         'cv2.grid_bin': None,
+        # 'cv2.grid_min': 0,
+        # 'cv2.grid_max': 12,
+        # 'cv2.grid_bin': 200,
         'cv2.pbc': True,
         'metad.height': 1.25, # 1/2 * kBT
         'metad.biasfactor': 48,
@@ -103,7 +110,7 @@ def run(
         temperature=TEMPERATURE,
         mdtime=MDTIME,
         timestep=TIMESTEP,
-        device_index='0,1',
+        device_index=None,
         device='cuda',
         device_precision='mixed',
         split_chains=False,
@@ -111,9 +118,8 @@ def run(
         config=config,
         box_size=BOX_SIZE,
         chain_mode='two-chain',
-        # replica_exchange=False,
         replica_exchange=True,
-        swap_time=0.01,
+        swap_time=1, # in ps
         temperatures=TEMPERATURES,
     )
 

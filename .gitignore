@@ -10,6 +10,8 @@ mymd.egg-info
 .vscode/
 .env
 
+tmp/
+
 # experimental data
 OPES_100ns/
 OPES_barrier_200_500ns/

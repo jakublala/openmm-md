@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 from src.utils import get_checkpoint_interval, get_platform_and_properties
 from src.plumed.io import create_plumed_input
+from src.utils import save_equilibrated_state
 
 def run_plumed(
         filename, 
@@ -88,10 +89,10 @@ def run_plumed(
     if os.path.exists(f'{output_dir}/{filename}_equilibrated.cif'):
         logger.info(f'Equilibrated state found at {output_dir}/{filename}_equilibrated.cif')
         logger.info('Skipping equilibration...')
-        pdf = PDBxFile(f'{output_dir}/{filename}_equilibrated.cif')
+        pdb = PDBxFile(f'{output_dir}/{filename}_equilibrated.cif')
         equilibrated = True
     else:
-        pdf = PDBxFile(f'{output_dir}/{filename}_solvated.cif')
+        pdb = PDBxFile(f'{output_dir}/{filename}_solvated.cif')
         equilibrated = False
 
     
@@ -152,8 +153,8 @@ def run_plumed(
 
     # Prepare the Simulation
     logger.info('Building system...')
-    topology = pdf.topology
-    positions = pdf.positions
+    topology = pdb.topology
+    positions = pdb.positions
     system = forcefield.createSystem(
         topology, 
         nonbondedMethod=nonbondedMethod, 
@@ -187,6 +188,7 @@ def run_plumed(
         if equilibrate_only:
             raise ValueError("Equilibrate_only is True, but equilibrated state found. You don't need to equilibrate again.")
         simulation.context.setPositions(positions)
+        simulation.context.setVelocitiesToTemperature(temperature)
     else:
         simulation.context.setPositions(positions)
 
@@ -249,14 +251,3 @@ def run_plumed(
 
     # TODO: DO ADAPTIVE CONVERGENCE HERE!!!!!
     # i.e. extend the simulation if convergence is not reached
-
-
-def save_equilibrated_state(
-        simulation,
-        output_dir,
-        filename
-        ) -> None:
-    topology = simulation.topology
-    positions = simulation.context.getState(getPositions=True).getPositions()
-    PDBxFile.writeFile(topology, positions, open(f'{output_dir}/{filename}_equilibrated.cif', 'w'))
-    logger.info(f'Equilibrated state saved to {output_dir}/{filename}_equilibrated.cif')
