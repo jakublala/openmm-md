@@ -1,5 +1,5 @@
 from src.plumed.main import main
-from src.plumed.utils import get_checkpoint_interval
+from src.utils import get_checkpoint_interval
 import fire
 
 def run(

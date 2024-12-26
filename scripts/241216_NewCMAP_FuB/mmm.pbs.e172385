@@ -1,0 +1,15 @@
+Lmod has detected the following error: The following module(s) are unknown:
+"apptainer"
+
+Please check the spelling or version number. Also try "module spider ..."
+It is also possible your cache file is out-of-date; it may help to try:
+  $ module --ignore_cache load "apptainer"
+
+Also make sure that all modulefiles written in TCL start with the string
+#%Module
+
+
+
+INFO:    Using cached SIF image
+FATAL:   While making image from oci registry: error copying image out of cache: could not open temporary file for copy: failed to create temporary file: open /gpfs/home/jl24018/Scratch/tmp-copy-1567007083: no such file or directory
+/var/spool/pbs/mom_priv/jobs/172385.pbs-6.SC: line 32: SYSTEM: Missing SYSTEM

@@ -36,4 +36,4 @@ echo ${PROJECT_DIR}
 submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241216-NewCMAP/CD28_general_equilibrated.cif" \
                 "CD28-G-CMAP2" \
                 "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241216-NewCMAP"
-                
+# if I do this again, and submit it in three days, it should potentially work
