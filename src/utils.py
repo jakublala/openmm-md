@@ -34,8 +34,8 @@ def get_platform_and_properties(
     return platform, properties
 
 def get_checkpoint_interval(timestep):
-    # return int((1 * nanoseconds) / (timestep * 0.001 * picoseconds)) 
-    return int((0.001 * nanoseconds) / (timestep * 0.001 * picoseconds)) 
+    return int((1 * nanoseconds) / (timestep * 0.001 * picoseconds)) 
+    # return int((0.001 * nanoseconds) / (timestep * 0.001 * picoseconds)) 
 
 def get_full_reporter(filename, log_freq, nsteps):
     return StateDataReporter(

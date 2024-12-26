@@ -1,5 +1,5 @@
 from src.plumed.main import main
-from src.plumed.utils import get_checkpoint_interval
+from src.utils import get_checkpoint_interval
 import fire
 
 def run(
@@ -77,7 +77,6 @@ def run(
         'spot1_residues': None,
         'spot2_residues': None,
         'idr_residues': idr_residues,
-        'restart': restart,
         'trajectory_logging': True
     }
 
