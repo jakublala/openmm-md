@@ -3,8 +3,8 @@ import fire
 
 # /home/jakub/phd/openmm-md/data/241010_FoldingUponBinding/output/CD28-G/241215-NewUW3
 def run(
-        filepath: str = "../../data/241010_FoldingUponBinding/output/CD28-G/241215-NewUW3/CD28_general_equilibrated.cif", 
-        output_dir: str = '../../data/241010_FoldingUponBinding/output/CD28-G/241222-NewUW3',
+        filepath: str = "/home/mmm1486/projects/openmm-md/data/241010_FoldingUponBinding/output/CD28-G/241215-NewUW3/CD28_general_equilibrated.cif", 
+        output_dir: str = "/home/mmm1486/projects/openmm-md/data/241010_FoldingUponBinding/output/CD28-G/241222-NewUW3",
         ):
     
     FILEPATH = filepath

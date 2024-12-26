@@ -15,8 +15,7 @@ OUTPUT_DIR=${OUTPUT_DIR}
 RESTART=${RESTART}
 PYTHON_CMD="python run.py \
     --output_dir $OUTPUT_DIR \
-    --filepath $FILEPATH \
-    --restart $RESTART"
+    --filepath $FILEPATH"
 
 
 # Add this before the main apptainer exec command to test CUDA

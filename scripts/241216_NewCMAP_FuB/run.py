@@ -4,8 +4,7 @@ import fire
 
 def run(
         filepath: str = "../../data/241010_FoldingUponBinding/output/CD28-G/241211-NewUW/CD28_general_equilibrated.cif", 
-        output_dir: str = '../../data/241010_FoldingUponBinding/output/CD28-G/241216-NewCMAP',
-        restart: bool = False,
+        output_dir: str = '../../data/241010_FoldingUponBinding/output/CD28-G/241216-NewCMAP'
         ):
     
     FILEPATH = filepath
