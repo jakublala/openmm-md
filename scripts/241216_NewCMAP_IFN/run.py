@@ -1,5 +1,5 @@
 from src.plumed.main import main
-from src.plumed.utils import get_checkpoint_interval
+from src.utils import get_checkpoint_interval
 import fire
 import re
 import MDAnalysis as mda
@@ -119,7 +119,6 @@ def run(
         'spot1_residues': spot1_residues,
         'spot2_residues': spot2_residues,
         'idr_residues': None,
-        'restart': True,
         'trajectory_logging': True
     }
 

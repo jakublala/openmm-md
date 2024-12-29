@@ -37,7 +37,9 @@ echo "Running $SYSTEM with output_dir $OUTPUT_DIR"
 
 
 # Define the Python command
-PYTHON_CMD="python /home/mmm1486/projects/openmm-md/scripts/241216_NewCMAP_FuB/run.py"
+PYTHON_CMD="python /home/mmm1486/projects/openmm-md/scripts/241216_NewCMAP_FuB/run.py \
+    --output_dir $OUTPUT_DIR \
+    --filepath $FILEPATH"
 
 # Execute the command using apptainer
 apptainer exec \

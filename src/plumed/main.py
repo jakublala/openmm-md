@@ -91,6 +91,7 @@ def main(
     input_dir = os.path.dirname(filepath)
 
     # Deduce whether we are restarting from a previous run
+    config['restart'] = False
     try:
         out_file = get_file_by_extension(input_dir, '.out')
         # Check if file has more than 2 lines
@@ -101,6 +102,7 @@ def main(
             config['restart'] = True
     except FileNotFoundError:
         config['restart'] = False
+    
 
     # make a new subfolder for the restart
     # first look whether there is already a restart folder (which could be restart-i where i is the index of the restart)
@@ -115,6 +117,7 @@ def main(
             # make a new restart folder with the next index
             new_restart_index = last_restart_index + 1
 
+            # assign the (input) filepath to the latest restart folder
             filepath = os.path.join(input_dir, f'restart-{last_restart_index}', os.path.basename(filepath))
             # asser that the file exists
             assert os.path.exists(filepath), f"File {filepath} does not exist, cannot restart properly..."
