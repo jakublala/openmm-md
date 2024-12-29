@@ -183,6 +183,7 @@ def reconstruct_dcd_from_nc(nc_file, output_dir):
 if __name__ == "__main__":
     # directory = "/home/jakub/phd/openmm-md/data/241010_FoldingUponBinding/output/CD28-G/241213-ReplicaPBC"
     directory = "../data/241010_FoldingUponBinding/output/CD28-G/241216-ReplicaPBC"
+    # directory = "241211_ReplicaImplementation/tmp"
     system = "CD28-G"
     cvs = ["cmap", "d"]
     n_replicas = 4

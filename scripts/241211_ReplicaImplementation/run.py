@@ -1,5 +1,5 @@
 from src.plumed.main import main
-from src.plumed.utils import get_checkpoint_interval
+from src.utils import get_checkpoint_interval
 import fire
 import numpy as np
 
@@ -16,8 +16,8 @@ def run(
     MDTIME = 0.001
 
     T_MIN = 300
-    T_MAX = 400
-    N_REPLICAS = 4
+    T_MAX = 325
+    N_REPLICAS = 8
 
     
     # PADDING = 2

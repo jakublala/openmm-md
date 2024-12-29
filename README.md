@@ -207,3 +207,17 @@ Then run:
 ```
 mpirun -np 2 --hostfile hostfile python run.py
 ```
+
+
+## VS Code
+To debug and "ssh" into the container use:
+```
+docker run -d \
+    --gpus all \
+    -v $HOME/phd/openmm-md:/app \
+    -w /app \
+    --user root \
+    jakublala/openmm-md \
+    tail -f /dev/null
+```
+which ensure we are the `root` user.

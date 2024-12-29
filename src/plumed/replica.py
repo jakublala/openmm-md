@@ -241,7 +241,7 @@ def run_replica_plumed(
     #     ))
 
     simulation = ReplicaExchangeSampler(
-        replica_mixing_scheme='swap-neighbors',
+        replica_mixing_scheme='swap-all',
         # or swap-all, which is more expensive
         # and does n_replicas**3 swap attempts per iteration
         mcmc_moves=move, 

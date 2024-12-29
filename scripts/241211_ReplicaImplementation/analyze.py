@@ -14,3 +14,12 @@ if __name__ == '__main__':
 
     print(nc.variables.keys())
     print(nc.variables['states'][:])
+
+
+    # get energies
+    energies = nc.variables['energies'][:]
+    
+    # print(energies[:, 0, :])
+    # plot these energies, where x-axis is energy, and y-axis is population density, histogram
+    plt.hist(energies[:, 0, :], bins=100)
+    plt.savefig('tmp/energies.png')
