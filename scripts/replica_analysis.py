@@ -40,7 +40,7 @@ def plot_replica_analysis(directory, system, cvs, n_replicas=4):
     # float64 energies(iteration, replica, state)
     # TODO: I am not sure what is the difference betweeen the replica and the state dimension
     # HACK: for now, let's just assume that columns are constant-ish
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     potential_energies = np.array(nc.variables['energies'])[:, 0, :].squeeze()
     for i in range(n_replicas):
         axs[0].hist(potential_energies[:, i], bins=100, label=f"Replica {i+1}")
@@ -110,7 +110,7 @@ def plot_replica_trajectory_analysis(directory, system, cvs, n_replicas=4):
         cvs (list): List of collective variables names
     """
     # Create figure with constrained layout for better spacing
-    fig, axs = plt.subplots(5, n_replicas, figsize=(16, 20), constrained_layout=True)
+    fig, axs = plt.subplots(5, n_replicas, figsize=((n_replicas*4), 20), constrained_layout=True)
     
     # Add title with padding
     date = directory.split('/')[-1]
@@ -181,14 +181,20 @@ def reconstruct_dcd_from_nc(nc_file, output_dir):
     assert 0 == 1
 
 if __name__ == "__main__":
-    # directory = "/home/jakub/phd/openmm-md/data/241010_FoldingUponBinding/output/CD28-G/241213-ReplicaPBC"
-    directory = "../data/241010_FoldingUponBinding/output/CD28-G/241216-ReplicaPBC"
-    # directory = "241211_ReplicaImplementation/tmp"
+    base_dir = "../data/241010_FoldingUponBinding/output/CD28-G"
+    directories = [
+        f"{base_dir}/241229-ReplicaPBC-300-310-8",
+        f"{base_dir}/241229-ReplicaPBC-300-325-8",
+        f"{base_dir}/241229-ReplicaPBC-300-350-8"
+    ]
+    
     system = "CD28-G"
     cvs = ["cmap", "d"]
-    n_replicas = 4
-    plot_replica_trajectory_analysis(directory, system, cvs, n_replicas)
-    plot_replica_analysis(directory, system, cvs, n_replicas)
-    nc_file = get_file_by_extension(directory, "replica_exchange.nc")
-    reconstruct_dcd_from_nc(nc_file, directory)
-
+    n_replicas = 8
+    
+    for directory in directories:
+        print(f"Processing {directory}...")
+        plot_replica_trajectory_analysis(directory, system, cvs, n_replicas)
+        plot_replica_analysis(directory, system, cvs, n_replicas)
+        nc_file = get_file_by_extension(directory, "replica_exchange.nc")
+        # reconstruct_dcd_from_nc(nc_file, directory)

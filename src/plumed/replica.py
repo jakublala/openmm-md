@@ -90,6 +90,7 @@ def run_replica_plumed(
         logging_frequency: int,
         plumed_config: str,
         chain_mode: str,
+        replica_type: str,
         ):
     
     from src.plumed.io import create_plumed_input
@@ -122,33 +123,7 @@ def run_replica_plumed(
     md_steps = int(md_time / timestep)
     N_ITERATIONS = int(md_steps / swap_steps)
 
-    # system holds information on the force field parameters
-    systems = []
-    for i in range(n_replicas):
-        _system = forcefield.createSystem(
-            topology=pdb.topology, 
-            nonbondedMethod=PME,
-            nonbondedCutoff=1*unit.nanometer,
-            constraints=HBonds
-            )
-    
-        with open(f'{output_dir}/{filename}_plumed_{i}.dat', 'r') as file:
-            plumed_script = file.read()
-        _system.addForce(PlumedForce(plumed_script))
-        systems.append(_system)
-
-    # print all the forces in the system
-    for i, system in enumerate(systems):
-        for force in system.getForces():
-            print(f"system {i=}", force.getName())
-
-
     import openmm as mm
-
-    # chain_A: GROUP ATOMS=1-503
-    # chain_B: GROUP ATOMS=505-2713
-
-
 
     class NoPeriodicCVLangevinDynamicsMove(mcmc.LangevinDynamicsMove):
         def _after_integration(self,
@@ -248,27 +223,58 @@ def run_replica_plumed(
         number_of_iterations=N_ITERATIONS # this does 50 iterations of the move, hence 50 * 500 steps
         )
     
-    # thermodynamic state holds information on ensemble parameters like temperture and pressure
-    thermodynamic_states = [
-        states.ThermodynamicState(system=system, temperature=T) 
-        for system, T in zip(systems, temperatures)
-    ]
+
+    # get thermodynamic states and sampler states
+    if replica_type == 'rest2':
+        from src.replica.rest2 import get_thermodynamic_and_sampler_states
+        system = forcefield.createSystem(
+            topology=pdb.topology, 
+            nonbondedMethod=PME,
+            nonbondedCutoff=1*unit.nanometer,
+            constraints=HBonds
+            )
+        
+        thermodynamic_states, sampler_states = get_thermodynamic_and_sampler_states(
+            system=system, 
+            temperatures=temperatures,
+            equilibriated_file=f'{output_dir}/{filename}_equilibrated.cif',
+            plumed_input_file=f'{output_dir}/{filename}_plumed.dat'
+            )
+    else:
+        # system holds information on the force field parameters
+        systems = []
+        for i in range(n_replicas):
+            _system = forcefield.createSystem(
+                topology=pdb.topology, 
+                nonbondedMethod=PME,
+                nonbondedCutoff=1*unit.nanometer,
+                constraints=HBonds
+                )
+        
+            with open(f'{output_dir}/{filename}_plumed_{i}.dat', 'r') as file:
+                plumed_script = file.read()
+            _system.addForce(PlumedForce(plumed_script))
+            systems.append(_system)
+        # thermodynamic state holds information on ensemble parameters like temperture and pressure
+        thermodynamic_states = [
+            states.ThermodynamicState(system=system, temperature=T) 
+            for system, T in zip(systems, temperatures)
+        ]
+        sampler_states = [states.SamplerState(
+            positions=pdb.positions,
+            box_vectors=system.getDefaultPeriodicBoxVectors()
+        ) for system in systems]
 
     # with no mpi4py, we are getting a single GPU performance
-
     logger.info(f"Running {n_replicas} replicas with temperatures {temperatures}")
     logger.info(f"Running with timestep {timestep} and mdtime {mdtime * unit.nanoseconds}, which is {N_ITERATIONS} iterations of replica swaps.")
     logger.info(f"Replica swaps every {swap_time}, which is {swap_steps} steps")
 
 
-    sampler_state = states.SamplerState(
-        positions=pdb.positions,
-        box_vectors=systems[0].getDefaultPeriodicBoxVectors()
-    )
 
     simulation.create(
         thermodynamic_states=thermodynamic_states,
-        sampler_states=sampler_state, # can be a single state, which gets copied to all replicas
+        sampler_states=sampler_states, # can be a single state, which gets copied to all replicas
         storage=reporter
         )
             

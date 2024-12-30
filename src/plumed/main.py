@@ -72,6 +72,7 @@ def main(
         chain_mode: Optional[Literal['single-chain', 'two-chain']] = None,
         equilibrate_only=False,
         replica_exchange=False,
+        replica_type: Optional[Literal['rest2']] = None,
         swap_time=None,
         temperatures=None,
         generate_plumed_input=True,
@@ -315,6 +316,7 @@ def main(
             logging_frequency=logging_frequency,
             plumed_config=config,
             chain_mode=chain_mode,
+            replica_type=replica_type,
         )
     else:
         assert rank == 0, "Usual single replica run doesn't support MPI, we only support a single process run."
