@@ -14,6 +14,11 @@ import sys
 import os
 import time
 
+"""
+This is implemented from the REST tutorial on the OpenMM website.
+https://openmm.github.io/openmm-cookbook/latest/notebooks/tutorials/Running_a_REST_simulation.html
+"""
+
 # platform = openmm.openmm.Platform.getPlatformByName('CUDA')
 # properties = {'DeviceIndex': '0, 1', 'Precision': 'mixed'}
 # cache.global_context_cache.set_platform(platform, properties)
@@ -32,6 +37,7 @@ system.addForce(barostat)
 print(system.getForces())
 
 res = list(pdb.topology.residues())[3]
+# Jakub: REST atoms are in the SOLUTE! that's why we get it from the pdb directly!
 rest_atoms = [atom.index for atom in res.atoms()]
 
 print('len(rest_atoms)', len(rest_atoms))
@@ -88,8 +94,12 @@ def get_rest_identifier(atoms, rest_atoms):
     For a given atom or set of atoms, get the rest_id which is a list of binary ints that defines which
     (mutually exclusive) set the atom(s) belong to.
 
-    If there is a single atom, the sets are: is_rest, is_nonrest
-    If there is a set of atoms, the sets are: is_rest, is_inter, is_nonrest
+    If there is a single atom, the sets are: [is_rest, is_nonrest]
+    If there is a set of atoms, the sets are: [is_rest, is_inter, is_nonrest]
+    
+    is_rest means we are in the solute.
+    is_nonrest means we are in the solvent.
+    is_inter means we are in the interface, i.e. the solute-solvent interaction, that's why we need a set of atoms.
 
     Example: if there is a single atom that is in the nonrest set, the rest_id is [0, 1]
 
@@ -363,9 +373,9 @@ move = mcmc.LangevinDynamicsMove(timestep=4*unit.femtoseconds, n_steps=250) # ea
 simulation = ReplicaExchangeSampler(mcmc_moves=move, number_of_iterations=100)
 
 # Configure a reporter to print to the console every 0.1 ps (100 steps)
-reporter = StateDataReporter(file=sys.stdout, reportInterval=100, step=True, time=True, potentialEnergy=True, temperature=True, 
-                             kineticEnergy=True, totalEnergy=True, density=True,
-                    volume=True)
+# reporter = StateDataReporter(file=sys.stdout, reportInterval=100, step=True, time=True, potentialEnergy=True, temperature=True, 
+#                              kineticEnergy=True, totalEnergy=True, density=True,
+#                     volume=True)
 # simulation.reporters.append(reporter)
 # simulation.reporters.append(PDBReporter('output_npt_20240513.pdb', 1000))
 
