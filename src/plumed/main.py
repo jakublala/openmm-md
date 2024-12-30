@@ -99,7 +99,10 @@ def main(
             line_count = sum(1 for line in f)
         if line_count > 2:
             logger.info("Found existing .out file with content, setting restart to True")
-            config['restart'] = True
+            if output_dir == input_dir: # output dir has to be the same as input dir, otherwise we are only likely using an equilibrated file
+                config['restart'] = True
+            else:
+                logger.warning("Output directory and input directory are different, we are only likely using an equilibrated file")
     except FileNotFoundError:
         config['restart'] = False
     

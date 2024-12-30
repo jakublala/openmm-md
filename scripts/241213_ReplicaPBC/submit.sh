@@ -31,14 +31,14 @@ submit_simulation() {
 
 echo ${PROJECT_DIR}
 
-submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241211-NewUW/CD28_general_equilibrated.cif" \
+submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241229-ReplicaPBC-300-325-8/CD28_general_equilibrated.cif" \
                 "CD28-G-ReplicaPBC-300-310-8" \
                 "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241229-ReplicaPBC-300-310-8" \
                 "300" \
                 "310" \
                 "8"
 
-submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241211-NewUW/CD28_general_equilibrated.cif" \
+submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241229-ReplicaPBC-300-325-8/CD28_general_equilibrated.cif" \
                 "CD28-G-ReplicaPBC-300-325-8" \
                 "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241229-ReplicaPBC-300-325-8" \
                 "300" \
@@ -46,7 +46,7 @@ submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/2
                 "8"
 
 
-submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241211-NewUW/CD28_general_equilibrated.cif" \
+submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241229-ReplicaPBC-300-325-8/CD28_general_equilibrated.cif" \
                 "CD28-G-ReplicaPBC-300-350-8" \
                 "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241229-ReplicaPBC-300-350-8" \
                 "300" \
