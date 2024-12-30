@@ -1,11 +1,14 @@
 from src.plumed.main import main
-from src.plumed.utils import get_checkpoint_interval
+from src.utils import get_checkpoint_interval
 import fire
 import numpy as np
 
 def run(
         filepath: str = "results/CD28_general_equilibrated.cif", 
         output_dir: str = 'results',
+        t_min: int = 300,
+        t_max: int = 360,
+        n_replicas: int = 4,
         ):
         
     FILEPATH = filepath
@@ -15,9 +18,9 @@ def run(
     TIMESTEP = 2
     MDTIME = 200
 
-    T_MIN = 300
-    T_MAX = 360
-    N_REPLICAS = 4
+    T_MIN = t_min
+    T_MAX = t_max
+    N_REPLICAS = n_replicas
 
     
     # PADDING = 2
