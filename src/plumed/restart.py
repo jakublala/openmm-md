@@ -79,6 +79,21 @@ def process_hills_for_restart(
     # Write the filtered lines to the new HILLS file
     with open(f'{output_dir}/{filename}.hills', 'w') as f:
         f.writelines(filtered_lines)
+    
+    # Also, re-write the original file, with the cut-offed post-checkpoint hills
+    with open(hills_file, 'w') as f:
+        f.writelines(filtered_lines)
+
+    # Also cut the colvar accordingly
+    from src.analysis.io import read_colvar_file
+    colvar_file = get_file_by_extension(input_dir, '.colvar')
+    colvar_df = read_colvar_file(colvar_file)
+    colvar_df = colvar_df[colvar_df['time'] <= last_hill_time]
+    indices_to_keep = 3 + len(colvar_df) # 3 is the header size
+    with open(colvar_file, 'r') as f:
+        lines = f.readlines()
+    with open(colvar_file, 'w') as f:
+        f.writelines(lines[:indices_to_keep])
 
 # move hills file to output dir
 # chop off lines that are after the checkpoint

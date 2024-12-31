@@ -117,9 +117,4 @@ def read_hills_file(filename):
     removed_len = original_len - len(hills_df)
     if removed_len > 0:
         logger.info(f"Removed {removed_len} rows with NaN entries")
-
-    # save into a csv in the current directory as a debug
-    import os
-    hills_df.to_csv(f"{os.path.dirname(filename)}/debug_hills.csv", index=False)
-    
     return hills_df
