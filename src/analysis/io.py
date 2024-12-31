@@ -1,6 +1,7 @@
 import pandas as pd
 import re
 import logging
+from io import StringIO
 
 logger = logging.getLogger(__name__)
 
@@ -81,8 +82,6 @@ def read_hills_file(filename):
     column_names = header_lines[0][0].replace('#! FIELDS', '').strip().split()
     logger.info(f"Column names: {column_names}")
 
-
-    from io import StringIO
     # Convert lines to string buffer, excluding header lines
     data_lines = [line for line in lines if not line.startswith('#!')]
     data_buffer = StringIO('\n'.join(data_lines))
@@ -106,12 +105,11 @@ def read_hills_file(filename):
             # find the difference between each row
             min_diff = hills_df['time'].diff().abs().dropna().unique().min()
             logger.info(f"Minimum difference (i.e. timestep of HILLS deposition): {min_diff}")
+            
             # make all the time columns start at 0 and go up by min_diff
             hills_df['time'] = [i * min_diff for i in range(len(hills_df))]
 
             assert len(hills_df['time'].diff().dropna().unique()) == 1, "Time column is not continuous"
-
-
 
     # remove incomplete lines
     original_len = len(hills_df)
@@ -120,5 +118,8 @@ def read_hills_file(filename):
     if removed_len > 0:
         logger.info(f"Removed {removed_len} rows with NaN entries")
 
+    # save into a csv in the current directory as a debug
+    import os
+    hills_df.to_csv(f"{os.path.dirname(filename)}/debug_hills.csv", index=False)
     
     return hills_df

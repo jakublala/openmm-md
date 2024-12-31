@@ -8,6 +8,7 @@ from src.analysis.fes import compute_fes, compute_fes_from_hills
 from src.analysis.plot import plot_2d_fes, plot_1d_fes
 
 from src.analysis.fes import load_fes
+from src.utils import get_latest_restart_dir
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +58,26 @@ def plot_opes_values(colvar_df, axs):
 from src.analysis.colvar import plot_colvar_trajectories
 
 from src.analysis.metad import plot_hills
+import pandas as pd
+
+from src.utils import get_restarted_files_by_extension
+
+def read_colvar_files(colvar_files):
+    colvar_df = pd.DataFrame()
+    for i, colvar_file in enumerate(colvar_files):
+        if colvar_df.size > 0:
+            last_time = colvar_df['time'].iloc[-1]
+        else:
+            last_time = 0
+        _colvar_df = read_colvar_file(colvar_file)
+        _colvar_df['time'] = _colvar_df['time'] + last_time
+        _colvar_df['run'] = i
+        # TODO: make different runs different colours
+        colvar_df = pd.concat([colvar_df, _colvar_df])
+
+    return colvar_df
+
+
 
 def plot_summary(directory, system, simulation_type):
     # Create figure with constrained layout for better spacing
@@ -71,8 +92,8 @@ def plot_summary(directory, system, simulation_type):
     fig.suptitle(f"Analysis for {system}/{date}", fontsize=16, y=1.02)
 
     cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5")
-    colvar_file = get_file_by_extension(directory, '.colvar')  
-    colvar_df = read_colvar_file(colvar_file)
+    colvar_files = get_restarted_files_by_extension(directory, '.colvar')
+    colvar_df = read_colvar_files(colvar_files)
 
     if simulation_type == 'opes':
         axs[0, :] = plot_opes_values(colvar_df, axs[0, :])
@@ -117,8 +138,8 @@ def plot_colvar_traj_in_fes(directory, system):
     
     # Load data
     cvs, fes, cv1_bins, cv2_bins = load_fes(f"{directory}/{system}_fes.h5")
-    colvar_file = get_file_by_extension(directory, '.colvar')  
-    colvar_df = read_colvar_file(colvar_file)
+    colvar_files = get_restarted_files_by_extension(directory, '.colvar')
+    colvar_df = read_colvar_files(colvar_files)
     
     # Get trajectory data (subsample)
     # Ensure 'd' CV is on x-axis
@@ -253,7 +274,8 @@ def run(project, system, date, recompute, collect_plots):
                 )
         elif simulation_type == 'metad':
             # METAD FES, use SUM_HILLS!!!!
-            hills_df = read_hills_file(get_file_by_extension(directory, '.hills'))
+            _directory = get_latest_restart_dir(directory)
+            hills_df = read_hills_file(get_file_by_extension(_directory, '.hills'))
             cv1_bins, cv2_bins, fes_hills = compute_fes_from_hills(
                 hills_df=hills_df,
                 temp=300,

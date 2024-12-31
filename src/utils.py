@@ -5,7 +5,21 @@ from openmm.unit import nanoseconds, picoseconds
 from openmm import Platform
 from openmm.app import PDBxFile, PDBFile
 import logging
+from src.analysis.utils import get_file_by_extension
 logger = logging.getLogger(__name__)
+
+def get_restarted_files_by_extension(directory, extension):
+    restarted_files = [get_file_by_extension(directory, extension)] # first non-restarted original file
+    restart_dirs = [f"{directory}/{d}" for d in os.listdir(directory) if d.startswith('restart-')]
+    for d in restart_dirs:
+        restarted_files.append(get_file_by_extension(d, extension))
+    return restarted_files
+
+def get_latest_restart_dir(directory):
+    restart_dirs = [d for d in os.listdir(directory) if d.startswith('restart-')]
+    if not restart_dirs:
+        return directory
+    return f"{directory}/restart-{max([int(d.split('-')[-1]) for d in restart_dirs])}"
 
 def get_platform_and_properties(
         device, 
