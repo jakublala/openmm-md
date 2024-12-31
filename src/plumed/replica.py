@@ -198,7 +198,7 @@ def run_replica_plumed(
     reporter = MultiStateReporter(
         storage=storage_path,
         checkpoint_storage='replica_exchange_checkpoint.nc',
-        checkpoint_interval=100,
+        checkpoint_interval=100000000, # HACK: for now, as the files are too big
         analysis_particle_indices=mda.Universe(pdb).select_atoms("protein").ids
         )
 
@@ -220,7 +220,8 @@ def run_replica_plumed(
         # or swap-all, which is more expensive
         # and does n_replicas**3 swap attempts per iteration
         mcmc_moves=move, 
-        number_of_iterations=N_ITERATIONS # this does 50 iterations of the move, hence 50 * 500 steps
+        number_of_iterations=N_ITERATIONS, # this does 50 iterations of the move, hence 50 * 500 steps,
+        online_analysis_interval=None,
         )
     
 

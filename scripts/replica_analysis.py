@@ -16,7 +16,7 @@ TEMP = 300
 STRIDE = 500
 
 
-def plot_replica_analysis(directory, system, cvs, n_replicas=4):
+def plot_replica_analysis(directory, system, cvs, n_replicas=4, t_min=300, t_max=350):
     # Create figure with constrained layout for better spacing
     fig, axs = plt.subplots(1, 3, figsize=(16, 5), constrained_layout=True)
     
@@ -42,6 +42,7 @@ def plot_replica_analysis(directory, system, cvs, n_replicas=4):
     # HACK: for now, let's just assume that columns are constant-ish
     # import pdb; pdb.set_trace()
     potential_energies = np.array(nc.variables['energies'])[:, 0, :].squeeze()
+    
     for i in range(n_replicas):
         axs[0].hist(potential_energies[:, i], bins=100, label=f"Replica {i+1}")
     axs[0].set_xlabel("Potential Energy [reduced units]")
@@ -66,8 +67,8 @@ def plot_replica_analysis(directory, system, cvs, n_replicas=4):
     axs[1].legend()
 
     # plot the states index across the temperatures
-    T_MIN = 300
-    T_MAX = 400
+    T_MIN = t_min 
+    T_MAX = t_max
     TEMPERATURES = [T_MIN + (T_MAX - T_MIN) * (np.exp(float(i) / float(n_replicas-1)) - 1.0) / (np.e - 1.0) for i in range(n_replicas)]
     states = np.array(nc.variables['states'])[:]
     for i in range(states.shape[0]):
@@ -185,7 +186,8 @@ if __name__ == "__main__":
     directories = [
         f"{base_dir}/241229-ReplicaPBC-300-310-8",
         f"{base_dir}/241229-ReplicaPBC-300-325-8",
-        f"{base_dir}/241229-ReplicaPBC-300-350-8"
+        f"{base_dir}/241229-ReplicaPBC-300-350-8",
+        f"{base_dir}/241230-REST2",
     ]
     
     system = "CD28-G"
@@ -195,6 +197,12 @@ if __name__ == "__main__":
     for directory in directories:
         print(f"Processing {directory}...")
         plot_replica_trajectory_analysis(directory, system, cvs, n_replicas)
-        plot_replica_analysis(directory, system, cvs, n_replicas)
+        if "310" in directory:
+            t_max = 310
+        elif "325" in directory:
+            t_max = 325
+        elif "350" in directory:
+            t_max = 350
+        plot_replica_analysis(directory, system, cvs, n_replicas, 300, t_max)
         nc_file = get_file_by_extension(directory, "replica_exchange.nc")
         # reconstruct_dcd_from_nc(nc_file, directory)

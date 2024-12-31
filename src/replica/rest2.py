@@ -348,7 +348,7 @@ def parse_plumed_cmap(plumed_input_file):
     return chainA_residue_ids, chainB_residue_ids
     
 
-def get_rest_atoms(system, pdb, plumed_input_file):
+def get_rest_atoms(pdb, plumed_input_file):
     """
         Heat up the atoms that are part of the CMAP.
         Assume chain A is the binder; then chain B is the target.
@@ -379,7 +379,7 @@ def get_thermodynamic_and_sampler_states(system, temperatures, equilibriated_fil
 
     pdb = PDBxFile(equilibriated_file)
 
-    rest_atoms = get_rest_atoms(system, pdb, plumed_input_file)
+    rest_atoms = get_rest_atoms(pdb, plumed_input_file)
     system = apply_scaling(system, rest_atoms)
 
     rest_state = RESTState.from_system(system)
@@ -393,7 +393,6 @@ def get_thermodynamic_and_sampler_states(system, temperatures, equilibriated_fil
         beta_m = 1/(kB*temperature)
         compound_thermodynamic_state_copy = copy.deepcopy(compound_thermodynamic_state)
         compound_thermodynamic_state_copy.set_rest_parameters(beta_m, beta_0)
-
         thermodynamic_state_list.append(compound_thermodynamic_state_copy)
 
         # Generate a sampler_state with minimized positions
