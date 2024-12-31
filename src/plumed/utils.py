@@ -30,33 +30,6 @@ def read_openmm_output(out_file: str) -> pd.DataFrame:
     
     return df
 
-def get_last_checkpoint_timestep(out_file, checkpoint_interval):
-    df_out = read_openmm_output(out_file)
-    last_timestep = df_out['Step'].iloc[-1]
-    num_checkpoints = last_timestep // checkpoint_interval
-    return num_checkpoints * checkpoint_interval
-
-def process_hills_for_restart(hills_file, time_of_last_hill):
-    filtered_lines = []
-    with open(hills_file, 'r') as f:
-        # Keep header lines (starting with #) and hills up to time_of_last_hill
-        for line in f:
-            if line.startswith('#'):
-                filtered_lines.append(line)
-                continue
-            
-            # Hills file columns are space-separated, time is in the first column
-            try:
-                time = float(line.split()[0])
-                if time <= time_of_last_hill:
-                    filtered_lines.append(line)
-            except (ValueError, IndexError):
-                continue
-    
-    return filtered_lines
-
-
-
 def assert_correct_metad_grid(config):
     # CV1
     assert config['cv1.type'] is not None, "Expected CV1 type"

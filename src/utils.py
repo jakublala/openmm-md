@@ -3,7 +3,7 @@ import os
 import subprocess
 from openmm.unit import nanoseconds, picoseconds
 from openmm import Platform
-
+from openmm.app import PDBxFile, PDBFile
 import logging
 logger = logging.getLogger(__name__)
 
@@ -94,7 +94,6 @@ def get_gpu_indices():
     
     return ','.join(gpu_indices) if gpu_indices else '0'
 
-from openmm.app import PDBxFile
 def save_equilibrated_state(
         simulation,
         output_dir,
@@ -104,3 +103,20 @@ def save_equilibrated_state(
     positions = simulation.context.getState(getPositions=True).getPositions()
     PDBxFile.writeFile(topology, positions, open(f'{output_dir}/{filename}_equilibrated.cif', 'w'))
     logger.info(f'Equilibrated state saved to {output_dir}/{filename}_equilibrated.cif')
+
+
+def convert_pdb_to_cif(output_dir: str, filename: str, file_type: str):
+    """Convert PDB file to CIF format.
+    
+    Args:
+        output_dir: Directory containing the files
+        filename: Base name of the file without extension
+        file_type: Type of file ('equilibrated' or 'solvated')
+    """
+    pdb_path = f"{output_dir}/{filename}_{file_type}.pdb"
+    cif_path = f"{output_dir}/{filename}_{file_type}.cif"
+    
+    if os.path.exists(pdb_path):
+        pdb = PDBFile(pdb_path)
+        PDBxFile.writeFile(pdb.topology, pdb.positions, open(cif_path, 'w'))
+        os.remove(pdb_path)  # Remove old PDB file

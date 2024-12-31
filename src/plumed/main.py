@@ -6,11 +6,10 @@ from mpi4py import MPI
 from src.plumed.opes import run_plumed
 from src.relax import minimize
 from src.fixer import fixer
-from src.plumed.io import create_plumed_input
 from src.analysis.utils import get_file_by_extension
-from src.plumed.utils import get_pace_from_metad, get_last_checkpoint_timestep, process_hills_for_restart
-from src.utils import get_checkpoint_interval
+from src.utils import convert_pdb_to_cif
 from src.plumed.replica import run_replica_plumed
+from src.plumed.restart import setup_metad_restart
 import sys
 
 def _setup_mpi():
@@ -189,49 +188,21 @@ def main(
             restart_checkpoint = None
     else:
         if config['restart'] and rank == 0:
-
-            # move hills file to output dir
-            # chop off lines that are after the checkpoint
-            # get the checkpoint file
-            # figure out the timestep
-            # HILLS file numbers every deposited kernel
-            # .out prints every 100 ps (i.e. 50,000 time steps)
-            # we finished at (were WALLtimed) at 221,900 ps, i.e. 221.9 ns
-            # how often do we get a checkpoint?
-            # we save every 1 nanoseconds, according to get_checkpoint_interval
-            plumed_file = get_file_by_extension(input_dir, 'plumed.dat')
-            metad_pace = get_pace_from_metad(plumed_file)
-            assert metad_pace == config['metad.pace'], 'Previous MetaD pace does not match the current one.'
-
-            # copy the PLUMED file, but modify it
-            from src.plumed.utils import prepare_plumed_file_for_restart
-            prepare_plumed_file_for_restart(plumed_file, output_dir, filename)
             
-            hills_file = get_file_by_extension(input_dir, '.hills')
-            out_file = get_file_by_extension(input_dir, '.out')
-            
-            checkpoint_interval = get_checkpoint_interval(timestep)
-            last_checkpoint_timestep = get_last_checkpoint_timestep(out_file, checkpoint_interval)
-            num_hills_before_checkpoint = last_checkpoint_timestep // config['metad.pace']
-            time_of_last_hill = int(num_hills_before_checkpoint * config['metad.pace'] * timestep * 0.001) # in ps 
-            new_hills_file_lines = process_hills_for_restart(hills_file, time_of_last_hill)
-            with open(f'{output_dir}/{filename}.hills', 'w') as f:
-                for line in new_hills_file_lines:
-                    f.write(line)
             logger.info("Restarting MetaD as requested...")
-            restart_checkpoint = get_file_by_extension(input_dir, '.chk')
 
-            if os.path.exists(f"{output_dir}/{filename}_equilibrated.pdb"):
-                # no longer supported, need to convert into cif
-                from openmm.app import PDBxFile, PDBFile
-                pdb = PDBFile(f"{output_dir}/{filename}_equilibrated.pdb")
-                PDBxFile.writeFile(pdb.topology, pdb.positions, open(f"{output_dir}/{filename}_equilibrated.cif", 'w'))
-                os.remove(f"{output_dir}/{filename}_equilibrated.pdb")  # Optional: remove old PDB file
-            # do the same for _solvated.pdb
-            if os.path.exists(f"{output_dir}/{filename}_solvated.pdb"):
-                pdb = PDBFile(f"{output_dir}/{filename}_solvated.pdb")
-                PDBxFile.writeFile(pdb.topology, pdb.positions, open(f"{output_dir}/{filename}_solvated.cif", 'w'))
-                os.remove(f"{output_dir}/{filename}_solvated.pdb")  # Optional: remove old PDB file
+            restart_checkpoint = setup_metad_restart(
+                input_dir=input_dir,
+                output_dir=output_dir,
+                filename=filename,
+                timestep=timestep,
+                config=config
+            )
+
+            # HACK: need to convert PDBs to CIF
+            convert_pdb_to_cif(output_dir, filename, 'equilibrated')
+            convert_pdb_to_cif(output_dir, filename, 'solvated')
+            
 
 
         else:
