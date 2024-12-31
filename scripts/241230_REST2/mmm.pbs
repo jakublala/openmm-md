@@ -37,7 +37,7 @@ echo "Running $SYSTEM with output_dir $OUTPUT_DIR"
 
 
 # Define the Python command
-PYTHON_CMD="python /home/mmm1486/projects/openmm-md/scripts/241213_ReplicaPBC/run.py \
+PYTHON_CMD="python /home/mmm1486/projects/openmm-md/scripts/241230_REST2/run.py \
     --output_dir $OUTPUT_DIR \
     --filepath $FILEPATH"
 

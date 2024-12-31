@@ -28,6 +28,6 @@ submit_simulation() {
 
 echo ${PROJECT_DIR}
 
-submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241211-NewUW/CD28_general_equilibrated.cif" \
-                "CD28-G-ReplicaPBC" \
-                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241216-ReplicaPBC" \
+submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241230-REST2/CD28_general_equilibrated.cif" \
+                "CD28-G-REST2" \
+                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241230-REST2" \

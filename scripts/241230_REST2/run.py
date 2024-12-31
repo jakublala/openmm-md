@@ -16,8 +16,8 @@ def run(
     MDTIME = 200
 
     T_MIN = 300
-    T_MAX = 600
-    N_REPLICAS = 4
+    T_MAX = 350
+    N_REPLICAS = 8
 
     
     # PADDING = 2
