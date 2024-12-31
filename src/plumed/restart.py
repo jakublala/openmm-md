@@ -89,7 +89,7 @@ def process_hills_for_restart(
     colvar_file = get_file_by_extension(input_dir, '.colvar')
     colvar_df = read_colvar_file(colvar_file)
     colvar_df = colvar_df[colvar_df['time'] <= last_hill_time]
-    indices_to_keep = 3 + len(colvar_df) # 3 is the header size
+    indices_to_keep = 1 + len(colvar_df) # 1 is the header size
     with open(colvar_file, 'r') as f:
         lines = f.readlines()
     with open(colvar_file, 'w') as f:

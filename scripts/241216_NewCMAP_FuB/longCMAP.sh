@@ -28,6 +28,6 @@ submit_simulation() {
 
 echo ${PROJECT_DIR}
 
-submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241222-LongCMAP/CD28_general_equilibrated.cif" \
+submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241231-LongCMAP/CD28_general_equilibrated.cif" \
                 "CD28-G-LongCMAP" \
                 "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241231-LongCMAP"
