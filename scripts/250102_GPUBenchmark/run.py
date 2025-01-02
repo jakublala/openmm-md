@@ -81,8 +81,8 @@ def run(
     }
 
     import os
-    from src.utils import get_gpu_indices
-    gpu_indices = get_gpu_indices()
+    from src.utils import get_available_gpu_indices
+    gpu_indices = get_available_gpu_indices()
     
     # 2. RUN MINIMIZATION AND SIMULATION
     main(

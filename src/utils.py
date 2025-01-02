@@ -70,9 +70,9 @@ def get_full_reporter(filename, log_freq, nsteps):
             )
 
 
-def get_gpu_indices():
+def get_available_gpu_indices():
     """
-    Convert GPU UUIDs from CUDA_VISIBLE_DEVICES to numerical indices for OpenMM.
+    Get available GPU indices using nvidia-smi -L command.
     
     Returns
     -------
@@ -82,33 +82,27 @@ def get_gpu_indices():
     
     Examples
     --------
-    >>> # If CUDA_VISIBLE_DEVICES="GPU-6aae2784-3658-0a4c-b8e4-510d2197db82,GPU-bebac720-9854-278d-fb9f-e3c0e55cad8e"
-    >>> get_gpu_indices()
+    >>> # If system has 2 GPUs
+    >>> get_available_gpu_indices()
     '0,1'
     """
-    def get_gpu_index_from_uuid(uuid):
+    try:
         result = subprocess.run(['nvidia-smi', '-L'], capture_output=True, text=True)
-        gpu_list = result.stdout.strip().split('\n')
+        if result.returncode != 0:
+            return '0'
         
-        for i, gpu_info in enumerate(gpu_list):
-            if uuid in gpu_info:
-                return str(i)
+        # nvidia-smi -L output format is like:
+        # GPU 0: NVIDIA GeForce RTX 2080 Ti (UUID: GPU-...)
+        # GPU 1: NVIDIA GeForce RTX 2080 Ti (UUID: GPU-...)
+        gpu_indices = []
+        for line in result.stdout.strip().split('\n'):
+            if line.startswith('GPU '):
+                idx = line.split(':')[0].split(' ')[1]
+                gpu_indices.append(idx)
+        
+        return ','.join(gpu_indices) if gpu_indices else '0'
+    except (subprocess.SubprocessError, FileNotFoundError):
         return '0'
-
-    nvidia_info = subprocess.run(["nvidia-smi --query-gpu=gpu_uuid,gpu_name,compute_mode  --format=csv"], capture_output=True, text=True)
-
-    # Get GPU UUIDs from environment
-    gpu_uuids = [i[0] for i in nvidia_info.stdout.split(', ')]
-    
-    # Convert UUIDs to indices
-    gpu_indices = []
-    for uuid in gpu_uuids:
-        uuid = uuid.strip()
-        if uuid.startswith('GPU-'):
-            index = get_gpu_index_from_uuid(uuid)
-            gpu_indices.append(index)
-    
-    return ','.join(gpu_indices) if gpu_indices else '0'
 
 def save_equilibrated_state(
         simulation,
