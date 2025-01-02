@@ -94,9 +94,11 @@ def get_gpu_indices():
             if uuid in gpu_info:
                 return str(i)
         return '0'
-        
+
+    nvidia_info = subprocess.run(["nvidia-smi --query-gpu=gpu_uuid,gpu_name,compute_mode  --format=csv"], capture_output=True, text=True)
+
     # Get GPU UUIDs from environment
-    gpu_uuids = os.environ.get('CUDA_VISIBLE_DEVICES', '').split(',')
+    gpu_uuids = [i[0] for i in nvidia_info.stdout.split(', ')]
     
     # Convert UUIDs to indices
     gpu_indices = []

@@ -27,6 +27,13 @@ submit_simulation() {
 }
 
 echo ${PROJECT_DIR}
-submit_simulation "${PROJECT_DIR}/data/241109_INFconstruct/output/Z1-B50L10W/250102-LongCMAP/Z1-B50L10W_equilibrated.cif" \
-                "Z1-B50L10W-CMAP" \
-                "${PROJECT_DIR}/data/241109_INFconstruct/output/Z1-B50L10W/250102-LongCMAP" \
+
+# submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241222-LongCMAP/CD28_general_equilibrated.cif" \
+#                 "CD28-G-LongCMAP" \
+#                 "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/241222-LongCMAP"
+
+
+submit_simulation "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/250102-GPUBenchmark4/CD28_general_equilibrated.cif" \
+                "CD28-G-GPUBenchmark4" \
+                "${PROJECT_DIR}/data/241010_FoldingUponBinding/output/CD28-G/250102-GPUBenchmark4"
+# if I do this again, and submit it in three days, it should potentially work

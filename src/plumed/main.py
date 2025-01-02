@@ -56,12 +56,12 @@ def _setup_logging(rank):
 
 def main(
         filepath=None, 
-        device_index='0',
         mdtime=100, # in ns
         timestep=2,
         temperature=300,
         device='cuda',
         device_precision='mixed',
+        device_index='0',
         output_dir=None,
         padding=None,
         split_chains=None,

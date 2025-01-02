@@ -4,7 +4,7 @@
 #$ -l gpu=1
 
 # Request ten minutes of wallclock time (format hours:minutes:seconds).
-#$ -l h_rt=48:00:0
+#$ -l h_rt=04:00:0
 
 # Request 1 gigabyte of RAM (must be an integer followed by M, G, or T)
 #$ -l mem=80G
@@ -13,7 +13,7 @@
 #$ -l tmpfs=32G
 
 # Set the name of the job.
-#$ -N GPUJob
+#$ -N GPUJob-
 
 # Set the working directory to somewhere in your scratch space.
 #$ -wd /home/mmm1486/Scratch/openmm-md
@@ -37,7 +37,7 @@ echo "Running $SYSTEM with output_dir $OUTPUT_DIR"
 
 
 # Define the Python command
-PYTHON_CMD="python /home/mmm1486/projects/openmm-md/scripts/241216_NewCMAP_FuB/run.py \
+PYTHON_CMD="cd /home/mmm1486/projects/openmm-md/scripts/250102_GPUBenchmark && python run.py \
     --output_dir $OUTPUT_DIR \
     --filepath $FILEPATH"
 
@@ -48,7 +48,7 @@ apptainer exec \
     --bind $HOME/Scratch \
     --bind $HOME/projects \
     $HOME/Scratch/openmm-md.sif bash -c \
-    "export PYTHONPATH=$HOME/projects/openmm-md:$PYTHONPATH && $PYTHON_CMD"
+    "echo $CUDA_VISIBLE_DEVICES"
 
 # Preferably, tar-up (archive) all output files onto the shared scratch area
 tar zcvf $HOME/Scratch/files_from_job_$JOB_ID.tar.gz $TMPDIR
