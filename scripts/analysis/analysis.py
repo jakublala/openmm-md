@@ -240,6 +240,9 @@ def get_cvs_from_plumed_file(plumed_text):
     
     raise ValueError("No CVs (ARG parameter) found in PLUMED file")
 
+
+from src.analysis.traj import stitch_trajectories
+
 def run(project, system, date, recompute, collect_plots):
     date = fix_fucked_up_naming(project, system, date)
 
@@ -259,6 +262,8 @@ def run(project, system, date, recompute, collect_plots):
     with open(get_file_by_extension(directory, 'plumed.dat'), 'r') as file:
         cvs = get_cvs_from_plumed_file(file)
 
+    stitch_trajectories(directory, system, date)
+    assert 0 == 1
 
     if recompute or not get_file_by_extension(directory, '.h5', assert_exists=False):
         if simulation_type == 'opes':
@@ -313,6 +318,7 @@ def run(project, system, date, recompute, collect_plots):
         system,
         simulation_type
     )
+
 
     # if collect_plots:
     #     save_dir = f"../../data/241010_FoldingUponBinding/output/{date}/plots"

@@ -50,6 +50,27 @@ def plot_trajectory(colvar_df, directory, system, cvs):
     )
     plt.close()
 
+from src.utils import get_checkpoint_interval
+LOGGING_INTERVAL = 100 # ps per frame
+CHECKPOINT_INTERVAL = 1000 # ps per checkpoint, 1 ns per checkpoint
+
+from src.utils import get_restarted_files_by_extension
+import MDAnalysis as mda
+def stitch_trajectories(directory, system, date):
+    dcd_files = get_restarted_files_by_extension(directory, '.dcd')
+    for i, dcd_file in enumerate(dcd_files):
+        if i == 0:
+            universe = mda.Universe(dcd_file)
+        else:
+            _universe = mda.Universe(dcd_file)
+
+            # HACK: doing checkpint trimming manually, but could do it via the actual .chk file
+            # but that requires separating the simulation intiailization into a function
+
+            last_frame = universe.trajectory.n_frames - (universe.trajectory.n_frames % (CHECKPOINT_INTERVAL / LOGGING_INTERVAL))
+            _universe = universe[::last_frame]
+
+        
 
 # OBSOLETE
 # def plot_colvar_traj_in_fes(directory, target, binder, num_runs):
