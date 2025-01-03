@@ -77,7 +77,8 @@ def run(
         'spot1_residues': None,
         'spot2_residues': None,
         'idr_residues': idr_residues,
-        'trajectory_logging': True
+        'trajectory_logging': True,
+        'debug': True
     }
 
     import os

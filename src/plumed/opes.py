@@ -244,6 +244,16 @@ def run_plumed(
 
     if plumed_config['trajectory_logging']:
         simulation.reporters.append(trajReporter)
+
+
+    from src.reporter import DebugReporter
+    if plumed_config['debug']:
+        debugReporter = DebugReporter(
+            file=f'{output_dir}/{filename}_debug.txt',
+            reportInterval=traj_interval
+            )
+        simulation.reporters.append(debugReporter)
+
     simulation.reporters.append(dataReporter)
     simulation.reporters.append(checkpointReporter)
     simulation.currentStep = 0

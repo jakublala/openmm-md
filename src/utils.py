@@ -130,3 +130,52 @@ def convert_pdb_to_cif(output_dir: str, filename: str, file_type: str):
         pdb = PDBFile(pdb_path)
         PDBxFile.writeFile(pdb.topology, pdb.positions, open(cif_path, 'w'))
         os.remove(pdb_path)  # Remove old PDB file
+
+
+def get_gpu_utilization():
+    """
+    Get GPU utilization and memory usage for each GPU using nvidia-smi.
+    
+    Returns
+    -------
+    list[dict]
+        List of dictionaries containing GPU info, one per GPU:
+        [
+            {
+                'id': '0',
+                'gpu_util': 45,  # GPU utilization percentage
+                'memory_util': 80,  # Memory utilization percentage
+                'memory_used': 8192,  # Memory used in MB
+                'memory_total': 11019  # Total memory in MB
+            },
+            ...
+        ]
+    """
+    try:
+        # Format: index, gpu_util, memory_used, memory_total
+        cmd = ['nvidia-smi', '--query-gpu=index,utilization.gpu,memory.used,memory.total', 
+               '--format=csv,noheader,nounits']
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        
+        if result.returncode != 0:
+            logger.warning("Failed to get GPU utilization")
+            return []
+        
+        gpus = []
+        for line in result.stdout.strip().split('\n'):
+            # Parse CSV output
+            idx, gpu_util, mem_used, mem_total = [x.strip() for x in line.split(',')]
+            
+            gpus.append({
+                'id': idx,
+                'gpu_util': int(gpu_util),
+                'memory_used': int(mem_used),
+                'memory_total': int(mem_total),
+                'memory_util': round(int(mem_used) / int(mem_total) * 100, 1)
+            })
+            
+        return gpus
+        
+    except (subprocess.SubprocessError, FileNotFoundError) as e:
+        logger.warning(f"Error getting GPU utilization: {e}")
+        return []
