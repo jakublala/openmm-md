@@ -242,6 +242,7 @@ def get_cvs_from_plumed_file(plumed_text):
 
 
 from src.analysis.traj import stitch_trajectories
+from src.analysis.output import stitch_openmm_outputs
 
 def run(project, system, date, recompute, collect_plots):
     date = fix_fucked_up_naming(project, system, date)
@@ -263,6 +264,7 @@ def run(project, system, date, recompute, collect_plots):
         cvs = get_cvs_from_plumed_file(file)
 
     stitch_trajectories(directory, system, date)
+    stitch_openmm_outputs(directory, system, date)
     assert 0 == 1
 
     if recompute or not get_file_by_extension(directory, '.h5', assert_exists=False):

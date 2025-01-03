@@ -34,8 +34,11 @@ export RECOMPUTE=False
 # python analysis.py --system SUMO-1A --date $DATE --project 241010_FoldingUponBinding --recompute $RECOMPUTE
 # python analysis.py --system SUMO-1C --date $DATE --project 241010_FoldingUponBinding --recompute $RECOMPUTE
 
-python analysis.py --system CD28-G --date 250102-LongCMAP --project 241010_FoldingUponBinding --recompute $RECOMPUTE
-python analysis.py --system Z1-B50L10W --date 250102-LongCMAP --project 241109_INFconstruct --recompute $RECOMPUTE
+# python analysis.py --system CD28-G --date 250102-LongCMAP --project 241010_FoldingUponBinding --recompute $RECOMPUTE
+# python analysis.py --system Z1-B50L10W --date 250102-LongCMAP --project 241109_INFconstruct --recompute $RECOMPUTE
+python analysis.py --system CD28-G --date 241222-LongCMAP --project 241010_FoldingUponBinding --recompute $RECOMPUTE
+
+
 # python analysis.py --system CD28-G --date 241231-LongCMAP --project 241010_FoldingUponBinding --recompute $RECOMPUTE
 # python analysis.py --system Z1-B50L10W --date 241231-LongCMAP --project 241109_INFconstruct --recompute $RECOMPUTE
 # python analysis.py --system CD28-G --date 241215-NewUW3 --project 241010_FoldingUponBinding --recompute $RECOMPUTE

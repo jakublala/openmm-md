@@ -54,22 +54,149 @@ from src.utils import get_checkpoint_interval
 LOGGING_INTERVAL = 100 # ps per frame
 CHECKPOINT_INTERVAL = 1000 # ps per checkpoint, 1 ns per checkpoint
 
-from src.utils import get_restarted_files_by_extension
+from src.utils import get_restarted_files_by_extension, get_file_by_extension
 import MDAnalysis as mda
+import os
+import numpy as np
+
 def stitch_trajectories(directory, system, date):
+    """
+    Stitch multiple DCD trajectories into a list of AtomGroups.
+    This final trajetory does not have the first equilibrated frame.
+    TODO: One could extend this function to get that from equilibrated.cif.
+    
+    Parameters
+    ----------
+    directory : str
+        Path to directory containing DCD files
+    system : str
+        System name
+    date : str
+        Date string
+    
+    Returns
+    -------
+    list
+        List of AtomGroups, one for each frame
+    """
+    # Delete previous stitched trajectory
+    try:
+        full_dcd_file = get_file_by_extension(directory, '_full.dcd')
+        os.remove(full_dcd_file)
+    except FileNotFoundError:
+        pass
+
+    # Get topology and trajectory files
     dcd_files = get_restarted_files_by_extension(directory, '.dcd')
+    pdb_file = get_file_by_extension(directory, '_fixed.pdb')
+    
+    if len(dcd_files) == 0:
+        raise ValueError("No DCD files found in directory")
+    
+    assert dcd_files == sorted(dcd_files), "DCD files are not sorted"
+    
+    # Initialize universe from PDB for topology
+    base_universe = mda.Universe(pdb_file)
+    frames = []
+    
+    # Process each DCD file
     for i, dcd_file in enumerate(dcd_files):
-        if i == 0:
-            universe = mda.Universe(dcd_file)
+        traj_universe = mda.Universe(pdb_file, dcd_file)
+        
+        # Verify topology matches
+        assert base_universe.atoms.n_atoms == traj_universe.atoms.n_atoms, \
+            f"Number of atoms mismatch in {dcd_file}"
+        
+        # Calculate frames to keep based on checkpoint interval
+        frames_per_checkpoint = int(CHECKPOINT_INTERVAL / LOGGING_INTERVAL)
+        
+        # Determine how many frames to keep from this trajectory
+        if i < len(dcd_files) - 1:
+            last_frame_index = int(traj_universe.trajectory.n_frames - 
+                                 (traj_universe.trajectory.n_frames % frames_per_checkpoint))
+            print(f"Processing {dcd_file} with {last_frame_index} frames (trimmed)")
         else:
-            _universe = mda.Universe(dcd_file)
+            last_frame_index = traj_universe.trajectory.n_frames
+            print(f"Processing {dcd_file} with {last_frame_index} frames (untrimmed)")
+        
+        # Extract frames
+        for ts in traj_universe.trajectory[:last_frame_index]:
+            frames.append(ts.copy())
+    
+    print(f"Total frames collected: {len(frames)}")
+    
+    # Verify no consecutive frames are identical
+    for i in range(len(frames)-1):
+        assert not np.array_equal(frames[i].positions, frames[i+1].positions), \
+            f"Consecutive frames {i} and {i+1} are identical"
 
-            # HACK: doing checkpint trimming manually, but could do it via the actual .chk file
-            # but that requires separating the simulation intiailization into a function
 
-            last_frame = universe.trajectory.n_frames - (universe.trajectory.n_frames % (CHECKPOINT_INTERVAL / LOGGING_INTERVAL))
-            _universe = universe[::last_frame]
+    # Create combined universe with all frames
+    combined_universe = mda.Universe(pdb_file)
+    combined_universe.trajectory = mda.coordinates.memory.MemoryReader(np.array(frames))
 
+    # Write the stitched trajectory
+    output_path = f"{directory}/{system}_full.dcd"
+    with mda.Writer(output_path, combined_universe.atoms.n_atoms) as w:
+        for ts in combined_universe.trajectory:
+            w.write(combined_universe)
+    
+    return combined_universe.trajectory
+
+# def stitch_trajectories(directory, system, date):
+
+#     try:
+#         full_dcd_file = get_file_by_extension(directory, '_full.dcd')
+#         os.remove(full_dcd_file)
+#     except FileNotFoundError:
+#         pass
+    
+#     dcd_files = get_restarted_files_by_extension(directory, '.dcd')
+#     pdb_file = get_file_by_extension(directory, '_fixed.pdb')
+
+
+    
+    
+#     atom_groups = []
+#     for i, dcd_file in enumerate(dcd_files):
+#         print(f"Processing {dcd_file}")
+#         trajectory = mda.Universe(pdb_file, dcd_file)
+
+#         import pdb; pdb.set_trace()
+#         for atom_group in trajectory.atoms:
+#             print(atom_group)
+#             atom_groups.append(atom_group)
+
+
+        
+#         # HACK: doing checkpint trimming manually, but could do it via the actual .chk file
+#         # but that requires separating the simulation intiailization into a function
+#         last_frame_index = int(trajectory.n_frames - (trajectory.n_frames % (CHECKPOINT_INTERVAL / LOGGING_INTERVAL)))
+#         # print(last_frame_index)
+#         trajectory = trajectory[:last_frame_index]
+#         _frames = [f for f in trajectory]
+
+#         assert len(_frames) == last_frame_index, f"Expected {last_frame_index} frames, got {len(_frames)}"
+
+#         for frame in trajectory:
+#             # print(frames[-1].frame)
+#             if len(frames) > 0:
+#                 frame.time = frames[-1].time + 1
+#             else:
+#                 frame.time = 0
+#             frames.append(frame)
+    
+#     pdb_file = get_file_by_extension(directory, '_fixed.pdb')
+#     universe = mda.Universe(pdb_file)
+#     print(universe.atoms)
+
+#     # import pdb; pdb.set_trace()
+#     # assert 0 == 1
+
+#     with mda.Writer(f"{directory}/{system}_full.dcd", universe.atoms.n_atoms) as w:
+#         for frame in frames:
+#             w.write(frame)
+        
         
 
 # OBSOLETE
